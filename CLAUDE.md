@@ -99,7 +99,17 @@ Skills must not write to `context/archive/`. Archived changes are immutable; if 
 
 - `wrangler pages deploy` jest zakazane w tym repo — użyj `npm run deploy` (= `astro build && wrangler deploy`) albo `npm run preview:upload` (= `astro build && wrangler versions upload`) dla wersji bez ruchu produkcyjnego.
 - Dostęp do zmiennych środowiskowych wyłącznie przez `astro:env/server` (patrz `src/lib/supabase.ts`). Nigdy `Astro.locals.runtime` (nie istnieje w v13) ani `process.env`.
-- `wrangler.jsonc` → `"name": "intouch"` determinuje subdomenę `*.workers.dev`; produkcyjny URL to `https://intouch.<subdomena>.workers.dev`.
+- `wrangler.jsonc` → `"name": "intouch"` determinuje subdomenę `*.workers.dev`; produkcyjny URL to `https://intouch.g-ratajczak97.workers.dev`.
+
+## Rollback
+
+`wrangler rollback <VERSION_ID>` cofa **tylko kod Workera** — nie cofa bound resources (KV, D1, R2, Durable Objects) ani migracji Supabase. Jeśli produkcja zostanie cofnięta do starszej wersji kodu, baza zostaje na najnowszym schemacie.
+
+Konsekwencja: migracje Supabase muszą być **wyłącznie forward-compatible**:
+- nową kolumnę dodawaj i wypełniaj domyślną wartością zanim kod zacznie jej wymagać
+- starą kolumnę usuwaj dopiero co najmniej jeden deploy po tym, jak żaden kod przestał jej używać
+
+`supabase/migrations/` jeszcze nie istnieje, ale ta zasada obowiązuje od pierwszej migracji.
 
 ## Sekrety
 
