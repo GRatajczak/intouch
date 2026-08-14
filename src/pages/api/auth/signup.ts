@@ -6,7 +6,8 @@ export const POST: APIRoute = async (context) => {
   const email = form.get("email") as string;
   const password = form.get("password") as string;
 
-  const supabase = createClient(context.request.headers, context.cookies);
+  const authCookieHeaders = new Headers();
+  const supabase = createClient(context.request.headers, context.cookies, authCookieHeaders);
   if (!supabase) {
     return context.redirect(`/auth/signup?error=${encodeURIComponent("Supabase is not configured")}`);
   }
@@ -16,5 +17,9 @@ export const POST: APIRoute = async (context) => {
     return context.redirect(`/auth/signup?error=${encodeURIComponent(error.message)}`);
   }
 
-  return context.redirect("/auth/confirm-email");
+  const response = context.redirect("/auth/confirm-email");
+  authCookieHeaders.forEach((value, key) => {
+    response.headers.set(key, value);
+  });
+  return response;
 };

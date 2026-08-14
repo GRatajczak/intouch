@@ -92,3 +92,21 @@ The shipped skill carries no 10xDevs / cohort / certification references. The ca
 Skills must not write to `context/archive/`. Archived changes are immutable; if a resolved target path starts with `context/archive/`, abort with: "This change is archived. Open a new change with `/10x-new` instead."
 
 <!-- END @przeprogramowani/10x-cli -->
+
+## Cloudflare: Workers, nie Pages
+
+`@astrojs/cloudflare` v13 usunął wsparcie dla Cloudflare Pages i `Astro.locals.runtime`. Ten projekt deployuje się jako **Cloudflare Worker**, nie Pages.
+
+- `wrangler pages deploy` jest zakazane w tym repo — użyj `npm run deploy` (= `astro build && wrangler deploy`) albo `npm run preview:upload` (= `astro build && wrangler versions upload`) dla wersji bez ruchu produkcyjnego.
+- Dostęp do zmiennych środowiskowych wyłącznie przez `astro:env/server` (patrz `src/lib/supabase.ts`). Nigdy `Astro.locals.runtime` (nie istnieje w v13) ani `process.env`.
+- `wrangler.jsonc` → `"name": "intouch"` determinuje subdomenę `*.workers.dev`; produkcyjny URL to `https://intouch.<subdomena>.workers.dev`.
+
+## Sekrety
+
+Sekrety żyją w trzech miejscach:
+
+- `.dev.vars` (gitignored) — lokalny dev
+- Workers Secrets (`wrangler secret put`) — **źródło prawdy dla produkcji**
+- GitHub Secrets — CI/CD (`wrangler-action`)
+
+Ustawianie/rotacja sekretów produkcyjnych to operacja człowieka, nie agenta.

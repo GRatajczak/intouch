@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, envField } from "astro/config";
+import { defineConfig, envField, sessionDrivers } from "astro/config";
 
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
@@ -8,12 +8,18 @@ import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://intouch.g-ratajczak97.workers.dev",
   output: "server",
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },
-  adapter: cloudflare(),
+  adapter: cloudflare({ imageService: "compile" }),
+  // Auth uses Supabase cookies, not Astro sessions. Explicit in-memory driver
+  // stops the Cloudflare adapter from auto-provisioning an unused KV namespace.
+  session: {
+    driver: sessionDrivers.lruCache(),
+  },
   env: {
     schema: {
       SUPABASE_URL: envField.string({ context: "server", access: "secret", optional: true }),
