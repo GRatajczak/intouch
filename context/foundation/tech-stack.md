@@ -35,3 +35,18 @@ watch is background work — scheduled reminders (FR-008) and non-blocking AI
 generation must run off a queue or external worker, since Cloudflare's edge
 runtime constrains long-running tasks. CI runs on GitHub Actions with
 auto-deploy-on-merge, the starter's default shape.
+
+## UI layer
+
+The starter ships with **shadcn/ui** (`components.json`, style `new-york`,
+`baseColor: neutral`) on top of **Tailwind CSS v4** and **React 19**
+(`@astrojs/react`). Component primitives come from **Radix UI**
+(`@radix-ui/react-slot`, ...), variant styling from
+**class-variance-authority** + **clsx** + **tailwind-merge**, and icons from
+**lucide-react** (`iconLibrary: "lucide"` in `components.json`). Path aliases
+(`@/components`, `@/components/ui`, `@/lib`, `@/hooks`) are already wired.
+
+Practical consequence: new UI work should add components via `npx shadcn add
+<component>` into `src/components/ui/` rather than hand-rolling primitives or
+introducing a second component library (e.g. MUI, Chakra, Ant Design) —
+`src/components/ui/button.tsx` is the existing reference pattern to follow.
