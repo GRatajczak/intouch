@@ -1,6 +1,6 @@
 ---
 project: "InTouch"
-version: 1
+version: 2
 status: draft
 created: 2026-07-19
 context_type: greenfield
@@ -109,7 +109,7 @@ reminders. Calendar integration is explicitly deferred to v2 — see Non-Goals.
 
 - FR-007: User can receive an AI-proposed contact hierarchy/order, computed from the self-profile + people descriptions + weights + who-is-who context. Each entry carries a suggested time window for reaching out (e.g. "worth contacting Maciej within 2 weeks"). Priority: must-have
   > Socrates: Counter-argument considered: "suggested time windows may feel arbitrary; if the user can't see why '2 weeks', trust erodes." Resolution: kept — flagged as a quality risk tied to the AI-relevance guardrail; suggestions must be explainable enough to trust (design concern, no FR change).
-- FR-008: User receives reminders aligned with that hierarchy. Priority: must-have
+- FR-008: User receives reminders aligned with that hierarchy, delivered as email to the address on their account. Priority: must-have
   > Socrates: Counter-argument considered: "too-frequent reminders become notification spam and get muted, killing the proactive value." Resolution: kept — reminder cadence must be restrained; routed to Open Questions as a cadence decision.
 - FR-009: User can mark whether a contact/meeting happened (yes/no) after its intended date, which feeds subsequent reminders. Priority: must-have
   > Socrates: Counter-argument considered: "users won't bother marking did-it-happen, leaving the loop empty and the hierarchy stale." Resolution: kept — core to the learning loop; making the marker frictionless is a design concern.
@@ -125,6 +125,13 @@ reminders. Calendar integration is explicitly deferred to v2 — see Non-Goals.
 - Reminders reach the user at most once per day, and address relationship decay
   (close ones the user has not contacted in a long time) — not same-day calendar
   events, which are out of MVP scope.
+- Reminders are delivered by **email**, to the address the user signed up with.
+  Email is the only reminder channel in the MVP — no web push, no SMS, no
+  in-app-only notification counts as satisfying FR-008. Sending goes through a
+  transactional email provider (**Resend**), which makes it a server-side
+  outbound call from a verified sending domain, never a client-side send. A
+  reminder that fails to send is a failure of FR-008, so delivery outcomes must
+  be observable rather than fire-and-forget.
 - The product is usable in a current mainstream desktop/mobile web browser.
   (Native mobile app is a future extension, not part of the MVP.)
 
@@ -143,8 +150,8 @@ share the top weight, the descriptive context breaks the tie.
 
 The output is a ranked hierarchy of people, each entry carrying a suggested time
 window for reaching out (e.g. "worth contacting Maciej within 2 weeks"). The
-user encounters it as the app's main view, is nudged toward it through reminders
-aligned with the ranking, and after each suggested date confirms whether the
+user encounters it as the app's main view, is nudged toward it through reminder
+emails aligned with the ranking, and after each suggested date confirms whether the
 contact happened — that confirmation feeds back into future rankings so the
 hierarchy stays current rather than going stale.
 
@@ -180,7 +187,13 @@ Non-goals carried over from the original idea:
 - **No social network** — this is a private personal tool, not a shared social
   graph.
 - **No chat / messaging** — the app does not send messages on the user's behalf;
-  the user reaches out through their own channels.
+  the user reaches out through their own channels. This is not in tension with
+  the reminder emails of FR-008: those are the app writing *to the user* about
+  their own circle. No message ever leaves the user's account addressed to a
+  close one, and close ones' email addresses are not collected at all.
+- **No inbound email** — reminder emails are one-way. The app does not receive,
+  parse, or act on replies; confirming "did it happen?" (FR-009) happens in the
+  app, not by replying to a reminder.
 - **No gamification** — no points, streaks, or badges in the MVP.
 
 ## Open Questions
@@ -188,3 +201,4 @@ Non-goals carried over from the original idea:
 1. **AI-suggestion explainability** — how much of the "why this order / why this time window" should be shown so users trust the hierarchy? Ties to the AI-relevance guardrail. Owner: user, during design.
 2. **Structured-form fields** — exact fields for the self-profile (FR-002) and per-person form (FR-003) are not yet pinned. Owner: user, during design.
 3. **Reminder cadence** — how frequently reminders fire without becoming spam that users mute (bounded by the "at most once per day" NFR, but the decay-driven trigger logic is unresolved). Owner: user, during design. Routed from FR-008.
+4. **Reminder email content** — does one email carry the single most urgent person, the top few, or the whole hierarchy? This decides whether the email is a nudge that pulls the user into the app or a digest they can read and dismiss without ever opening it — which in turn decides whether the FR-009 confirmation loop gets fed. Owner: user, during design. Routed from FR-008.
