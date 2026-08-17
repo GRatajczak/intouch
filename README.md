@@ -1,5 +1,7 @@
 # InTouch
 
+![](./public/template.png)
+
 InTouch to webowa aplikacja, ktora pomaga podtrzymywac relacje z bliskimi.
 Zamiast klasycznych przypomnien "na date", aplikacja buduje kolejnosc kontaktu
 na bazie kontekstu relacji i przypomina, kiedy dana relacja zaczyna cichnac.
