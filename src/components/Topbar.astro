@@ -1,34 +1,40 @@
 ---
+import Logo from "@/components/Logo.astro";
+
 const { user } = Astro.locals;
 ---
 
-<div
-  class="mb-4 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80"
->
+<div class="border-border bg-card mb-4 flex items-center justify-between rounded-xl border px-4 py-2 text-sm">
   {
     user ? (
       <>
-        <span class="text-blue-100/70">{user.email}</span>
+        <div class="flex items-center gap-2">
+          <Logo size={20} />
+          <span class="text-muted-foreground">{user.email}</span>
+        </div>
         <div class="flex items-center gap-3">
-          <a href="/dashboard" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
-            Dashboard
+          <a href="/dashboard" class="text-accent-foreground cursor-pointer transition-colors hover:underline">
+            Panel
           </a>
           <form method="POST" action="/api/auth/signout">
-            <button type="submit" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
-              Sign out
+            <button type="submit" class="text-accent-foreground cursor-pointer transition-colors hover:underline">
+              Wyloguj się
             </button>
           </form>
         </div>
       </>
     ) : (
       <>
-        <span class="text-blue-100/70">Not signed in</span>
+        <div class="flex items-center gap-2">
+          <Logo size={20} />
+          <span class="text-muted-foreground">Nie zalogowano</span>
+        </div>
         <div class="flex gap-3">
-          <a href="/auth/signin" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
-            Sign in
+          <a href="/auth/signin" class="text-accent-foreground cursor-pointer transition-colors hover:underline">
+            Zaloguj się
           </a>
-          <a href="/auth/signup" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
-            Sign up
+          <a href="/auth/signup" class="text-accent-foreground cursor-pointer transition-colors hover:underline">
+            Zarejestruj się
           </a>
         </div>
       </>

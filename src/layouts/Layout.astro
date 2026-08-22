@@ -11,7 +11,7 @@ const { title = "InTouch" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="pl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -33,7 +33,7 @@ const { title = "InTouch" } = Astro.props;
           {cfg.docsUrl && (
             <>
               {" "}
-              <a href={cfg.docsUrl} target="_blank" rel="noopener noreferrer">
+              <a href={cfg.docsUrl} target="_blank" rel="noopener noreferrer" class="cursor-pointer">
                 {cfg.docsLabel ?? "Dokumentacja"}
               </a>
               .

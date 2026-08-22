@@ -457,27 +457,27 @@ Not applicable — no data model, no persisted state affected.
 
 #### Automated
 
-- [x] 2.1 Build succeeds: `npm run build`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 `public/favicon.svg` exists and is valid XML
+- [x] 2.1 Build succeeds: `npm run build` — 3dd7e42
+- [x] 2.2 Lint passes: `npm run lint` — 3dd7e42
+- [x] 2.3 `public/favicon.svg` exists and is valid XML — 3dd7e42
 
 #### Manual
 
-- [x] 2.4 Browser tab shows new favicon
-- [x] 2.5 Page title reads "InTouch"
-- [x] 2.6 Logo renders correctly at small and large sizes
+- [x] 2.4 Browser tab shows new favicon — 3dd7e42
+- [x] 2.5 Page title reads "InTouch" — 3dd7e42
+- [x] 2.6 Logo renders correctly at small and large sizes — 3dd7e42
 
 ### Phase 3: Migrate existing screens off the starter theme
 
 #### Automated
 
-- [ ] 3.1 Build succeeds: `npm run build`
-- [ ] 3.2 Lint passes: `npm run lint`
-- [ ] 3.3 No starter-theme utility remains anywhere in `src/`
-- [ ] 3.4 `LibBadge.astro` no longer exists
+- [x] 3.1 Build succeeds: `npm run build`
+- [x] 3.2 Lint passes: `npm run lint`
+- [x] 3.3 No starter-theme utility remains anywhere in `src/`
+- [x] 3.4 `LibBadge.astro` no longer exists
 
 #### Manual
 
-- [ ] 3.5 All 6 routes render on new palette at desktop and mobile widths
-- [ ] 3.6 Sign-in/sign-up forms fully usable
-- [ ] 3.7 No regression in auth flow
+- [x] 3.5 All 6 routes render on new palette at desktop and mobile widths
+- [x] 3.6 Sign-in/sign-up forms fully usable
+- [x] 3.7 No regression in auth flow
