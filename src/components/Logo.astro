@@ -1,0 +1,33 @@
+---
+interface Props {
+  size?: number;
+  withWordmark?: boolean;
+  class?: string;
+}
+
+const { size = 24, withWordmark = false, class: className } = Astro.props;
+
+const markWidth = size * 1.56;
+const wordmarkSize = size * 1.28;
+const gap = size * 0.36;
+---
+
+<div class:list={["text-foreground inline-flex items-center", className]} style={`gap: ${gap}px;`}>
+  <div style={`position: relative; width: ${markWidth}px; height: ${size}px; flex-shrink: 0;`}>
+    <div
+      style={`position: absolute; left: 0; top: 0; width: ${size}px; height: ${size}px; border-radius: 50%; background: #F3C7CD;`}
+    >
+    </div>
+    <div
+      style={`position: absolute; right: 0; top: 0; width: ${size}px; height: ${size}px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;`}
+    >
+    </div>
+  </div>
+  {
+    withWordmark && (
+      <span class="font-display" style={`font-size: ${wordmarkSize}px; line-height: 1;`}>
+        InTouch
+      </span>
+    )
+  }
+</div>

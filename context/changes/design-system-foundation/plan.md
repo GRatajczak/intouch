@@ -444,28 +444,28 @@ Not applicable — no data model, no persisted state affected.
 
 #### Automated
 
-- [x] 1.1 Build succeeds: `npm run build`
-- [x] 1.2 Lint passes: `npm run lint`
-- [x] 1.3 No leftover starter-theme artifacts in the token file
+- [x] 1.1 Build succeeds: `npm run build` — e3a00ab
+- [x] 1.2 Lint passes: `npm run lint` — e3a00ab
+- [x] 1.3 No leftover starter-theme artifacts in the token file — e3a00ab
 
 #### Manual
 
-- [ ] 1.4 Button variants render with new colors
-- [ ] 1.5 Both fonts load correctly
+- [x] 1.4 Button variants render with new colors — e3a00ab
+- [x] 1.5 Both fonts load correctly — e3a00ab
 
 ### Phase 2: Logo & product identity
 
 #### Automated
 
-- [ ] 2.1 Build succeeds: `npm run build`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 `public/favicon.svg` exists and is valid XML
+- [x] 2.1 Build succeeds: `npm run build`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 `public/favicon.svg` exists and is valid XML
 
 #### Manual
 
-- [ ] 2.4 Browser tab shows new favicon
-- [ ] 2.5 Page title reads "InTouch"
-- [ ] 2.6 Logo renders correctly at small and large sizes
+- [x] 2.4 Browser tab shows new favicon
+- [x] 2.5 Page title reads "InTouch"
+- [x] 2.6 Logo renders correctly at small and large sizes
 
 ### Phase 3: Migrate existing screens off the starter theme
 
