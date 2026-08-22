@@ -471,13 +471,13 @@ Not applicable — no data model, no persisted state affected.
 
 #### Automated
 
-- [x] 3.1 Build succeeds: `npm run build`
-- [x] 3.2 Lint passes: `npm run lint`
-- [x] 3.3 No starter-theme utility remains anywhere in `src/`
-- [x] 3.4 `LibBadge.astro` no longer exists
+- [x] 3.1 Build succeeds: `npm run build` — f850cdd
+- [x] 3.2 Lint passes: `npm run lint` — f850cdd
+- [x] 3.3 No starter-theme utility remains anywhere in `src/` — f850cdd
+- [x] 3.4 `LibBadge.astro` no longer exists — f850cdd
 
 #### Manual
 
-- [x] 3.5 All 6 routes render on new palette at desktop and mobile widths
-- [x] 3.6 Sign-in/sign-up forms fully usable
-- [x] 3.7 No regression in auth flow
+- [x] 3.5 All 6 routes render on new palette at desktop and mobile widths — f850cdd
+- [x] 3.6 Sign-in/sign-up forms fully usable — f850cdd
+- [x] 3.7 No regression in auth flow — f850cdd

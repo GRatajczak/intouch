@@ -1,7 +1,7 @@
 ---
 change_id: design-system-foundation
 title: Design system foundation
-status: implementing
+status: implemented
 created: 2026-08-22
 updated: 2026-08-22
 archived_at: null
