@@ -1,9 +1,9 @@
 ---
 project: "InTouch"
-version: 1
+version: 2
 status: draft
 created: 2026-08-15
-updated: 2026-08-17
+updated: 2026-08-22
 prd_version: 2
 main_goal: speed
 top_blocker: time
@@ -43,7 +43,7 @@ successfully done").
 | ---- | ---------------------------- | ----------------------------------------------------------------- | ------------- | ------------------------------ | -------- |
 | F-01 | `per-user-data-isolation`    | (foundation) migrations + default-deny RLS + a proof of isolation | —             | NFR-privacy, Access Control    | ready    |
 | F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | ready    |
-| F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | ready |
+| F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | in-progress |
 | F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | ready    |
 | S-01 | `profile-and-first-people`   | fill a self-profile and add people with a weight, and see them    | F-01, F-03    | FR-001, FR-002, FR-003, FR-004 | proposed |
 | S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02    | US-01, FR-007                  | proposed |
@@ -120,7 +120,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - Palette direction — warm and personal (this is an app about people you care about) versus neutral-utility (shadcn's current `baseColor: neutral`). Owner: user, during this foundation's plan. Block: no — the plan step must propose a concrete palette and get it confirmed before restyling; it is not a research question.
   - Does the MVP ship dark mode at all? Today the token layer defines a light default plus a `.dark` block that nothing toggles, while every screen renders the starter's dark gradient — one of the three has to go. Owner: user, during this foundation's plan. Block: no — shipping light-only is a legitimate answer under `main_goal: speed`, as long as it is a decision rather than the current accident.
 - **Risk:** This is a foundation because of retrofit cost, not because it is glamorous. Every screen in the repo today is styled in a theme inherited from the starter that has nothing to do with this product, and the token layer that shadcn components expect is effectively dead code. Building `S-01`, `S-02`, `S-03` and `S-05` on top of that means four slices of screens to re-skin later, plus every new `npx shadcn add` component arriving in tokens that visually clash with the pages around it — the same "retrofit versus policy file" argument that sequences `F-01`. The counter-risk is real and is why the scope is capped hard: token layer, removal of the starter theme, product identity in `Layout.astro`, and only the primitives `S-01`/`S-02` actually need (form field, list row/card, weight indicator, empty state, pending state). No Storybook, no component gallery, no logo or brand work, no components without a caller. The existing auth screens are the migration's proving ground — they are the only real screens that exist, so they are what shows the palette holds up before any product screen is written on it.
-- **Status:** ready
+- **Status:** in-progress
 
 ### F-04: Resend email delivery path
 
@@ -130,7 +130,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unlocks:** `S-04` — the only slice that sends anything. Closes the "delivery channel" open question that blocked it, and turns the PRD's email NFR from a stated intention into a proven path.
 - **Prerequisites:** —
 - **Parallel with:** F-01, F-02, F-03
-- **Blockers:** —
+- **Blockers:** — (Resend chosen; the user already holds the account and API key, so nothing external is pending. The sending identity below can still add an external wait if it lands on an owned domain, but the test sender makes the path provable without one — which is why this is `ready` rather than `blocked`.)
 - **Unknowns:**
   - Sending identity — a domain the user owns (needs DNS records, and verification has an external lead time nobody can compress) or Resend's `onboarding@resend.dev` test sender (zero setup, but it can only deliver to the account owner's own address). For an MVP whose only user is the author, the test sender may genuinely be enough; for anyone else it is not. Owner: user, during this foundation's plan. Block: no — but it is the item worth starting first, because it is the only one that waits on DNS rather than on code.
   - Whether the scheduled handler sends directly or enqueues, given that Cloudflare's free plan caps Cron Triggers at **5 per account** (not per Worker) with a 1-minute minimum interval — already recorded as a risk in `context/foundation/infrastructure.md`. Owner: resolved by this foundation's work. Block: no.
