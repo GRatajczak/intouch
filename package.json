@@ -13,7 +13,8 @@
     "deploy": "astro build && wrangler deploy",
     "preview:upload": "astro build && wrangler versions upload",
     "cf-typegen": "wrangler types",
-    "db:types": "supabase gen types typescript --local > src/db/database.types.ts"
+    "db:types": "supabase gen types typescript --local > src/db/database.types.ts",
+    "verify:rls": "tsx scripts/verify-rls.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",

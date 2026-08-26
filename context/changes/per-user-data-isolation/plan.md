@@ -244,20 +244,20 @@ This is the first migration in the repo, so there is no prior schema to migrate 
 
 #### Automated
 
-- [x] 2.1 Types generate without error (`npm run db:types`)
-- [x] 2.2 Type checking passes with the new generic in place
-- [x] 2.3 Linting passes
+- [x] 2.1 Types generate without error (`npm run db:types`) — fe4efb9
+- [x] 2.2 Type checking passes with the new generic in place — fe4efb9
+- [x] 2.3 Linting passes — fe4efb9
 
 #### Manual
 
-- [ ] 2.4 `src/db/database.types.ts` contains a `people` table definition matching Phase 1's migration
+- [x] 2.4 `src/db/database.types.ts` contains a `people` table definition matching Phase 1's migration — fe4efb9
 
 ### Phase 3: Isolation verification script + production migration
 
 #### Automated
 
-- [ ] 3.1 `npm run verify:rls` passes (exits 0)
-- [ ] 3.2 Linting passes
+- [x] 3.1 `npm run verify:rls` passes (exits 0)
+- [x] 3.2 Linting passes
 
 #### Manual
 
