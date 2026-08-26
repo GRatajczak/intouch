@@ -256,11 +256,11 @@ This is the first migration in the repo, so there is no prior schema to migrate 
 
 #### Automated
 
-- [x] 3.1 `npm run verify:rls` passes (exits 0)
-- [x] 3.2 Linting passes
+- [x] 3.1 `npm run verify:rls` passes (exits 0) — 0b7e079
+- [x] 3.2 Linting passes — 0b7e079
 
 #### Manual
 
-- [ ] 3.3 Project linked to production (`supabase link --project-ref <project-ref>`)
-- [ ] 3.4 Migration applied to production (`supabase db push`)
-- [ ] 3.5 Production dashboard confirmed to match local (table + RLS + 4 policies)
+- [x] 3.3 Project linked to production (`supabase link --project-ref <project-ref>`) — 0b7e079
+- [x] 3.4 Migration applied to production (`supabase db push`) — 0b7e079
+- [x] 3.5 Production dashboard confirmed to match local (table + RLS + 4 policies) — 0b7e079
