@@ -3,7 +3,7 @@ project: "InTouch"
 version: 2
 status: draft
 created: 2026-08-15
-updated: 2026-08-22
+updated: 2026-08-24
 prd_version: 2
 main_goal: speed
 top_blocker: time
@@ -41,7 +41,7 @@ successfully done").
 
 | ID   | Change ID                    | Outcome (user can …)                                              | Prerequisites | PRD refs                       | Status   |
 | ---- | ---------------------------- | ----------------------------------------------------------------- | ------------- | ------------------------------ | -------- |
-| F-01 | `per-user-data-isolation`    | (foundation) migrations + default-deny RLS + a proof of isolation | —             | NFR-privacy, Access Control    | ready    |
+| F-01 | `per-user-data-isolation`    | (foundation) migrations + default-deny RLS + a proof of isolation | —             | NFR-privacy, Access Control    | in-progress |
 | F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | ready    |
 | F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | in-progress |
 | F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | ready    |
@@ -91,7 +91,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** This is the one place where `main_goal: speed` does not get to win. RLS retrofitted after three slices already write rows is a migration with real data in it; RLS established before the first row is a policy file. The scope cap is deliberate: F-01 proves the pattern on the single minimal owner-scoped table `S-01` needs, and each later slice adds its own tables under the same contract — it does not model the domain up front. Note also that `wrangler rollback` reverts code but not the database (see `CLAUDE.md`), so every migration from here on must be forward-compatible.
-- **Status:** ready
+- **Status:** in-progress
 
 ### F-02: OpenAI call path from the Worker
 
