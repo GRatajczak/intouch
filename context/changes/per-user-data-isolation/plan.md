@@ -231,22 +231,22 @@ This is the first migration in the repo, so there is no prior schema to migrate 
 
 #### Automated
 
-- [x] 1.1 `supabase start` boots local Postgres cleanly
-- [x] 1.2 Migration applies without error against the local instance
-- [x] 1.3 Linting passes
+- [x] 1.1 `supabase start` boots local Postgres cleanly — c7fd8b5
+- [x] 1.2 Migration applies without error against the local instance — c7fd8b5
+- [x] 1.3 Linting passes — c7fd8b5
 
 #### Manual
 
-- [ ] 1.4 `supabase db reset` output shows the `people` table created and RLS policies listed with no errors
-- [ ] 1.5 Local Supabase Studio shows `public.people` with RLS enabled and 4 policies
+- [x] 1.4 `supabase db reset` output shows the `people` table created and RLS policies listed with no errors — c7fd8b5
+- [x] 1.5 Local Supabase Studio shows `public.people` with RLS enabled and 4 policies — c7fd8b5
 
 ### Phase 2: Generated DB types + typed Supabase client
 
 #### Automated
 
-- [ ] 2.1 Types generate without error (`npm run db:types`)
-- [ ] 2.2 Type checking passes with the new generic in place
-- [ ] 2.3 Linting passes
+- [x] 2.1 Types generate without error (`npm run db:types`)
+- [x] 2.2 Type checking passes with the new generic in place
+- [x] 2.3 Linting passes
 
 #### Manual
 
