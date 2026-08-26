@@ -89,11 +89,11 @@ async function main() {
 
     console.log("Checking isolation...");
 
-    const { data: ownSelectA } = await clientA.from("people").select("id").eq("id", rowA.id);
-    assert((ownSelectA?.length ?? 0) === 1, "user A sees own row via select");
+    const { data: ownSelectA, error: ownSelectAErr } = await clientA.from("people").select("id").eq("id", rowA.id);
+    assert(!ownSelectAErr && ownSelectA.length === 1, "user A sees own row via select");
 
-    const { data: crossSelectA } = await clientA.from("people").select("id").eq("id", rowB.id);
-    assert((crossSelectA?.length ?? 0) === 0, "user A cannot select user B's row");
+    const { data: crossSelectA, error: crossSelectAErr } = await clientA.from("people").select("id").eq("id", rowB.id);
+    assert(!crossSelectAErr && crossSelectA.length === 0, "user A cannot select user B's row");
 
     const { data: crossUpdateA, error: crossUpdateAErr } = await clientA
       .from("people")
@@ -109,11 +109,11 @@ async function main() {
       .select();
     assert(!crossDeleteAErr && crossDeleteA.length === 0, "user A's delete of user B's row affects zero rows");
 
-    const { data: stillThereB } = await clientB.from("people").select("id").eq("id", rowB.id);
-    assert((stillThereB?.length ?? 0) === 1, "user B's row survives user A's cross-delete attempt");
+    const { data: stillThereB, error: stillThereBErr } = await clientB.from("people").select("id").eq("id", rowB.id);
+    assert(!stillThereBErr && stillThereB.length === 1, "user B's row survives user A's cross-delete attempt");
 
-    const { data: anonSelect } = await anonClient.from("people").select("id");
-    assert((anonSelect?.length ?? 0) === 0, "unauthenticated client sees no rows");
+    const { data: anonSelect, error: anonSelectErr } = await anonClient.from("people").select("id");
+    assert(!anonSelectErr && anonSelect.length === 0, "unauthenticated client sees no rows");
   } finally {
     console.log("Cleaning up throwaway users (cascade-deletes their people rows)...");
     if (userAId) await admin.auth.admin.deleteUser(userAId);

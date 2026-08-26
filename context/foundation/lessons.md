@@ -29,3 +29,10 @@
 - **Problem**: During the Cloudflare deploy, a plan called for `session: false` in `astro.config.mjs` to disable KV auto-provisioning. No such option exists in Astro's `SessionConfig` type or the `@astrojs/cloudflare` `Options` type — the plan's intent was right, the exact syntax was invented. Caught only by reading `node_modules/@astrojs/cloudflare/dist/index.js` and `node_modules/astro/dist/core/session/types.d.ts` directly.
 - **Rule**: When a plan specifies exact config syntax for a library, verify the option actually exists in the installed version (check `node_modules` types/source, not just the plan's prose) before applying it — a plan can be right about intent and wrong about API surface.
 - **Applies to**: plan-review, implement, impl-review
+
+## ON DELETE CASCADE on owner_id is a per-table decision, not an inherited default
+
+- **Context**: `supabase/migrations/20260824192356_create_people_table.sql` (`owner_id` FK) — any future user-owned table copying the F-01 RLS pattern (`S-01`, `S-02`, `S-03`, `S-05`).
+- **Problem**: `owner_id`'s `ON DELETE CASCADE` is correct for `people` and relied on by `scripts/verify-rls.ts`'s cleanup, but because this migration is the template every future table copies, cascade-delete-on-account-removal could get inherited silently without anyone deciding it's right for that table too.
+- **Rule**: Before adding `ON DELETE CASCADE` to a new `owner_id` FK, explicitly decide cascade-delete vs. soft-delete/anonymize for that table — don't inherit it from `people` by default.
+- **Applies to**: plan, implement
