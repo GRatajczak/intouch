@@ -1,9 +1,10 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import AppShell from "@/components/layout/AppShell.astro";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/people/EmptyState";
 import { PersonCard } from "@/components/people/PersonCard";
 import { createClient } from "@/lib/supabase";
+import { loadProfileName } from "@/lib/shell-summary";
 
 const { user } = Astro.locals;
 
@@ -23,33 +24,33 @@ async function fetchPeople() {
 }
 
 people = await fetchPeople();
+
+// This page already has the array in scope, so the sidebar's count line costs
+// nothing extra here.
+const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, user?.id);
 ---
 
-<Layout title="Twoi bliscy">
-  <div class="bg-background min-h-screen p-4 py-8">
-    <div class="mx-auto w-full max-w-2xl">
-      <div class="mb-6 flex items-center justify-between">
-        <h1 class="font-display text-display-sm text-foreground">Twoi bliscy</h1>
-        {
-          people.length > 0 && (
-            <Button asChild>
-              <a href="/people/new">Dodaj osobę</a>
-            </Button>
-          )
-        }
-      </div>
-
-      {
-        people.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div class="space-y-3">
-            {people.map((person) => (
-              <PersonCard person={person} />
-            ))}
-          </div>
-        )
-      }
-    </div>
+<AppShell title="Twoi bliscy" profileName={profileName} peopleCount={people.length}>
+  <div class="mb-6 flex items-center justify-between">
+    <h1 class="font-display text-display-sm text-foreground">Twoi bliscy</h1>
+    {
+      people.length > 0 && (
+        <Button asChild>
+          <a href="/people/new">Dodaj osobę</a>
+        </Button>
+      )
+    }
   </div>
-</Layout>
+
+  {
+    people.length === 0 ? (
+      <EmptyState />
+    ) : (
+      <div class="space-y-3">
+        {people.map((person) => (
+          <PersonCard person={person} />
+        ))}
+      </div>
+    )
+  }
+</AppShell>

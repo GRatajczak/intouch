@@ -1,29 +1,29 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import AppShell from "@/components/layout/AppShell.astro";
 import { Button } from "@/components/ui/button";
+import { loadProfileName } from "@/lib/shell-summary";
 
 const { user } = Astro.locals;
+
+// No `peopleCount` here — the shell footer shows the name alone, so this page
+// adds exactly one subrequest, not two.
+const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, user?.id);
 ---
 
-<Layout title="Panel">
-  <div class="bg-background flex min-h-screen items-center justify-center p-4">
-    <div class="border-border bg-card text-card-foreground rounded-2xl border p-8 text-center">
-      <h1 class="font-display text-display-md mb-4">Panel</h1>
-      <p class="text-muted-foreground">
-        Witaj, <span class="text-foreground font-semibold">{user?.email}</span>
-      </p>
-      <p class="text-text-tertiary mt-2 text-sm">Ta strona jest dostępna tylko dla zalogowanych użytkowników.</p>
-      <div class="mt-6 flex flex-col gap-2">
-        <Button asChild>
-          <a href="/profile">Uzupełnij profil</a>
-        </Button>
-        <Button asChild variant="secondary">
-          <a href="/people">Twoi bliscy</a>
-        </Button>
-      </div>
-      <form method="POST" action="/api/auth/signout" class="mt-6">
-        <Button type="submit" variant="outline"> Wyloguj się </Button>
-      </form>
+<AppShell title="Panel" profileName={profileName}>
+  <div class="border-border bg-card text-card-foreground shadow-card max-w-xl rounded-2xl border p-8 text-center">
+    <h1 class="font-display text-display-md mb-4">Panel</h1>
+    <p class="text-muted-foreground">
+      Witaj, <span class="text-foreground font-semibold">{user?.email}</span>
+    </p>
+    <p class="text-text-tertiary mt-2 text-sm">Ta strona jest dostępna tylko dla zalogowanych użytkowników.</p>
+    <div class="mt-6 flex flex-col gap-2">
+      <Button asChild>
+        <a href="/profile">Uzupełnij profil</a>
+      </Button>
+      <Button asChild variant="secondary">
+        <a href="/people">Twoi bliscy</a>
+      </Button>
     </div>
   </div>
-</Layout>
+</AppShell>

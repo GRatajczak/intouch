@@ -531,16 +531,16 @@ No schema or data migration — this pass touches presentation only.
 
 #### Automated
 
-- [x] 2.1 `npm run build` passes
-- [x] 2.2 `npm run lint` passes
-- [x] 2.3 `npm run typecheck` passes (if present) — no `typecheck` script exists; ran `npx astro check` instead (0 errors)
+- [x] 2.1 `npm run build` passes — cbb11f5
+- [x] 2.2 `npm run lint` passes — cbb11f5
+- [x] 2.3 `npm run typecheck` passes (if present) — no `typecheck` script exists; ran `npx astro check` instead (0 errors) — cbb11f5
 
 ### Phase 3: Migrate dashboard + people into the shell; new Ustawienia stub
 
 #### Automated
 
-- [ ] 3.1 `npm run build` passes
-- [ ] 3.2 `npm run lint` passes
+- [x] 3.1 `npm run build` passes
+- [x] 3.2 `npm run lint` passes
 
 #### Manual
 

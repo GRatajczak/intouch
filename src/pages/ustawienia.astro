@@ -1,0 +1,21 @@
+---
+import AppShell from "@/components/layout/AppShell.astro";
+import { loadProfileName } from "@/lib/shell-summary";
+
+const { user } = Astro.locals;
+
+const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, user?.id);
+---
+
+<AppShell title="Ustawienia" profileName={profileName}>
+  <div class="mb-6">
+    <h1 class="font-display text-display-sm text-foreground">Ustawienia</h1>
+  </div>
+
+  <div class="border-border bg-card text-card-foreground shadow-card max-w-xl rounded-2xl border p-8">
+    <p class="text-muted-foreground">
+      Wkrótce znajdziesz tu ustawienia przypomnień — jak często i w jakiej formie chcesz dostawać podpowiedzi o
+      kontakcie.
+    </p>
+  </div>
+</AppShell>
