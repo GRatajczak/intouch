@@ -69,25 +69,22 @@ export type Database = {
       }
       profiles: {
         Row: {
-          age_range: string
+          birth_date: string
           life_context: string
-          life_context_detail: string | null
           name: string
           owner_id: string
           updated_at: string
         }
         Insert: {
-          age_range: string
+          birth_date: string
           life_context: string
-          life_context_detail?: string | null
           name: string
           owner_id: string
           updated_at?: string
         }
         Update: {
-          age_range?: string
+          birth_date?: string
           life_context?: string
-          life_context_detail?: string | null
           name?: string
           owner_id?: string
           updated_at?: string

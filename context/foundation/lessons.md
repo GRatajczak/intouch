@@ -36,3 +36,10 @@
 - **Problem**: `owner_id`'s `ON DELETE CASCADE` is correct for `people` and relied on by `scripts/verify-rls.ts`'s cleanup, but because this migration is the template every future table copies, cascade-delete-on-account-removal could get inherited silently without anyone deciding it's right for that table too.
 - **Rule**: Before adding `ON DELETE CASCADE` to a new `owner_id` FK, explicitly decide cascade-delete vs. soft-delete/anonymize for that table — don't inherit it from `people` by default.
 - **Applies to**: plan, implement
+
+## New React components live in a folder with a separate types file and barrel index
+
+- **Context**: Any new React component created under `src/components/` (or similar) in this project.
+- **Problem**: Flat single-file components (e.g. `TextField.tsx`) mix prop-type declarations with rendering logic, which gets harder to scan and reuse as components grow.
+- **Rule**: Organize every new component as `ComponentName/` containing `ComponentName.tsx` (rendering logic, imports its props type via `import type { ... } from "./types"`), `types.ts` (prop/type interfaces), and `index.ts` (a barrel re-export — e.g. `export { ComponentName } from "./ComponentName"; export type { ComponentNameProps } from "./types";`, or `export { default } from "./ComponentName";` for a default export). Consumers keep importing from the folder path (e.g. `@/components/forms/TextField`), which resolves to `index.ts`, so no consumer import needs to change.
+- **Applies to**: implement

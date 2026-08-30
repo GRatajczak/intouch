@@ -1,7 +1,8 @@
 import { defineMiddleware } from "astro:middleware";
 import { createClient } from "@/lib/supabase";
 
-const PROTECTED_ROUTES = ["/dashboard"];
+const PROTECTED_ROUTES = ["/dashboard", "/profile", "/people"];
+const PROFILE_GATED_ROUTES = ["/people"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const authCookieHeaders = new Headers();
@@ -19,6 +20,17 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (PROTECTED_ROUTES.some((route) => context.url.pathname.startsWith(route))) {
     if (!context.locals.user) {
       return context.redirect("/auth/signin");
+    }
+  }
+
+  if (supabase && context.locals.user && PROFILE_GATED_ROUTES.some((route) => context.url.pathname.startsWith(route))) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("owner_id")
+      .eq("owner_id", context.locals.user.id)
+      .maybeSingle();
+    if (!profile) {
+      return context.redirect("/profile");
     }
   }
 

@@ -688,33 +688,35 @@ real user input. No backfill step is needed.
 
 #### Automated
 
-- [x] 1.1 `supabase start` boots local Postgres cleanly
-- [x] 1.2 Migration applies without error (`supabase db reset`)
-- [x] 1.3 Types generate without error (`npm run db:types`)
-- [x] 1.4 Type checking passes (`npx astro check`)
-- [x] 1.5 Verification script passes (`npm run verify:rls`)
-- [x] 1.6 Linting passes (`npm run lint`)
+- [x] 1.1 `supabase start` boots local Postgres cleanly — 4ac61e6
+- [x] 1.2 Migration applies without error (`supabase db reset`) — 4ac61e6
+- [x] 1.3 Types generate without error (`npm run db:types`) — 4ac61e6
+- [x] 1.4 Type checking passes (`npx astro check`) — 4ac61e6
+- [x] 1.5 Verification script passes (`npm run verify:rls`) — 4ac61e6
+- [x] 1.6 Linting passes (`npm run lint`) — 4ac61e6
 
 #### Manual
 
-- [x] 1.7 `supabase db reset` shows `profiles` (3 policies) and `people`'s 5 new columns with constraints
-- [x] 1.8 `npm run verify:rls` output shows both `people` and new `profiles` assertions passing
+- [x] 1.7 `supabase db reset` shows `profiles` (3 policies) and `people`'s 5 new columns with constraints — 4ac61e6
+- [x] 1.8 `npm run verify:rls` output shows both `people` and new `profiles` assertions passing — 4ac61e6
 
 ### Phase 2: Self-profile flow
 
 #### Automated
 
-- [ ] 2.1 Type checking passes (`npx astro check`)
-- [ ] 2.2 Build succeeds (`npm run build`)
-- [ ] 2.3 Linting passes (`npm run lint`)
+- [x] 2.1 Type checking passes (`npx astro check`)
+- [x] 2.2 Build succeeds (`npm run build`)
+- [x] 2.3 Linting passes (`npm run lint`)
+
+> Note (applies to both Automated and Manual criteria in this phase): FR-002 was amended mid-phase (see `change.md` Notes) — `ageRange`/`lifeContext` enum fields became `birthDate` (exact date) and a free-text `lifeContext`. Contract text above describes the original design; the shipped code matches the amendment. 2.5/2.6 below were verified against the amended fields: empty `birthDate`/`lifeContext` or a future `birthDate` blocks submission with an inline error; a valid free-text `lifeContext` submits successfully — there is no more "other"/detail-field distinction.
 
 #### Manual
 
-- [ ] 2.4 Profile-incomplete user redirected from `/people` to `/profile`
-- [ ] 2.5 Non-"other" `lifeContext` hides detail field and submits successfully
-- [ ] 2.6 "other" `lifeContext` without detail text blocks submission with inline error
-- [ ] 2.7 Re-visiting `/profile` pre-fills previously-saved values
-- [ ] 2.8 Signed-out visits to `/people`, `/people/new`, `/profile` and `POST /api/profile` all redirect to `/auth/signin` (no 500)
+- [x] 2.4 Profile-incomplete user redirected from `/people` to `/profile`
+- [x] 2.5 Non-"other" `lifeContext` hides detail field and submits successfully
+- [x] 2.6 "other" `lifeContext` without detail text blocks submission with inline error
+- [x] 2.7 Re-visiting `/profile` pre-fills previously-saved values
+- [x] 2.8 Signed-out visits to `/people`, `/people/new`, `/profile` and `POST /api/profile` all redirect to `/auth/signin` (no 500)
 
 ### Phase 3: Add-person flow
 

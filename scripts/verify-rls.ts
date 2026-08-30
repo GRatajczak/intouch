@@ -133,15 +133,14 @@ async function main() {
     const profilePayloadA = {
       owner_id: userAId,
       name: "Profile A",
-      age_range: "20s",
-      life_context: "other",
-      life_context_detail: "Seeded by verify-rls",
+      birth_date: "1995-01-01",
+      life_context: "Seeded by verify-rls",
     };
     const profilePayloadB = {
       owner_id: userBId,
       name: "Profile B",
-      age_range: "30s",
-      life_context: "remote_worker",
+      birth_date: "1990-06-15",
+      life_context: "Seeded by verify-rls",
     };
     const { data: insertedProfileA, error: insertProfileAErr } = await clientA
       .from("profiles")

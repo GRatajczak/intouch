@@ -1,0 +1,32 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ProfileForm from "@/components/profile/ProfileForm";
+import { createClient } from "@/lib/supabase";
+
+const { user } = Astro.locals;
+const error = Astro.url.searchParams.get("error");
+
+let initialValues;
+if (user) {
+  const supabase = createClient(Astro.request.headers, Astro.cookies);
+  if (supabase) {
+    const { data: row } = await supabase.from("profiles").select("*").eq("owner_id", user.id).maybeSingle();
+    if (row) {
+      initialValues = {
+        name: row.name,
+        birthDate: row.birth_date,
+        lifeContext: row.life_context,
+      };
+    }
+  }
+}
+---
+
+<Layout title="Twój profil">
+  <div class="bg-background flex min-h-screen items-center justify-center p-4">
+    <div class="border-border bg-card text-card-foreground w-full max-w-sm rounded-2xl border p-8">
+      <h1 class="font-display text-display-sm text-foreground mb-6 text-center">Twój profil</h1>
+      <ProfileForm initialValues={initialValues} serverError={error} client:load />
+    </div>
+  </div>
+</Layout>

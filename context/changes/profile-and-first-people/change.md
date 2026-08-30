@@ -21,5 +21,13 @@ Roadmap slice `S-01`. Two PRD amendments made while planning this slice:
   `reviews/plan-review.md`. The collective's identity now lives in
   `description`; if `S-02` finds the AI can't reliably pull it out of prose,
   the fallback is a nullable `collective_label` column (F4's Fix B).
+- **FR-002** — amended 2026-08-30 mid-Phase-2, on user feedback during manual
+  review of the profile form: `age_range` (3-bucket enum) replaced with an
+  exact `birth_date`, and `life_context` (4-option enum + conditional detail
+  field) replaced with a single bounded free-text field (max 300 chars, UI
+  tooltip shows an example). Phase 1's migration was edited in place (not
+  superseded by a new one) since it had not been applied anywhere but local
+  dev. `scripts/verify-rls.ts`, `src/lib/validation/profile.ts`,
+  `ProfileForm.tsx`, and `profile.astro` were all updated to match.
 
-Both amended in `context/foundation/prd.md`.
+All three amended in `context/foundation/prd.md`.

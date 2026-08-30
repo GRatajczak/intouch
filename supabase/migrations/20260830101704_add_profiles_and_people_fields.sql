@@ -7,9 +7,8 @@
 create table public.profiles (
   owner_id uuid primary key references auth.users (id) on delete cascade,
   name text not null check (char_length(name) <= 100),
-  age_range text not null check (age_range in ('20s', '30s', '40s+')),
-  life_context text not null check (life_context in ('busy_parent', 'frequent_traveler', 'remote_worker', 'other')),
-  life_context_detail text check (char_length(life_context_detail) <= 80),
+  birth_date date not null check (birth_date <= current_date),
+  life_context text not null check (char_length(life_context) <= 300),
   updated_at timestamptz not null default now()
 );
 
