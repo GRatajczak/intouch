@@ -50,3 +50,10 @@
 - **Problem**: The product's UI language is Polish, which makes it tempting to name the file after the label the user sees. `design-alignment-pass` shipped `src/pages/ustawienia.astro` → `/ustawienia` that way, mixing languages across the route table (`/dashboard`, `/people`, `/profile`, `/ustawienia`) and putting Polish into `PROTECTED_ROUTES`, nav hrefs, and every future link to that page.
 - **Rule**: Name page files (and the routes they produce) in English — `settings.astro` → `/settings`. Keep Polish for user-facing copy only: nav labels, headings, button text. The nav config is the seam that holds both (`NAV_ITEMS` in `src/lib/nav-items.ts`: English `href`, Polish `label`).
 - **Applies to**: plan, implement, impl-review
+
+## Mirror every roadmap status flip onto its Linear issue
+
+- **Context**: Any `/10x-implement` or `/10x-archive` run on a change whose `change-id` matches a `Change ID` in `context/foundation/roadmap.md`.
+- **Problem**: The skills flip `roadmap.md` (`ready` → `in-progress` on entry, → `done` on archive) but know nothing about Linear, so the workspace silently drifts: `F-05` shipped with its `GRA-18` issue still sitting in Backlog. Anyone reading Linear gets a stale picture of what's built, and the drift is invisible from inside the repo.
+- **Rule**: Whenever a roadmap item's status changes, update its Linear issue in the same run — don't wait to be asked. Find it by title prefix (`[<roadmap-id>] …`, e.g. `[F-05]`) in team `GRatajczak`, project `InTouch MVP v1`. Map `in-progress` → **In Progress** and `done` → **Done**; leave it **In Progress** while manual verification is still outstanding, since automated checks passing is not the same as the slice being closed. On close, also post a comment carrying: per-phase commit SHAs, every divergence from the plan with its reason, and the manual-verification items still open. If the implementation changed something the issue's description asserts (a route, a field, a scope boundary), patch the description too — a stale description outlives the comment thread.
+- **Applies to**: implement, archive
