@@ -47,7 +47,7 @@ tending their own circle.
 ## Success Criteria
 
 The end-to-end flow that must work: the user creates an account and signs in;
-adds people, each with a description and a relationship weight (1–5); the app
+adds people, each with a description and a relationship weight (1–10); the app
 analyzes the descriptions, weights, and relationship context and proposes a
 ranked hierarchy of who to reconnect with; the user receives a reminder driven
 by that hierarchy and reaches out themselves; and after the intended date the
@@ -83,7 +83,7 @@ reminders. Calendar integration is explicitly deferred to v2 — see Non-Goals.
 - **Then** they see a ranked order of "who to reconnect with," reflecting weights AND relationship context, where each entry carries a suggested time window for reaching out (e.g. "worth contacting Maciej within 2 weeks")
 
 #### Acceptance Criteria
-- When two people share the same weight (e.g. both 5), their order is decided by the context from their descriptions — they are not treated identically.
+- When two people share the same weight (e.g. both 8), their order is decided by the context from their descriptions — they are not treated identically.
 - Each hierarchy entry shows a suggested time window for reaching out.
 - A user with no people added sees an explanatory empty state, not an error or empty list.
 - The hierarchy takes into account time since the last (un)successful contact from the feedback loop.
@@ -96,10 +96,10 @@ reminders. Calendar integration is explicitly deferred to v2 — see Non-Goals.
   > Socrates: Counter-argument considered: "login is friction before any value; a busy user may abandon at signup — could it be local-first with no account?" Resolution: kept, and login is mandatory — (1) security of sensitive third-party data, (2) control of AI costs (no anonymous/free-for-all usage).
 - FR-002: User can provide a self-profile via a short structured form (selectable fields + short inputs, not pure free text) so the AI has clean context about who is asking. Priority: must-have
   > Socrates: Counter-argument considered: "another onboarding step before value; users fill free text lazily, so the AI gets weak context anyway." Resolution: revised — changed from free-text description to a short structured form so it stays quick to fill and gives the AI cleaner signal.
-- FR-003: User can add a person via a short structured form (short inputs for who they are, what they like/value) plus a text field marking whether it is a single person or a collective (e.g. "part of the family from the mountains"). Priority: must-have
-  > Socrates: Counter-argument considered: "free-text descriptions are effort; busy users leave them blank, starving the AI of the differentiating context." Resolution: revised — replaced pure free-text with a structured form to lower effort and improve data quality; single-vs-collective field retained.
-- FR-004: User can assign a relationship weight (1–5) to a person. Priority: must-have
-  > Socrates: Counter-argument considered: "if everyone important gets a 5, the scale collapses to all-5s and loses signal." Resolution: kept — context resolves ties (see US-01); weight is one signal among several, and the collapse risk is acceptable.
+- FR-003: User can add a person via a short structured form (short inputs for who they are, what they like/value) plus a single-vs-collective marker; when the entry is a collective, its identity (e.g. "part of the family from the mountains") is carried in that same structured description. Priority: must-have
+  > Socrates: Counter-argument considered: "free-text descriptions are effort; busy users leave them blank, starving the AI of the differentiating context." Resolution: revised — replaced pure free-text with a structured form to lower effort and improve data quality; single-vs-collective field retained. Narrowed from an originally-considered free-text collective label to a two-option marker, keeping one less field on a form the persona is expected to abandon if it grows; the collective's identity rides in the description, which the AI already reads for the tie-breaking context US-01 depends on.
+- FR-004: User can assign a relationship weight (1–10) to a person. Priority: must-have
+  > Socrates: Counter-argument considered: "if everyone important gets a 10, the scale collapses to all-10s and loses signal." Resolution: kept — context resolves ties (see US-01); weight is one signal among several, and the collapse risk is acceptable. Widened from an originally-considered 1–5 to 1–10 to give the scale more discriminating room before ties become common.
 - FR-005: User can edit a person, deactivate them (AI stops considering a deactivated person while their data — including contact history — is retained), and delete them; deletion is available only after deactivation. Priority: must-have
   > Socrates: Counter-argument considered: "deleting a person loses their contact/feedback history that feeds the hierarchy." Resolution: revised — added a deactivate step before delete: user first deactivates (excluded from AI, data retained), and can delete only afterward.
 - FR-006: User can organize people into categories/tabs (e.g. family, friends, neighbors) for easier browsing. Priority: nice-to-have
@@ -144,7 +144,7 @@ window — and ranks those people in order of importance/urgency.
 The rule consumes user-facing inputs: the user's own short self-profile; for
 each close one, a structured description (who they are, what they like or value)
 and whether they are a single person or a collective; a relationship weight from
-1 to 5; and the running history of whether previously suggested contacts
+1 to 10; and the running history of whether previously suggested contacts
 actually happened. Weight alone is deliberately not enough — when several people
 share the top weight, the descriptive context breaks the tie.
 
