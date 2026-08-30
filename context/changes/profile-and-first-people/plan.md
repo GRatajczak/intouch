@@ -688,17 +688,17 @@ real user input. No backfill step is needed.
 
 #### Automated
 
-- [ ] 1.1 `supabase start` boots local Postgres cleanly
-- [ ] 1.2 Migration applies without error (`supabase db reset`)
-- [ ] 1.3 Types generate without error (`npm run db:types`)
-- [ ] 1.4 Type checking passes (`npx astro check`)
-- [ ] 1.5 Verification script passes (`npm run verify:rls`)
-- [ ] 1.6 Linting passes (`npm run lint`)
+- [x] 1.1 `supabase start` boots local Postgres cleanly
+- [x] 1.2 Migration applies without error (`supabase db reset`)
+- [x] 1.3 Types generate without error (`npm run db:types`)
+- [x] 1.4 Type checking passes (`npx astro check`)
+- [x] 1.5 Verification script passes (`npm run verify:rls`)
+- [x] 1.6 Linting passes (`npm run lint`)
 
 #### Manual
 
-- [ ] 1.7 `supabase db reset` shows `profiles` (3 policies) and `people`'s 5 new columns with constraints
-- [ ] 1.8 `npm run verify:rls` output shows both `people` and new `profiles` assertions passing
+- [x] 1.7 `supabase db reset` shows `profiles` (3 policies) and `people`'s 5 new columns with constraints
+- [x] 1.8 `npm run verify:rls` output shows both `people` and new `profiles` assertions passing
 
 ### Phase 2: Self-profile flow
 

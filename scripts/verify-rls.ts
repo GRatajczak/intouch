@@ -75,11 +75,25 @@ async function main() {
     const anonClient = createClient<Database>(API_URL, ANON_KEY, noPersist);
 
     console.log("Seeding one people row per user...");
-    const { data: insertedA, error: insertAErr } = await clientA.from("people").insert({ owner_id: userAId }).select();
+    const personPayloadA = {
+      owner_id: userAId,
+      name: "Test Person A",
+      relationship_type: "friend",
+      description: "Seeded by verify-rls",
+      weight: 5,
+    };
+    const personPayloadB = {
+      owner_id: userBId,
+      name: "Test Person B",
+      relationship_type: "friend",
+      description: "Seeded by verify-rls",
+      weight: 5,
+    };
+    const { data: insertedA, error: insertAErr } = await clientA.from("people").insert(personPayloadA).select();
     const rowA = insertedA?.[0];
     assert(!insertAErr && !!rowA, "user A can insert own row");
 
-    const { data: insertedB, error: insertBErr } = await clientB.from("people").insert({ owner_id: userBId }).select();
+    const { data: insertedB, error: insertBErr } = await clientB.from("people").insert(personPayloadB).select();
     const rowB = insertedB?.[0];
     assert(!insertBErr && !!rowB, "user B can insert own row");
 
@@ -114,6 +128,79 @@ async function main() {
 
     const { data: anonSelect, error: anonSelectErr } = await anonClient.from("people").select("id");
     assert(!anonSelectErr && anonSelect.length === 0, "unauthenticated client sees no rows");
+
+    console.log("Seeding one profile row per user...");
+    const profilePayloadA = {
+      owner_id: userAId,
+      name: "Profile A",
+      age_range: "20s",
+      life_context: "other",
+      life_context_detail: "Seeded by verify-rls",
+    };
+    const profilePayloadB = {
+      owner_id: userBId,
+      name: "Profile B",
+      age_range: "30s",
+      life_context: "remote_worker",
+    };
+    const { data: insertedProfileA, error: insertProfileAErr } = await clientA
+      .from("profiles")
+      .insert(profilePayloadA)
+      .select();
+    const profileRowA = insertedProfileA?.[0];
+    assert(!insertProfileAErr && !!profileRowA, "user A can insert own profile");
+
+    const { data: insertedProfileB, error: insertProfileBErr } = await clientB
+      .from("profiles")
+      .insert(profilePayloadB)
+      .select();
+    const profileRowB = insertedProfileB?.[0];
+    assert(!insertProfileBErr && !!profileRowB, "user B can insert own profile");
+
+    console.log("Checking profiles isolation...");
+
+    const { data: ownProfileSelectA, error: ownProfileSelectAErr } = await clientA
+      .from("profiles")
+      .select("owner_id")
+      .eq("owner_id", userAId);
+    assert(!ownProfileSelectAErr && ownProfileSelectA.length === 1, "user A sees own profile via select");
+
+    const { data: crossProfileSelectA, error: crossProfileSelectAErr } = await clientA
+      .from("profiles")
+      .select("owner_id")
+      .eq("owner_id", userBId);
+    assert(!crossProfileSelectAErr && crossProfileSelectA.length === 0, "user A cannot select user B's profile");
+
+    const { data: crossProfileUpdateA, error: crossProfileUpdateAErr } = await clientA
+      .from("profiles")
+      .update({ updated_at: new Date().toISOString() })
+      .eq("owner_id", userBId)
+      .select();
+    assert(
+      !crossProfileUpdateAErr && crossProfileUpdateA.length === 0,
+      "user A's update of user B's profile affects zero rows",
+    );
+
+    // profiles has no delete policy and no DELETE grant (plan: "no delete --
+    // nothing in this slice deletes a profile"), so any delete attempt --
+    // even against one's own row -- is rejected at the table-grant layer
+    // with a permission error, not a silent zero-row no-op.
+    const { error: crossProfileDeleteAErr } = await clientA.from("profiles").delete().eq("owner_id", userBId).select();
+    assert(!!crossProfileDeleteAErr, "user A's delete of user B's profile is rejected (no delete grant on profiles)");
+
+    const { data: stillThereProfileB, error: stillThereProfileBErr } = await clientB
+      .from("profiles")
+      .select("owner_id")
+      .eq("owner_id", userBId);
+    assert(
+      !stillThereProfileBErr && stillThereProfileB.length === 1,
+      "user B's profile survives user A's cross-delete attempt",
+    );
+
+    const { data: anonProfileSelect, error: anonProfileSelectErr } = await anonClient
+      .from("profiles")
+      .select("owner_id");
+    assert(!anonProfileSelectErr && anonProfileSelect.length === 0, "unauthenticated client sees no profile rows");
   } finally {
     console.log("Cleaning up throwaway users (cascade-deletes their people rows)...");
     if (userAId) await admin.auth.admin.deleteUser(userAId);

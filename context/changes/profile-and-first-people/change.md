@@ -1,7 +1,7 @@
 ---
 change_id: profile-and-first-people
 title: Self-profile and first people
-status: plan_reviewed
+status: implementing
 created: 2026-08-29
 updated: 2026-08-30
 archived_at: null
