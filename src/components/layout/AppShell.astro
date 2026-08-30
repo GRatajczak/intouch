@@ -1,0 +1,24 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import AppSidebar from "@/components/layout/AppSidebar.astro";
+import BottomNav from "@/components/layout/BottomNav.astro";
+
+interface Props {
+  title?: string;
+  profileName: string | null;
+  /** Omitted on `/dashboard` and `/ustawienia` so neither page adds a count query. */
+  peopleCount?: number;
+}
+
+const { title, profileName, peopleCount } = Astro.props;
+---
+
+<Layout title={title}>
+  <div class="bg-background flex min-h-screen">
+    <AppSidebar profileName={profileName} peopleCount={peopleCount} />
+    <main class="min-w-0 flex-1 p-4 pb-24 lg:p-10 lg:pb-10">
+      <slot />
+    </main>
+  </div>
+  <BottomNav />
+</Layout>

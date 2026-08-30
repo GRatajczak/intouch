@@ -1,0 +1,44 @@
+---
+import { LogOut } from "lucide-react";
+import { NAV_ITEMS, isNavItemActive } from "@/lib/nav-items";
+
+const pathname = Astro.url.pathname;
+---
+
+<nav
+  class="border-border bg-muted shadow-card fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)] lg:hidden"
+  aria-label="Nawigacja główna"
+>
+  <div class="flex items-stretch justify-between px-6 py-3">
+    {
+      NAV_ITEMS.map((item) => {
+        const Icon = item.icon;
+        const isActive = isNavItemActive(pathname, item.href);
+        return (
+          <a
+            href={item.href}
+            aria-current={isActive ? "page" : undefined}
+            class:list={[
+              "flex flex-1 cursor-pointer flex-col items-center gap-1.5",
+              isActive ? "text-foreground font-bold" : "text-text-tertiary",
+            ]}
+          >
+            <Icon className="size-5" />
+            <span class="text-[11px] leading-none">{item.label}</span>
+          </a>
+        );
+      })
+    }
+
+    {
+      /* Not in the mock's 3-tab bar — but AppSidebar is `hidden lg:flex`, so without
+        this tab sign-out is unreachable below the lg breakpoint. */
+    }
+    <form method="POST" action="/api/auth/signout" class="flex flex-1">
+      <button type="submit" class="text-text-tertiary flex w-full cursor-pointer flex-col items-center gap-1.5">
+        <LogOut className="size-5" />
+        <span class="text-[11px] leading-none">Wyloguj</span>
+      </button>
+    </form>
+  </div>
+</nav>

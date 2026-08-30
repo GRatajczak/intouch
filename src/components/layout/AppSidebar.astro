@@ -1,0 +1,68 @@
+---
+import Logo from "@/components/Logo.astro";
+import { Button } from "@/components/ui/button";
+import { NAV_ITEMS, isNavItemActive } from "@/lib/nav-items";
+
+interface Props {
+  profileName: string | null;
+  /** Only `/people` has the array in scope for free; omitted elsewhere so no page pays for a count query. */
+  peopleCount?: number;
+}
+
+const { profileName, peopleCount } = Astro.props;
+const pathname = Astro.url.pathname;
+---
+
+<aside
+  class="bg-muted border-border shadow-card hidden w-62 shrink-0 flex-col gap-7 border-r p-5 lg:sticky lg:top-0 lg:flex lg:h-screen"
+>
+  <a href="/dashboard" class="cursor-pointer px-2">
+    <Logo size={24} withWordmark />
+  </a>
+
+  <nav class="flex flex-col gap-1">
+    {
+      NAV_ITEMS.map((item) => {
+        const Icon = item.icon;
+        const isActive = isNavItemActive(pathname, item.href);
+        return (
+          <a
+            href={item.href}
+            aria-current={isActive ? "page" : undefined}
+            class:list={[
+              "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition-colors",
+              isActive
+                ? "bg-secondary text-foreground font-semibold"
+                : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+            ]}
+          >
+            <Icon className="size-4 shrink-0" />
+            {item.label}
+          </a>
+        );
+      })
+    }
+  </nav>
+
+  <div class="mt-auto flex flex-col gap-3">
+    {
+      profileName ? (
+        <div class="flex flex-col gap-0.5">
+          <span class="text-foreground truncate text-sm font-semibold">{profileName}</span>
+          {peopleCount !== undefined && <span class="text-text-tertiary text-xs">{peopleCount} bliskich osób</span>}
+        </div>
+      ) : (
+        <div class="flex flex-col items-start gap-2">
+          <span class="text-muted-foreground text-xs">Uzupełnij profil, aby dostać lepsze podpowiedzi.</span>
+          <Button asChild size="sm" variant="secondary">
+            <a href="/profile">Uzupełnij profil</a>
+          </Button>
+        </div>
+      )
+    }
+
+    <form method="POST" action="/api/auth/signout">
+      <Button type="submit" variant="outline" size="sm" className="w-full">Wyloguj się</Button>
+    </form>
+  </div>
+</aside>

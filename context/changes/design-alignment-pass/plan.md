@@ -520,20 +520,20 @@ No schema or data migration — this pass touches presentation only.
 
 #### Automated
 
-- [x] 1.1 `npm run build` passes
-- [x] 1.2 `npm run lint` passes
+- [x] 1.1 `npm run build` passes — ab2fded
+- [x] 1.2 `npm run lint` passes — ab2fded
 
 #### Manual
 
-- [x] 1.3 `shadow-card` utility is available and renders visibly on a test element
+- [x] 1.3 `shadow-card` utility is available and renders visibly on a test element — ab2fded
 
 ### Phase 2: App shell components
 
 #### Automated
 
-- [ ] 2.1 `npm run build` passes
-- [ ] 2.2 `npm run lint` passes
-- [ ] 2.3 `npm run typecheck` passes (if present)
+- [x] 2.1 `npm run build` passes
+- [x] 2.2 `npm run lint` passes
+- [x] 2.3 `npm run typecheck` passes (if present) — no `typecheck` script exists; ran `npx astro check` instead (0 errors)
 
 ### Phase 3: Migrate dashboard + people into the shell; new Ustawienia stub
 
