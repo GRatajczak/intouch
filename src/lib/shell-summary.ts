@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase";
  *
  * Returns `null` when no `profiles` row exists yet. That case is reachable:
  * `middleware.ts` gates only `/people` on profile existence, so a signed-up
- * user who skipped `/profile` reaches `/dashboard` and `/ustawienia` without
+ * user who skipped `/profile` reaches `/dashboard` and `/settings` without
  * one. `AppSidebar` renders an "Uzupełnij profil" prompt for it.
  */
 export async function loadProfileName(

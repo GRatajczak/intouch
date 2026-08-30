@@ -43,3 +43,10 @@
 - **Problem**: Flat single-file components (e.g. `TextField.tsx`) mix prop-type declarations with rendering logic, which gets harder to scan and reuse as components grow.
 - **Rule**: Organize every new component as `ComponentName/` containing `ComponentName.tsx` (rendering logic, imports its props type via `import type { ... } from "./types"`), `types.ts` (prop/type interfaces), and `index.ts` (a barrel re-export — e.g. `export { ComponentName } from "./ComponentName"; export type { ComponentNameProps } from "./types";`, or `export { default } from "./ComponentName";` for a default export). Consumers keep importing from the folder path (e.g. `@/components/forms/TextField`), which resolves to `index.ts`, so no consumer import needs to change.
 - **Applies to**: implement
+
+## Page filenames and routes are English; only the UI copy is Polish
+
+- **Context**: Any new file under `src/pages/` — and therefore any new URL, since Astro derives routes from filenames.
+- **Problem**: The product's UI language is Polish, which makes it tempting to name the file after the label the user sees. `design-alignment-pass` shipped `src/pages/ustawienia.astro` → `/ustawienia` that way, mixing languages across the route table (`/dashboard`, `/people`, `/profile`, `/ustawienia`) and putting Polish into `PROTECTED_ROUTES`, nav hrefs, and every future link to that page.
+- **Rule**: Name page files (and the routes they produce) in English — `settings.astro` → `/settings`. Keep Polish for user-facing copy only: nav labels, headings, button text. The nav config is the seam that holds both (`NAV_ITEMS` in `src/lib/nav-items.ts`: English `href`, Polish `label`).
+- **Applies to**: plan, implement, impl-review
