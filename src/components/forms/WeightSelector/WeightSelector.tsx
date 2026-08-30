@@ -5,13 +5,16 @@ import type { WeightSelectorProps } from "./types";
 export const WEIGHT_MIN = 1;
 export const WEIGHT_MAX = 10;
 
-// Shared with the read-only WeightIndicator (src/components/people/WeightIndicator)
-// so the two never visually drift apart.
+// Shape and fill state, shared with the read-only WeightIndicator
+// (src/components/people/WeightIndicator) so the two never visually drift apart.
+// Sizing is deliberately NOT included: the selector is fixed-size, while the
+// indicator has to shrink to fit a catalog grid cell.
+export function weightSegmentShapeClassName(filled: boolean): string {
+  return cn("rounded-md border transition-colors", filled ? "bg-primary border-primary" : "bg-input border-border");
+}
+
 export function weightSegmentClassName(filled: boolean): string {
-  return cn(
-    "size-6 rounded-md border transition-colors",
-    filled ? "bg-primary border-primary" : "bg-input border-border",
-  );
+  return cn("size-6", weightSegmentShapeClassName(filled));
 }
 
 const WEIGHT_VALUES = Array.from({ length: WEIGHT_MAX - WEIGHT_MIN + 1 }, (_, i) => i + WEIGHT_MIN);

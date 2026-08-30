@@ -539,8 +539,8 @@ No schema or data migration — this pass touches presentation only.
 
 #### Automated
 
-- [x] 3.1 `npm run build` passes
-- [x] 3.2 `npm run lint` passes
+- [x] 3.1 `npm run build` passes — 5bf8f5a
+- [x] 3.2 `npm run lint` passes — 5bf8f5a
 
 #### Manual
 
@@ -555,8 +555,8 @@ No schema or data migration — this pass touches presentation only.
 
 #### Automated
 
-- [ ] 4.1 `npm run build` passes
-- [ ] 4.2 `npm run lint` passes
+- [x] 4.1 `npm run build` passes
+- [x] 4.2 `npm run lint` passes
 
 #### Manual
 
