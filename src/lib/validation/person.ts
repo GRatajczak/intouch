@@ -2,12 +2,28 @@ import { z } from "zod";
 
 export const RELATIONSHIP_TYPES = ["family", "friend", "colleague", "acquaintance", "other"] as const;
 
-export const RELATIONSHIP_TYPE_LABELS: Record<(typeof RELATIONSHIP_TYPES)[number], string> = {
+export type RelationshipType = (typeof RELATIONSHIP_TYPES)[number];
+
+export const RELATIONSHIP_TYPE_LABELS: Record<RelationshipType, string> = {
   family: "Rodzina",
   friend: "Przyjaciel/Przyjaciółka",
   colleague: "Współpracownik/Współpracowniczka",
   acquaintance: "Znajomy/Znajoma",
   other: "Inne",
+};
+
+/**
+ * Catalog-card color swatch per relationship type. Derived from the enum rather
+ * than hashed from `id`, so every `family` card renders the same color. Values
+ * are full Tailwind utility classes (not fragments) so the class scanner sees
+ * them; the colors themselves come from the `--color-swatch-*` tokens.
+ */
+export const RELATIONSHIP_TYPE_SWATCH: Record<RelationshipType, string> = {
+  family: "bg-swatch-family",
+  friend: "bg-swatch-friend",
+  colleague: "bg-swatch-colleague",
+  acquaintance: "bg-swatch-acquaintance",
+  other: "bg-swatch-other",
 };
 
 export const personSchema = z.object({

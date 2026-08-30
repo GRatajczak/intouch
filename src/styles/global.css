@@ -12,6 +12,8 @@
   --radius-2xl: 1.5rem;
   --radius-full: 999px;
 
+  --shadow-card: 0 18px 40px -28px rgba(60, 45, 30, 0.45);
+
   --background: #efe9e1;
   --foreground: #2a2724;
   --card: #fbf8f4;
@@ -38,6 +40,12 @@
   --color-warning-bg: #f5e7ce;
   --color-urgent: #8c4a52;
   --color-urgent-bg: #f7d9dc;
+
+  --color-swatch-family: #f7d9dc;
+  --color-swatch-friend: #dce0f5;
+  --color-swatch-colleague: #e9dfee;
+  --color-swatch-acquaintance: #f5e7ce;
+  --color-swatch-other: #d9e8dc;
 
   --chart-1: #e08e45;
   --chart-2: #2a9d8f;
@@ -72,6 +80,8 @@
   --radius-2xl: var(--radius-2xl);
   --radius-full: var(--radius-full);
 
+  --shadow-card: var(--shadow-card);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -98,6 +108,12 @@
   --color-warning-bg: var(--color-warning-bg);
   --color-urgent: var(--color-urgent);
   --color-urgent-bg: var(--color-urgent-bg);
+
+  --color-swatch-family: var(--color-swatch-family);
+  --color-swatch-friend: var(--color-swatch-friend);
+  --color-swatch-colleague: var(--color-swatch-colleague);
+  --color-swatch-acquaintance: var(--color-swatch-acquaintance);
+  --color-swatch-other: var(--color-swatch-other);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
