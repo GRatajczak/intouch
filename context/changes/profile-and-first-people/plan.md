@@ -722,32 +722,32 @@ real user input. No backfill step is needed.
 
 #### Automated
 
-- [x] 3.1 Type checking passes (`npx astro check`)
-- [x] 3.2 Build succeeds (`npm run build`)
-- [x] 3.3 Linting passes (`npm run lint`)
+- [x] 3.1 Type checking passes (`npx astro check`) — 8050274
+- [x] 3.2 Build succeeds (`npm run build`) — 8050274
+- [x] 3.3 Linting passes (`npm run lint`) — 8050274
 
 > Note: Phase 3 was expanded mid-implementation (see `change.md` Notes) — `/people/new` now supports adding multiple people/groups in one view (dynamic rows, one bulk insert) instead of one person per submission. Contract text above describes the original single-row design; 3.4 below was verified against the shipped multi-row behavior (each row inserts as a separate people row in the same request).
 
 #### Manual
 
-- [x] 3.4 Valid submission inserts a row and redirects to `/people`
-- [x] 3.5 Empty `description` blocks submission with inline error
-- [x] 3.6 Weight selector reflects and submits the correct 1–10 value
-- [x] 3.7 Clicking a weight segment does not submit the form
-- [x] 3.8 Profile-incomplete user cannot reach `/people/new` directly
+- [x] 3.4 Valid submission inserts a row and redirects to `/people` — 8050274
+- [x] 3.5 Empty `description` blocks submission with inline error — 8050274
+- [x] 3.6 Weight selector reflects and submits the correct 1–10 value — 8050274
+- [x] 3.7 Clicking a weight segment does not submit the form — 8050274
+- [x] 3.8 Profile-incomplete user cannot reach `/people/new` directly — 8050274
 
 ### Phase 4: People list + navigation
 
 #### Automated
 
-- [ ] 4.1 Type checking passes (`npx astro check`)
-- [ ] 4.2 Build succeeds (`npm run build`)
-- [ ] 4.3 Linting passes (`npm run lint`)
+- [x] 4.1 Type checking passes (`npx astro check`)
+- [x] 4.2 Build succeeds (`npm run build`)
+- [x] 4.3 Linting passes (`npm run lint`)
 
 #### Manual
 
-- [ ] 4.4 Empty state renders for a profile-complete user with zero people, CTA reaches `/people/new`
-- [ ] 4.5 Added person's card shows correct relationship type, description, collective marker, weight
-- [ ] 4.6 Two people with tied weight render as distinct cards
-- [ ] 4.7 Dashboard's two new links navigate correctly
-- [ ] 4.8 Full walk (sign up → confirm → sign in → gate → profile → empty state → add person → see it listed) succeeds end to end
+- [x] 4.4 Empty state renders for a profile-complete user with zero people, CTA reaches `/people/new`
+- [x] 4.5 Added person's card shows correct relationship type, description, collective marker, weight
+- [x] 4.6 Two people with tied weight render as distinct cards
+- [x] 4.7 Dashboard's two new links navigate correctly
+- [x] 4.8 Full walk (sign up → confirm → sign in → gate → profile → empty state → add person → see it listed) succeeds end to end

@@ -13,6 +13,14 @@ const { user } = Astro.locals;
         Witaj, <span class="text-foreground font-semibold">{user?.email}</span>
       </p>
       <p class="text-text-tertiary mt-2 text-sm">Ta strona jest dostępna tylko dla zalogowanych użytkowników.</p>
+      <div class="mt-6 flex flex-col gap-2">
+        <Button asChild>
+          <a href="/profile">Uzupełnij profil</a>
+        </Button>
+        <Button asChild variant="secondary">
+          <a href="/people">Twoi bliscy</a>
+        </Button>
+      </div>
       <form method="POST" action="/api/auth/signout" class="mt-6">
         <Button type="submit" variant="outline"> Wyloguj się </Button>
       </form>

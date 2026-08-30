@@ -7,16 +7,13 @@ import { Button } from "@/components/ui/button";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
 import { cn } from "@/lib/utils";
-import { peopleFormSchema } from "@/lib/validation/person";
+import { peopleFormSchema, RELATIONSHIP_TYPES, RELATIONSHIP_TYPE_LABELS } from "@/lib/validation/person";
 import type { PersonFormProps, PersonRowState } from "./types";
 
-const RELATIONSHIP_TYPE_OPTIONS = [
-  { value: "family", label: "Rodzina" },
-  { value: "friend", label: "Przyjaciel/Przyjaciółka" },
-  { value: "colleague", label: "Współpracownik/Współpracowniczka" },
-  { value: "acquaintance", label: "Znajomy/Znajoma" },
-  { value: "other", label: "Inne" },
-];
+const RELATIONSHIP_TYPE_OPTIONS = RELATIONSHIP_TYPES.map((value) => ({
+  value,
+  label: RELATIONSHIP_TYPE_LABELS[value],
+}));
 
 const COLLECTIVE_OPTIONS = [
   { value: "false", label: "Osoba" },

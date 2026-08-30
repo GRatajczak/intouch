@@ -2,6 +2,14 @@ import { z } from "zod";
 
 export const RELATIONSHIP_TYPES = ["family", "friend", "colleague", "acquaintance", "other"] as const;
 
+export const RELATIONSHIP_TYPE_LABELS: Record<(typeof RELATIONSHIP_TYPES)[number], string> = {
+  family: "Rodzina",
+  friend: "Przyjaciel/Przyjaciółka",
+  colleague: "Współpracownik/Współpracowniczka",
+  acquaintance: "Znajomy/Znajoma",
+  other: "Inne",
+};
+
 export const personSchema = z.object({
   name: z.string().trim().min(1, "Imię jest wymagane").max(100, "Imię jest za długie"),
   relationshipType: z.enum(RELATIONSHIP_TYPES, { message: "Wybierz typ relacji" }),
