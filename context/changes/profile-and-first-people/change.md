@@ -31,3 +31,5 @@ Roadmap slice `S-01`. Two PRD amendments made while planning this slice:
   `ProfileForm.tsx`, and `profile.astro` were all updated to match.
 
 All three amended in `context/foundation/prd.md`.
+
+- **Phase 3 scope expansion** — amended 2026-08-30 on user feedback after trying the single-person `/people/new` form: the add-person flow was redesigned to support adding multiple people/groups in one view before submitting, rather than one person per page visit. `PersonForm` now holds a dynamic array of rows (add/remove controls, each row independently validated), submitted as one native POST with indexed field names (`name-0`, `name-1`, ...). `src/lib/validation/person.ts` gained `peopleFormSchema` (`z.array(personSchema)`) and `parseForm`/`toRows` operate on the whole array; `/api/people` does one bulk `.insert()`. This doesn't contradict FR-003's wording, so the PRD was not amended — it's an additive UX improvement, not a redefinition of the field set.

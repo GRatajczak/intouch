@@ -704,35 +704,37 @@ real user input. No backfill step is needed.
 
 #### Automated
 
-- [x] 2.1 Type checking passes (`npx astro check`)
-- [x] 2.2 Build succeeds (`npm run build`)
-- [x] 2.3 Linting passes (`npm run lint`)
+- [x] 2.1 Type checking passes (`npx astro check`) — b9e1fa4
+- [x] 2.2 Build succeeds (`npm run build`) — b9e1fa4
+- [x] 2.3 Linting passes (`npm run lint`) — b9e1fa4
 
 > Note (applies to both Automated and Manual criteria in this phase): FR-002 was amended mid-phase (see `change.md` Notes) — `ageRange`/`lifeContext` enum fields became `birthDate` (exact date) and a free-text `lifeContext`. Contract text above describes the original design; the shipped code matches the amendment. 2.5/2.6 below were verified against the amended fields: empty `birthDate`/`lifeContext` or a future `birthDate` blocks submission with an inline error; a valid free-text `lifeContext` submits successfully — there is no more "other"/detail-field distinction.
 
 #### Manual
 
-- [x] 2.4 Profile-incomplete user redirected from `/people` to `/profile`
-- [x] 2.5 Non-"other" `lifeContext` hides detail field and submits successfully
-- [x] 2.6 "other" `lifeContext` without detail text blocks submission with inline error
-- [x] 2.7 Re-visiting `/profile` pre-fills previously-saved values
-- [x] 2.8 Signed-out visits to `/people`, `/people/new`, `/profile` and `POST /api/profile` all redirect to `/auth/signin` (no 500)
+- [x] 2.4 Profile-incomplete user redirected from `/people` to `/profile` — b9e1fa4
+- [x] 2.5 Non-"other" `lifeContext` hides detail field and submits successfully — b9e1fa4
+- [x] 2.6 "other" `lifeContext` without detail text blocks submission with inline error — b9e1fa4
+- [x] 2.7 Re-visiting `/profile` pre-fills previously-saved values — b9e1fa4
+- [x] 2.8 Signed-out visits to `/people`, `/people/new`, `/profile` and `POST /api/profile` all redirect to `/auth/signin` (no 500) — b9e1fa4
 
 ### Phase 3: Add-person flow
 
 #### Automated
 
-- [ ] 3.1 Type checking passes (`npx astro check`)
-- [ ] 3.2 Build succeeds (`npm run build`)
-- [ ] 3.3 Linting passes (`npm run lint`)
+- [x] 3.1 Type checking passes (`npx astro check`)
+- [x] 3.2 Build succeeds (`npm run build`)
+- [x] 3.3 Linting passes (`npm run lint`)
+
+> Note: Phase 3 was expanded mid-implementation (see `change.md` Notes) — `/people/new` now supports adding multiple people/groups in one view (dynamic rows, one bulk insert) instead of one person per submission. Contract text above describes the original single-row design; 3.4 below was verified against the shipped multi-row behavior (each row inserts as a separate people row in the same request).
 
 #### Manual
 
-- [ ] 3.4 Valid submission inserts a row and redirects to `/people`
-- [ ] 3.5 Empty `description` blocks submission with inline error
-- [ ] 3.6 Weight selector reflects and submits the correct 1–10 value
-- [ ] 3.7 Clicking a weight segment does not submit the form
-- [ ] 3.8 Profile-incomplete user cannot reach `/people/new` directly
+- [x] 3.4 Valid submission inserts a row and redirects to `/people`
+- [x] 3.5 Empty `description` blocks submission with inline error
+- [x] 3.6 Weight selector reflects and submits the correct 1–10 value
+- [x] 3.7 Clicking a weight segment does not submit the form
+- [x] 3.8 Profile-incomplete user cannot reach `/people/new` directly
 
 ### Phase 4: People list + navigation
 

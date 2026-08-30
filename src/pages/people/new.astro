@@ -1,0 +1,15 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import PersonForm from "@/components/people/PersonForm";
+
+const error = Astro.url.searchParams.get("error");
+---
+
+<Layout title="Dodaj osobę">
+  <div class="bg-background flex min-h-screen items-center justify-center p-4 py-8">
+    <div class="border-border bg-card text-card-foreground w-full max-w-lg rounded-2xl border p-8">
+      <h1 class="font-display text-display-sm text-foreground mb-6 text-center">Dodaj osoby</h1>
+      <PersonForm serverError={error} client:load />
+    </div>
+  </div>
+</Layout>
