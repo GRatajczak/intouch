@@ -33,3 +33,24 @@ decisions from `FR-002`/`FR-003`/`FR-004`/`FR-006`:
 
 Full plan: `context/changes/design-alignment-pass/plan.md`. Brief:
 `context/changes/design-alignment-pass/plan-brief.md`.
+
+## Divergences from the plan
+
+- **`/ustawienia` shipped as `/settings`** (`feb24ec`, file move in `4a25a2e`).
+  User decision during implementation: page filenames — and so routes — stay
+  English; only UI copy is Polish. The nav label is still "Ustawienia".
+  Recorded as a rule in `context/foundation/lessons.md`. The plan text and its
+  `## Progress` step titles still say `/ustawienia`; titles were left verbatim
+  per the Progress format contract.
+- **`WeightIndicator` segments now shrink to fit** (`1b8b7c5`). At the
+  `WeightSelector`'s fixed `size-6` the 10 segments need 276px, which overflows
+  a `lg:grid-cols-3` catalog cell (~248px of content) — so Phase 4's success
+  criterion 4.5 could not have passed unchanged. `weightSegmentShapeClassName`
+  was split out of `weightSegmentClassName` so the indicator sizes itself
+  without a Tailwind class conflict; the form's selector renders unchanged.
+- **`BottomNav`'s `shadow-card` renders downward**, i.e. off-screen under a
+  bottom-fixed bar, rather than upward into the content as the plan's aside
+  suggested. Reversing it would need a hand-written `box-shadow`, which Phase
+  1's "one token, one utility" contract forbids. The mock's own bottom bar
+  (`InTouch.dc.html:374`) separates itself with a top border and no shadow, and
+  that border is present.

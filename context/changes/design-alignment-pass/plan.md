@@ -568,8 +568,8 @@ No schema or data migration — this pass touches presentation only.
 
 #### Automated
 
-- [x] 5.1 `npm run build` passes
-- [x] 5.2 `npm run lint` passes
+- [x] 5.1 `npm run build` passes — 4a25a2e
+- [x] 5.2 `npm run lint` passes — 4a25a2e
 
 #### Manual
 

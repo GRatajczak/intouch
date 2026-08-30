@@ -45,11 +45,13 @@ successfully done").
 | F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | planning |
 | F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | in-progress |
 | F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | ready    |
+| F-05 | `design-alignment-pass`      | (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design | F-03, S-01 | NFR-browser (mobile usability) | in-progress |
 | S-01 | `profile-and-first-people`   | fill a self-profile and add people with a weight, and see them    | F-01, F-03    | FR-001, FR-002, FR-003, FR-004 | in-progress |
 | S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02    | US-01, FR-007                  | proposed |
 | S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | proposed |
 | S-04 | `decay-driven-reminders`     | be reminded, unprompted, about relationships going quiet          | S-03, F-04    | FR-008, NFR-once-per-day       | blocked  |
 | S-05 | `person-lifecycle-and-erasure`| edit, deactivate and permanently delete a person                  | S-01          | FR-005, NFR-privacy            | proposed |
+| S-06 | `landing-page`                | see a real marketing page at `/` explaining what InTouch is, before signing in | F-03          | Access Control ("unauthenticated visitor") | proposed |
 
 ## Streams
 
@@ -61,7 +63,8 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 | B      | AI call path              | `F-02`                               | Runs in parallel with `F-01`/`S-01`; joins Stream A at `S-02`.                                 |
 | C      | Data lifecycle & erasure  | `S-05`                               | Branches off `S-01`, runs parallel to `S-02`/`S-03`. Carries the binary privacy NFR.           |
 | D      | Proactive reminders       | `F-04` → `S-04`                      | `F-04` is unblocked and can start now; `S-04` still waits on the cadence decision.             |
-| E      | Visual foundation         | `F-03`                               | Runs in parallel with `F-01`/`F-02`; joins Stream A at `S-01`, the first slice that renders product screens. |
+| E      | Visual foundation         | `F-03` → `F-05`                      | Runs in parallel with `F-01`/`F-02`; joins Stream A at `S-01`, the first slice that renders product screens. `F-05` follows once `S-01` ships, since its shell needs real people/profile data to show. |
+| F      | Public landing page       | `F-03` → `S-06`                      | Parallel with everything else once `F-03` lands. A leaf outcome — nothing downstream depends on it; it's the first thing a visitor meets, not a foundation for anything. |
 
 ## Baseline
 
@@ -137,6 +140,19 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Lifted out of `S-04` for the same reason `F-02` was lifted out of `S-02`: an unproven outbound call from an edge runtime is exactly the kind of thing that invalidates a slice's design rather than just its plan, and here it is compounded by a dependency that is not code at all. Domain verification is DNS propagation plus Resend's checks — if that is discovered inside `S-04`, the slice stalls on something no amount of implementation effort moves. Sequencing it as its own foundation means it can run **now**, in parallel with everything else, while the cadence decision that still blocks `S-04` is pending. Scope is capped at one proven send on one schedule plus the secret in all three places — no reminder logic, no decay rules, no email template, no ranking. Note also that a scheduled handler is the first code in this repo that runs with no user in scope, so `F-01`'s RLS assumption ("the row's owner is the caller") does not hold for it; how the sweep reads other users' rows safely is `S-04`'s problem, but `F-04` must not accidentally establish a pattern that bypasses RLS.
 - **Status:** ready
 
+### F-05: App shell navigation and catalog visual alignment
+
+- **Outcome:** (foundation) `/dashboard`, `/people`, and a new `/ustawienia` stub render inside one persistent app shell — a desktop sidebar and a mobile bottom tab bar sharing one nav-items config with server-rendered active-route highlighting — and `/people` renders as a responsive card grid instead of a flat list. Every card in the app carries a shared shadow token matching the finished design bundle.
+- **Change ID:** `design-alignment-pass`
+- **PRD refs:** NFR "the product is usable in a current mainstream desktop/mobile web browser" (drives the mobile bottom-bar pattern, not just a sidebar squeezed down). Not tied to a numbered FR — closes a visual gap the roadmap didn't originally carve out, the same way `S-06` did for the landing page.
+- **Unlocks:** Gives `S-02` ("Dziś" real ranked content) and `S-04` ("Ustawienia" real reminder settings) a shell to render their content into, instead of each slice inventing its own nav from scratch.
+- **Prerequisites:** F-03 (done), S-01 (done)
+- **Parallel with:** S-02, S-03, S-05 — touches shared chrome and the catalog's visual layout, not their data or logic.
+- **Blockers:** —
+- **Unknowns:** —
+- **Risk:** Low technical risk — server-rendered nav, zero client JS, no schema change. The real risk is scope discipline: the design bundle presents this shell together with content this pass deliberately does not build (AI ranking, contact history, reminder settings, category tabs/search on the catalog). Scope is capped at chrome plus a grid reskin — see `context/changes/design-alignment-pass/plan.md`'s "What We're NOT Doing" for the full boundary.
+- **Status:** in-progress
+
 ## Slices
 
 ### S-01: Profile and first people
@@ -204,6 +220,22 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Carries the second half of the privacy NFR, which is binary — partial deletion is a failure, not a smaller success. The deactivate-before-delete rule exists because deleting a person otherwise destroys the contact history feeding the ranking, so the two paths must not be collapsed into one "remove" action for speed. Fully parallel with the Stream A chain: it touches the same tables but none of the ranking logic, which under `top_blocker: time` makes it the natural candidate for a separate agent run.
 - **Status:** proposed
 
+### S-06: Public landing page
+
+- **Outcome:** An unauthenticated visitor landing on `/` sees a real marketing page — hero, problem statement, "how it works" (4 steps), "who it's for", the product's stated principles, and a closing CTA — using InTouch's own copy and visual identity, instead of the 10x-astro-starter's placeholder `Welcome` component that renders there today.
+- **Change ID:** `landing-page`
+- **PRD refs:** Access Control ("an unauthenticated visitor has no access to any relationship data") — this is the page that visitor actually lands on. Not tied to a numbered FR; it closes a gap the roadmap missed, found by the user while implementing other slices: nowhere in the PRD is there an owner for "what a visitor sees before they sign up." Full copy and layout already exist as a design handoff in `.ai/intouch-design-preparation/project/InTouch.dc.html` (section "8 — Landing page") plus the companion "9 — Mail z przypomnieniem" reminder-email mocks, which belong to `S-04` rather than this slice.
+- **Unlocks:** — (leaf outcome; nothing downstream depends on it)
+- **Prerequisites:** F-03
+- **Parallel with:** S-01, S-02, S-03, S-04, S-05 — touches no data model and no auth-gated route, so it can be picked up by a separate agent run any time after `F-03` lands.
+- **Blockers:** —
+- **Unknowns:**
+  - The design ships a complete, concrete palette (warm cream surfaces, `Instrument Serif` display type, soft pastel accent pairs) and is light-only — no `.dark` variant is designed. This is a plausible answer to `F-03`'s still-open palette and dark-mode Unknowns, but resolving those is `F-03`'s job, not this slice's: whoever plans `F-03` should look at this design before finalizing tokens, so this page's tokens and the rest of the product's tokens are the same tokens rather than two palettes that happen to agree today. Owner: user, at latest by `F-03`'s plan. Block: no.
+  - Footer links ("Prywatność", "Regulamin", "Kontakt") and nav anchors ("Jak to działa", "Dla kogo", "Prywatność") appear in the mock but no privacy policy, terms, or contact target exists anywhere in the codebase or PRD. Owner: user, during this slice's plan. Block: no — scroll-anchor nav and placeholder footer links are a legitimate MVP answer under `main_goal: speed`, but it should be a decision, not an oversight.
+  - The primary CTA ("Zacznij" / "Dodaj pierwsze osoby") — does it route straight to signup, or scroll to an on-page section first? Owner: user, during this slice's plan. Block: no.
+- **Risk:** Low technical risk — static content, no data model, no auth, no AI call — but real product risk if skipped: it's the page every prospect meets first, and today `/` still renders the starter's cosmic placeholder under the starter's own title. Sequenced after `F-03` specifically so it becomes the *next* screen styled correctly rather than a second migration; building it before `F-03` lands would hardcode this design's palette straight into `src/pages/`, recreating the exact "two disconnected visual systems" problem `F-03`'s baseline already describes. Scope is capped at the one page in the mock — hero, problem, how-it-works, who-it's-for, principles, closing CTA, footer — using InTouch's copy verbatim from the design file; no CMS, no blog, no additional marketing pages, no A/B testing.
+- **Status:** proposed
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                      | Suggested issue title                                         | Ready for `/10x-plan` | Notes                                                       |
@@ -215,8 +247,10 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-02       | `ai-contact-hierarchy`         | AI-ranked contact hierarchy with suggested time windows        | no                    | Needs S-01 and F-02                                          |
 | S-03       | `did-it-happen-feedback-loop`  | Did-it-happen confirmation feeding the next ranking            | no                    | North star. Needs S-02                                       |
 | F-04       | `resend-email-delivery-path`   | Send one real email from the Worker on a schedule via Resend   | yes                   | Parallel with F-01/F-02/F-03; start the sending domain first  |
+| F-05       | `design-alignment-pass`        | App shell (sidebar/bottom-nav) + catalog grid reskin from the finished design | yes | Needs F-03 and S-01, both done                                |
 | S-04       | `decay-driven-reminders`       | Decay-driven reminders, at most once per day                   | no                    | Needs S-03 and F-04. Blocked: reminder cadence undecided      |
 | S-05       | `person-lifecycle-and-erasure` | Edit, deactivate and irreversibly delete a person              | no                    | Needs S-01; then runs parallel to the whole Stream A chain   |
+| S-06       | `landing-page`                 | Public landing page at `/` from the existing design + copy     | no                    | Needs F-03; copy and layout already in `.ai/intouch-design-preparation/` |
 
 ## Open Roadmap Questions
 
@@ -226,8 +260,9 @@ Foundations below assume these are present and do NOT re-scaffold them.
 4. **Resend sending identity** — an owned domain (DNS records plus a verification wait nobody can compress) or Resend's `onboarding@resend.dev` test sender (instant, but delivers only to the account owner's own address). Owner: user, during `F-04`'s plan. Block: `F-04` — not hard-blocking (F-04 is `ready`), but it is the longest-lead item on the board, so start it before writing any reminder code.
    > Resolved and closed: **reminder delivery channel**. FR-008 reminders are email, sent through Resend (PRD v2). The wiring lives in `F-04`; what remains open is only the sending identity above.
 5. **Reminder email content** — one email per most-urgent person, a top-few, or the whole hierarchy? Decides whether the email pulls the user back into the app to close the FR-009 loop or is a digest they read and dismiss. Owner: user, during design. Block: `S-04` — not hard-blocking; affects the email's template, not whether the slice can be built.
-6. **Palette direction** — warm and personal versus neutral-utility (shadcn's current `baseColor: neutral`). The PRD never describes a visual character, and the repo's current look is the starter's, not the product's. Owner: user, during design. Block: `F-03`.
-7. **Dark mode in the MVP** — light-only, dark-only, or both with a toggle. Today all three states are partly present and none is chosen (see `## Baseline`). Owner: user, during design. Block: `F-03`.
+6. **Palette direction** — warm and personal versus neutral-utility (shadcn's current `baseColor: neutral`). The PRD never describes a visual character, and the repo's current look is the starter's, not the product's. Owner: user, during design. Block: `F-03`. The `S-06` landing design (`.ai/intouch-design-preparation/`) already proposes a concrete warm/personal palette and type scale — a candidate answer to confirm or reject during `F-03`'s plan, not a foregone conclusion.
+7. **Dark mode in the MVP** — light-only, dark-only, or both with a toggle. Today all three states are partly present and none is chosen (see `## Baseline`). Owner: user, during design. Block: `F-03`. The `S-06` landing design is light-only with no `.dark` variant — a data point toward light-only, not a decision by itself.
+8. **Landing page legal/contact placeholders and CTA target** — footer links to Prywatność/Regulamin/Kontakt and nav anchors to Jak to działa/Dla kogo/Prywatność appear in the design but no privacy policy, terms, or contact target exists yet; also whether the primary CTA routes straight to signup or scrolls to an on-page section first. Owner: user, during `S-06`'s plan. Block: `S-06` — not hard-blocking; scroll anchors and placeholder footer links are a legitimate MVP answer, but should be a decision.
 
 ## Parked
 
