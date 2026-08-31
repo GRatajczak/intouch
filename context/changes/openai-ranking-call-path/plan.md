@@ -244,28 +244,28 @@ Not applicable — no Supabase schema changes in this foundation.
 
 #### Automated
 
-- [x] 1.1 Type check passes: `npx astro check`
-- [x] 1.2 Build succeeds locally with `OPENAI_API_KEY` present in `.dev.vars`: `npm run build`
+- [x] 1.1 Type check passes: `npx astro check` — 7cbd2b3
+- [x] 1.2 Build succeeds locally with `OPENAI_API_KEY` present in `.dev.vars`: `npm run build` — 7cbd2b3
 
 #### Manual
 
-- [x] 1.3 User has added their real `OPENAI_API_KEY` to local `.dev.vars`
+- [x] 1.3 User has added their real `OPENAI_API_KEY` to local `.dev.vars` — 7cbd2b3
 - [ ] 1.4 User has added `OPENAI_API_KEY` to the GitHub repo's Actions secrets
-- [x] 1.5 `npm run dev` boots without a new config-related error
+- [x] 1.5 `npm run dev` boots without a new config-related error — 7cbd2b3
 
 ### Phase 2: KV-backed async call route
 
 #### Automated
 
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Build succeeds: `npm run build`
-- [ ] 2.3 Lint passes: `npm run lint`
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Build succeeds: `npm run build`
+- [x] 2.3 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.4 `npm run dev` → authenticated `POST /api/internal/ai-ping` returns `202` with a job id near-instantly
-- [ ] 2.5 Polling `GET /api/internal/ai-ping?jobId=...` shows `pending` then eventually `done` with a result string
-- [ ] 2.6 Unauthenticated request to either method returns `401`
+- [x] 2.4 `npm run dev` → authenticated `POST /api/internal/ai-ping` returns `202` with a job id near-instantly
+- [x] 2.5 Polling `GET /api/internal/ai-ping?jobId=...` shows `pending` then eventually `done` with a result string
+- [x] 2.6 Unauthenticated request to either method returns `401`
 
 ### Phase 3: Production secret + verification
 

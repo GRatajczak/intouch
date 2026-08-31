@@ -11,6 +11,15 @@
     "directory": "./dist",
     "not_found_handling": "404-page",
   },
+  // Ephemeral AI job statuses (pending/done/failed). Every write carries an
+  // expirationTtl -- see src/lib/ai-jobs.ts, the only file that reads this binding.
+  "kv_namespaces": [
+    {
+      "binding": "AI_JOBS",
+      "id": "4765866c5f624d17b235bc614e93acf8",
+      "preview_id": "644928899c1c44a881612806f944a321",
+    },
+  ],
   "observability": {
     "enabled": true,
   },
