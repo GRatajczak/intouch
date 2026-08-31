@@ -54,34 +54,34 @@ Get `OPENAI_API_KEY` flowing through `astro:env/server` locally, the same shape 
 
 **Contract**: `OPENAI_API_KEY: envField.string({ context: "server", access: "secret", optional: true })`. Use `optional: true` (unlike the Supabase vars' `optional: false`) — this foundation has no live traffic depending on it yet, and the client factory below already has a defensive `null`-return path for a missing key, matching `src/lib/supabase.ts`'s existing convention.
 
-#### 2. Local secret + template files
+#### 2. Local secret
 
-**Files**: `.dev.vars` (gitignored, not committed), `.env.example`
+**File**: `.dev.vars` (gitignored, not committed)
 
-**Intent**: The user adds their real key to `.dev.vars` locally (manual step — this is their existing OpenAI account key). `.env.example` gets a new placeholder line so the template stays in sync with what `.dev.vars` actually needs, matching how `RESEND_API_KEY` was already added to both.
+**Intent**: The user adds their real key to `.dev.vars` locally (manual step — this is their existing OpenAI account key). The adapter loads `.dev.vars` into `process.env` during `astro:config:setup` (`node_modules/@astrojs/cloudflare/dist/index.js:292-300`), and that hook runs for both `dev` and `build` — so a local build sees the key too.
 
-**Contract**: `.env.example` gains `OPENAI_API_KEY=###` alongside the existing three placeholders.
+**Contract**: `.dev.vars` gains an `OPENAI_API_KEY` line. `.env.example` needs **no** change: the `OPENAI_API_KEY=###` placeholder already landed in `d4ea632`, after this plan was written.
 
 #### 3. GitHub Secrets entry
 
 **File**: `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`
 
-**Intent**: `npm run build` needs `OPENAI_API_KEY` available at build time the same way it already needs `SUPABASE_URL`/`SUPABASE_KEY`, since Astro's env schema validates against build-time env.
+**Intent**: Keep CI's build env in step with the schema, defensively — mirroring the existing `SUPABASE_URL`/`SUPABASE_KEY` entries. This is **not** load-bearing yet: because §1 declares the var `optional: true`, `npm run build` succeeds whether or not the secret is present. It becomes required the moment `S-02` flips it to `optional: false`, which is why the wiring goes in now rather than being discovered then.
 
-**Contract**: Add `OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}` to the existing `env:` block under the `npm run build` step in both workflow files. The GitHub Secret itself (`OPENAI_API_KEY`) must be added to the repo's secrets by a human before this step is exercised in CI — note this in the phase's manual verification.
+**Contract**: Add `OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}` to the existing `env:` block under the `npm run build` step in both workflow files. Adding the GitHub Secret itself is a human step; until it exists the workflow passes an empty value and CI still goes green — so step 1.4 is a follow-up, not a blocker for this phase or for Phase 3.
 
 ### Success Criteria:
 
 #### Automated Verification:
 
-- [ ] Type check passes: `npx astro check`
-- [ ] Build succeeds locally with `OPENAI_API_KEY` present in `.dev.vars`: `npm run build`
+- Type check passes: `npx astro check`
+- Build succeeds locally with `OPENAI_API_KEY` present in `.dev.vars`: `npm run build`
 
 #### Manual Verification:
 
-- [ ] User has added their real `OPENAI_API_KEY` to local `.dev.vars`
-- [ ] User has added `OPENAI_API_KEY` to the GitHub repo's Actions secrets
-- [ ] `npm run dev` boots without a new config-related error
+- User has added their real `OPENAI_API_KEY` to local `.dev.vars`
+- User has added `OPENAI_API_KEY` to the GitHub repo's Actions secrets
+- `npm run dev` boots without a new config-related error
 
 ---
 
@@ -105,7 +105,7 @@ Add the KV namespace, the `openai` package, and the authenticated route pair tha
   { "binding": "AI_JOBS", "id": "<remote-id-from-command-output>", "preview_id": "<preview-id-from-command-output>" }
 ]
 ```
-Regenerate `worker-configuration.d.ts` afterward (`npx wrangler types`) so `Env.AI_JOBS` is typed.
+Regenerate `worker-configuration.d.ts` afterward (`npx wrangler types`) so `Env.AI_JOBS` is typed. Typing the binding is not the same as reaching it at runtime — §3 below defines how the code actually gets hold of it.
 
 #### 2. OpenAI package + client factory
 
@@ -115,27 +115,41 @@ Regenerate `worker-configuration.d.ts` afterward (`npx wrangler types`) so `Env.
 
 **Contract**: `npm install openai`. `src/lib/openai.ts` exports a `createOpenAIClient()` function reading `OPENAI_API_KEY` from `astro:env/server`, returning `null` if unset or a configured `OpenAI` client instance otherwise.
 
-#### 3. Trigger + status route
+#### 3. KV access helper
+
+**File**: `src/lib/ai-jobs.ts` (new)
+
+**Intent**: One place that knows how to reach the `AI_JOBS` binding, so the route — and later `S-02` — never imports it directly. Same containment `src/lib/supabase.ts` gives the Supabase client.
+
+**Contract**: The binding is **not** reachable through `astro:env/server` (`envField` models only string/number/boolean/enum, not a KV namespace) and **not** through `Astro.locals.runtime.env`, which throws in `@astrojs/cloudflare` v13 — `"has been removed in Astro v6. Use 'import { env } from \"cloudflare:workers\"' instead."` (`dist/utils/handler.js:66-70`). That message names the one supported path, and the module is declared and typed in `worker-configuration.d.ts:12188`. This is the repo's first Cloudflare binding, so this file sets the pattern for every later one.
+
+Exports `readJob(jobId)` and `writeJob(jobId, status)` over `env.AI_JOBS`. Every write passes `expirationTtl: 3600` — a job status is worthless an hour later, and `S-02` will copy this module under real traffic, so the TTL belongs in the pattern rather than being retrofitted once keys have accumulated.
+
+Note the companion rule appended to `context/foundation/lessons.md`: **config values** come from `astro:env/server`, **bindings** come from `cloudflare:workers`. The existing "env vars go through `astro:env/server` only" rule governs the former and does not forbid the latter.
+
+#### 4. Trigger + status route
 
 **File**: `src/pages/api/internal/ai-ping.ts` (new)
 
-**Intent**: `POST` generates a job id, writes a `pending` KV entry, starts the OpenAI call via `Astro.locals.cfContext.waitUntil(...)` (model: `gpt-4o-mini`, a trivial fixed prompt — no ranking logic), and returns `202` with the job id immediately, before the OpenAI call resolves. The background promise's `try/catch` writes `done` (with the response text) or `failed` (with the error message) to the same KV key when it settles. `GET` with a `?jobId=` query param reads and returns that KV entry's current status. Both methods require `context.locals.user` to be set (401 JSON response otherwise) — this route is not meant for anonymous or unauthenticated callers, since it triggers a real billed API call.
+**Intent**: `POST` generates a job id, writes a `pending` entry through §3's `writeJob`, starts the OpenAI call via `Astro.locals.cfContext.waitUntil(...)` (model: `gpt-4o-mini`, a trivial fixed prompt — no ranking logic), and returns `202` with the job id immediately, before the OpenAI call resolves. The background promise's `try/catch` writes `done` (with the response text) or `failed` (with the error message) to the same key when it settles, again through `writeJob` — so the TTL applies to terminal states too. `GET` with a `?jobId=` query param returns `readJob`'s current status. Both methods require `context.locals.user` to be set (401 JSON response otherwise) — this route is not meant for anonymous or unauthenticated callers, since it triggers a real billed API call.
 
 **Contract**: `POST /api/internal/ai-ping` → `202 { jobId }`. `GET /api/internal/ai-ping?jobId=<id>` → `200 { status: "pending" | "done" | "failed", result?: string, error?: string }`, or `404` if the job id is unknown to KV. Both return `401` when `context.locals.user` is null.
+
+**Convention note**: every existing API route redirects to `/auth/signin` on a missing user (`src/pages/api/people.ts:8`, `src/pages/api/profile.ts`). This route deliberately does not — `/api/internal/*` is a JSON contract meant for machine callers (`202`/`200`/`401`/`404`), while the form-post routes stay with redirects because a browser form submission has somewhere to be redirected *to*. This is an intentional second convention, scoped to `/api/internal/*`.
 
 ### Success Criteria:
 
 #### Automated Verification:
 
-- [ ] Type check passes: `npx astro check`
-- [ ] Build succeeds: `npm run build`
-- [ ] Lint passes: `npm run lint`
+- Type check passes: `npx astro check`
+- Build succeeds: `npm run build`
+- Lint passes: `npm run lint`
 
 #### Manual Verification:
 
-- [ ] `npm run dev` → authenticated `POST /api/internal/ai-ping` returns `202` with a job id near-instantly (well before a real OpenAI round-trip would complete)
-- [ ] Polling `GET /api/internal/ai-ping?jobId=...` shows `pending` then eventually `done` with a result string
-- [ ] Unauthenticated request to either method returns `401`
+- `npm run dev` → authenticated `POST /api/internal/ai-ping` returns `202` with a job id near-instantly (well before a real OpenAI round-trip would complete)
+- Polling `GET /api/internal/ai-ping?jobId=...` shows `pending` then eventually `done` with a result string
+- Unauthenticated request to either method returns `401`
 
 ---
 
@@ -155,20 +169,35 @@ Set the real production secret (human step), deploy to a preview URL, and prove 
 
 **File**: `scripts/verify-openai-call.ts` (new), `package.json` (new script)
 
-**Intent**: Follow the `scripts/verify-rls.ts` convention exactly — a standalone `tsx` script, no test framework. It targets a **deployed** URL (passed as an argument or env var, not hardcoded to localhost), because the Outcome this foundation exists to prove ("checked against Cloudflare's production limits") cannot be demonstrated against `astro dev`. It authenticates (reusing the existing Supabase auth flow against a throwaway or existing test account), `POST`s `/api/internal/ai-ping`, asserts the response returns in well under the time a real OpenAI completion takes (proving non-blocking), then polls `GET .../ai-ping?jobId=...` until `done`/`failed` or a timeout, asserting the terminal status is `done`.
+**Intent**: A standalone `tsx` script with no test framework, borrowing `verify-rls.ts`'s *shape* — `assert()` + a `failures[]` array, non-zero exit on any failure. It targets a **deployed** URL (argument or env var, never hardcoded to localhost), because the Outcome this foundation exists to prove ("checked against Cloudflare's production limits") cannot be demonstrated against `astro dev`.
 
-**Contract**: `npm run verify:ai-call -- <preview-or-prod-url>` runs the script; it exits non-zero and prints a clear failure reason on any assertion failure, mirroring `verify-rls.ts`'s `assert()` + `failures[]` pattern.
+**Authentication — the part `verify-rls.ts` does *not* answer.** That script reads the **local** stack via `supabase status -o json`, explicitly refuses to run against a non-localhost URL, and mints users with the `SERVICE_ROLE_KEY`. None of that transfers: this script must reach a deployed Worker backed by **hosted** Supabase, and the route's auth check reads `context.locals.user`, which the middleware derives from `@supabase/ssr` cookies on the request. A service-role key bypasses RLS at the database, but produces no browser session — the Worker never sees it.
+
+So the script does not hand-craft those cookies (their chunked `sb-<ref>-auth-token.0/.1` format is `@supabase/ssr`'s internal detail and shifts between versions). It has the app mint them:
+
+1. `POST` form-encoded `email`/`password` to `<url>/api/auth/signin` with `redirect: "manual"`, so the `302` is not followed and its headers survive.
+2. Collect `response.headers.getSetCookie()` — these are the exact cookies the middleware will read back, produced by the same `createClient` (`src/pages/api/auth/signin.ts:20-23`).
+3. Join them into one `Cookie:` header and send it on every subsequent request.
+4. `POST /api/internal/ai-ping`, assert the response returns well under a real OpenAI round-trip (proving non-blocking), then poll `GET .../ai-ping?jobId=...` until `done`/`failed` or timeout, asserting the terminal status is `done`.
+
+This keeps the script off `@supabase/ssr` internals and exercises the real sign-in path, which is the same contract step 2.6 tests from the unauthenticated side.
+
+**Contract**: `npm run verify:ai-call -- <preview-or-prod-url>` runs the script. Test-account credentials arrive as env vars (`VERIFY_EMAIL` / `VERIFY_PASSWORD`) — never hardcoded, never committed. The script exits non-zero with a clear reason on any assertion failure.
+
+**Prerequisite (human, one-off)**: a test account must exist in the **hosted** Supabase project, with its email already confirmed — `signInWithPassword` rejects an unconfirmed address when email confirmation is on, and this repo has a `/auth/confirm-email` route, so it is. Creating it is a human step, listed in this phase's manual verification.
 
 ### Success Criteria:
 
 #### Automated Verification:
 
-- [ ] `npm run verify:ai-call -- <preview-url>` passes against a deployed preview URL
+- `npm run verify:ai-call -- <preview-url>` passes against a deployed preview URL
 
 #### Manual Verification:
 
-- [ ] `wrangler tail` during the verification run shows the OpenAI call completing after the HTTP response was already sent, with no uncaught exceptions
-- [ ] `wrangler secret list` shows `OPENAI_API_KEY` present in production
+- `wrangler tail` during the verification run shows the OpenAI call completing after the HTTP response was already sent, with no uncaught exceptions
+- `wrangler secret list` shows `OPENAI_API_KEY` present in production
+- A test account exists in the hosted Supabase project with its email confirmed, and signing in with it through the deployed app succeeds
+- `VERIFY_EMAIL` / `VERIFY_PASSWORD` are exported in the shell running the script, and appear in no committed file
 
 **Implementation Note**: After this phase's automated verification passes, pause for manual confirmation from the human that the `wrangler tail` observation and production secret check succeeded before considering this foundation done.
 
@@ -248,3 +277,5 @@ Not applicable — no Supabase schema changes in this foundation.
 
 - [ ] 3.2 `wrangler tail` during the verification run shows the OpenAI call completing after the HTTP response was already sent, with no uncaught exceptions
 - [ ] 3.3 `wrangler secret list` shows `OPENAI_API_KEY` present in production
+- [ ] 3.4 A test account exists in the hosted Supabase project with its email confirmed, and signing in with it through the deployed app succeeds
+- [ ] 3.5 `VERIFY_EMAIL` / `VERIFY_PASSWORD` are exported in the shell running the script, and appear in no committed file
