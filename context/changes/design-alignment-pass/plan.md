@@ -544,12 +544,12 @@ No schema or data migration — this pass touches presentation only.
 
 #### Manual
 
-- [ ] 3.3 Sidebar renders on `/dashboard`, `/people`, `/ustawienia`; bottom bar renders on the same three below `lg`
-- [ ] 3.4 Active nav item highlights correctly on each of the three pages
-- [ ] 3.5 Sign-out works from all three shell pages at both ~1200px (sidebar) and ~390px (`BottomNav` 4th tab)
-- [ ] 3.6 `/ustawienia` redirects to `/auth/signin` when signed out
-- [ ] 3.7 Signed in with no profile row, the sidebar footer shows the "Uzupełnij profil" prompt + button (never `undefined`)
-- [ ] 3.8 `/profile` and `/people/new` remain standalone cards, unaffected
+- [x] 3.3 Sidebar renders on `/dashboard`, `/people`, `/ustawienia`; bottom bar renders on the same three below `lg` — 5bf8f5a
+- [x] 3.4 Active nav item highlights correctly on each of the three pages — 5bf8f5a
+- [x] 3.5 Sign-out works from all three shell pages at both ~1200px (sidebar) and ~390px (`BottomNav` 4th tab) — 5bf8f5a
+- [x] 3.6 `/ustawienia` redirects to `/auth/signin` when signed out — 5bf8f5a
+- [x] 3.7 Signed in with no profile row, the sidebar footer shows the "Uzupełnij profil" prompt + button (never `undefined`) — 5bf8f5a
+- [x] 3.8 `/profile` and `/people/new` remain standalone cards, unaffected — 5bf8f5a
 
 ### Phase 4: People catalog grid reskin
 
@@ -560,9 +560,9 @@ No schema or data migration — this pass touches presentation only.
 
 #### Manual
 
-- [ ] 4.3 Empty state unchanged at 0 people
-- [ ] 4.4 Grid renders correctly at 1/2/3 columns across breakpoints, including tied-relationship-type and tied-weight cases
-- [ ] 4.5 `WeightIndicator` fits visibly inside a grid cell at `lg` width
+- [x] 4.3 Empty state unchanged at 0 people — 1b8b7c5
+- [x] 4.4 Grid renders correctly at 1/2/3 columns across breakpoints, including tied-relationship-type and tied-weight cases — 1b8b7c5
+- [x] 4.5 `WeightIndicator` fits visibly inside a grid cell at `lg` width — 1b8b7c5
 
 ### Phase 5: Standalone-card polish
 
@@ -573,5 +573,5 @@ No schema or data migration — this pass touches presentation only.
 
 #### Manual
 
-- [ ] 5.3 Full auth click-through (sign up → confirm-email → sign in → dashboard → sign out) unaffected
-- [ ] 5.4 `/profile` and `/people/new` render correctly, unaffected in structure
+- [x] 5.3 Full auth click-through (sign up → confirm-email → sign in → dashboard → sign out) unaffected — 4a25a2e
+- [x] 5.4 `/profile` and `/people/new` render correctly, unaffected in structure — 4a25a2e

@@ -1,9 +1,9 @@
 ---
 change_id: design-alignment-pass
 title: App shell navigation and catalog visual alignment
-status: implementing
+status: implemented
 created: 2026-08-30
-updated: 2026-08-30
+updated: 2026-08-31
 archived_at: null
 ---
 
