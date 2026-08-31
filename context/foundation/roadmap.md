@@ -3,7 +3,7 @@ project: "InTouch"
 version: 2
 status: draft
 created: 2026-08-15
-updated: 2026-08-30
+updated: 2026-08-31
 prd_version: 2
 main_goal: speed
 top_blocker: time
@@ -41,12 +41,12 @@ successfully done").
 
 | ID   | Change ID                    | Outcome (user can …)                                              | Prerequisites | PRD refs                       | Status   |
 | ---- | ---------------------------- | ----------------------------------------------------------------- | ------------- | ------------------------------ | -------- |
-| F-01 | `per-user-data-isolation`    | (foundation) migrations + default-deny RLS + a proof of isolation | —             | NFR-privacy, Access Control    | in-progress |
-| F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | planning |
-| F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | in-progress |
+| F-01 | `per-user-data-isolation`    | (foundation) migrations + default-deny RLS + a proof of isolation | —             | NFR-privacy, Access Control    | done        |
+| F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | ready    |
+| F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | done                                        |
 | F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | ready    |
-| F-05 | `design-alignment-pass`      | (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design | F-03, S-01 | NFR-browser (mobile usability) | in-progress |
-| S-01 | `profile-and-first-people`   | fill a self-profile and add people with a weight, and see them    | F-01, F-03    | FR-001, FR-002, FR-003, FR-004 | in-progress |
+| F-05 | `design-alignment-pass`      | (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design | F-03, S-01 | NFR-browser (mobile usability) | done      |
+| S-01 | `profile-and-first-people`   | fill a self-profile and add people with a weight, and see them    | F-01, F-03    | FR-001, FR-002, FR-003, FR-004 | done      |
 | S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02    | US-01, FR-007                  | proposed |
 | S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | proposed |
 | S-04 | `decay-driven-reminders`     | be reminded, unprompted, about relationships going quiet          | S-03, F-04    | FR-008, NFR-once-per-day       | blocked  |
@@ -94,7 +94,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** This is the one place where `main_goal: speed` does not get to win. RLS retrofitted after three slices already write rows is a migration with real data in it; RLS established before the first row is a policy file. The scope cap is deliberate: F-01 proves the pattern on the single minimal owner-scoped table `S-01` needs, and each later slice adds its own tables under the same contract — it does not model the domain up front. Note also that `wrangler rollback` reverts code but not the database (see `CLAUDE.md`), so every migration from here on must be forward-compatible.
-- **Status:** in-progress
+- **Status:** done
 
 ### F-02: OpenAI call path from the Worker
 
@@ -108,7 +108,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - What is the non-blocking generation shape — deferred work with a "ready" notification, or an in-view async state the user may navigate away from? Owner: user, during F-02's plan. Block: no — resolving this *is* the work of this foundation.
 - **Risk:** Sequenced here because `lessons.md` already records that a fast local `astro dev` run proves nothing about the Workers free-tier ceilings, and an LLM call is exactly the kind of per-request work that finds them. Discovering this inside `S-02` would invalidate that slice's whole design rather than just its plan. Scope is capped at one proven call path plus the secret in all three places (`.dev.vars`, `wrangler secret`, GitHub Secrets) — not a prompt, not a ranking, not a schema.
-- **Status:** planning
+- **Status:** ready
 
 ### F-03: Design system and product identity
 
@@ -123,7 +123,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - Palette direction — warm and personal (this is an app about people you care about) versus neutral-utility (shadcn's current `baseColor: neutral`). Owner: user, during this foundation's plan. Block: no — the plan step must propose a concrete palette and get it confirmed before restyling; it is not a research question.
   - Does the MVP ship dark mode at all? Today the token layer defines a light default plus a `.dark` block that nothing toggles, while every screen renders the starter's dark gradient — one of the three has to go. Owner: user, during this foundation's plan. Block: no — shipping light-only is a legitimate answer under `main_goal: speed`, as long as it is a decision rather than the current accident.
 - **Risk:** This is a foundation because of retrofit cost, not because it is glamorous. Every screen in the repo today is styled in a theme inherited from the starter that has nothing to do with this product, and the token layer that shadcn components expect is effectively dead code. Building `S-01`, `S-02`, `S-03` and `S-05` on top of that means four slices of screens to re-skin later, plus every new `npx shadcn add` component arriving in tokens that visually clash with the pages around it — the same "retrofit versus policy file" argument that sequences `F-01`. The counter-risk is real and is why the scope is capped hard: token layer, removal of the starter theme, product identity in `Layout.astro`, and only the primitives `S-01`/`S-02` actually need (form field, list row/card, weight indicator, empty state, pending state). No Storybook, no component gallery, no logo or brand work, no components without a caller. The existing auth screens are the migration's proving ground — they are the only real screens that exist, so they are what shows the palette holds up before any product screen is written on it.
-- **Status:** in-progress
+- **Status:** done
 
 ### F-04: Resend email delivery path
 
@@ -151,7 +151,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Low technical risk — server-rendered nav, zero client JS, no schema change. The real risk is scope discipline: the design bundle presents this shell together with content this pass deliberately does not build (AI ranking, contact history, reminder settings, category tabs/search on the catalog). Scope is capped at chrome plus a grid reskin — see `context/changes/design-alignment-pass/plan.md`'s "What We're NOT Doing" for the full boundary.
-- **Status:** in-progress
+- **Status:** done
 
 ## Slices
 
@@ -166,7 +166,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Exact fields for the self-profile (FR-002) and the per-person form (FR-003) are not pinned in the PRD. Owner: user, during this slice's plan. Block: no — the plan step must propose a concrete field set and get it confirmed before building; it is not a research question.
 - **Risk:** This is the only input the AI ever gets, so a form that is too thin starves `S-02` of the context that breaks weight ties, and a form that is too heavy gets abandoned by exactly the rushed persona the PRD describes. The PRD already moved both forms from free text to structured for this reason — the plan should hold that line. Sequenced first because nothing downstream has data without it.
-- **Status:** in-progress
+- **Status:** done
 
 ### S-02: AI contact hierarchy
 
@@ -240,17 +240,17 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 | Roadmap ID | Change ID                      | Suggested issue title                                         | Ready for `/10x-plan` | Notes                                                       |
 | ---------- | ------------------------------ | ------------------------------------------------------------- | --------------------- | ----------------------------------------------------------- |
-| F-01       | `per-user-data-isolation`      | Migration path + default-deny RLS for user-owned data          | yes                   | Run `/10x-plan per-user-data-isolation`                      |
-| F-02       | `openai-ranking-call-path`     | Non-blocking OpenAI call path from the Worker                  | yes                   | Parallel with F-01; API key already held                     |
-| F-03       | `design-system-foundation`     | Design tokens + palette, drop the starter theme                | yes                   | Parallel with F-01/F-02; confirm palette + dark mode in plan |
-| S-01       | `profile-and-first-people`     | Self-profile + add people with description and weight          | no                    | Needs F-01 and F-03; pin the form fields during planning     |
-| S-02       | `ai-contact-hierarchy`         | AI-ranked contact hierarchy with suggested time windows        | no                    | Needs S-01 and F-02                                          |
+| F-01       | `per-user-data-isolation`      | Migration path + default-deny RLS for user-owned data          | done                  | Shipped `c7fd8b5`…`54508d1`; impl-reviewed. Linear GRA-5     |
+| F-02       | `openai-ranking-call-path`     | Non-blocking OpenAI call path from the Worker                  | planned               | Plan written (`9aaf49d`), not implemented. Next on Stream A  |
+| F-03       | `design-system-foundation`     | Design tokens + palette, drop the starter theme                | done                  | Shipped `e3a00ab`…`402cafb`. Linear GRA-16                   |
+| S-01       | `profile-and-first-people`     | Self-profile + add people with description and weight          | done                  | Shipped `4ac61e6`…`a54295b`; impl-reviewed. Linear GRA-7     |
+| S-02       | `ai-contact-hierarchy`         | AI-ranked contact hierarchy with suggested time windows        | no                    | S-01 done; waits only on F-02                                |
 | S-03       | `did-it-happen-feedback-loop`  | Did-it-happen confirmation feeding the next ranking            | no                    | North star. Needs S-02                                       |
 | F-04       | `resend-email-delivery-path`   | Send one real email from the Worker on a schedule via Resend   | yes                   | Parallel with F-01/F-02/F-03; start the sending domain first  |
-| F-05       | `design-alignment-pass`        | App shell (sidebar/bottom-nav) + catalog grid reskin from the finished design | yes | Needs F-03 and S-01, both done                                |
+| F-05       | `design-alignment-pass`        | App shell (sidebar/bottom-nav) + catalog grid reskin from the finished design | done | Shipped `ab2fded`…`ff28367`. Linear GRA-18                  |
 | S-04       | `decay-driven-reminders`       | Decay-driven reminders, at most once per day                   | no                    | Needs S-03 and F-04. Blocked: reminder cadence undecided      |
 | S-05       | `person-lifecycle-and-erasure` | Edit, deactivate and irreversibly delete a person              | no                    | Needs S-01; then runs parallel to the whole Stream A chain   |
-| S-06       | `landing-page`                 | Public landing page at `/` from the existing design + copy     | no                    | Needs F-03; copy and layout already in `.ai/intouch-design-preparation/` |
+| S-06       | `landing-page`                 | Public landing page at `/` from the existing design + copy     | yes                   | F-03 done — unblocked. Copy/layout in `.ai/intouch-design-preparation/` |
 
 ## Open Roadmap Questions
 
