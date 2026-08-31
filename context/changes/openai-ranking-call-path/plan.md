@@ -250,7 +250,7 @@ Not applicable — no Supabase schema changes in this foundation.
 #### Manual
 
 - [x] 1.3 User has added their real `OPENAI_API_KEY` to local `.dev.vars` — 7cbd2b3
-- [x] 1.4 User has added `OPENAI_API_KEY` to the GitHub repo's Actions secrets
+- [x] 1.4 User has added `OPENAI_API_KEY` to the GitHub repo's Actions secrets — cafa8b1
 - [x] 1.5 `npm run dev` boots without a new config-related error — 7cbd2b3
 
 ### Phase 2: KV-backed async call route
@@ -271,11 +271,11 @@ Not applicable — no Supabase schema changes in this foundation.
 
 #### Automated
 
-- [x] 3.1 `npm run verify:ai-call -- <preview-url>` passes against a deployed preview URL
+- [x] 3.1 `npm run verify:ai-call -- <preview-url>` passes against a deployed preview URL — cafa8b1
 
 #### Manual
 
-- [ ] 3.2 `wrangler tail` during the verification run shows the OpenAI call completing after the HTTP response was already sent, with no uncaught exceptions
-- [x] 3.3 `wrangler secret list` shows `OPENAI_API_KEY` present in production
-- [x] 3.4 A test account exists in the hosted Supabase project with its email confirmed, and signing in with it through the deployed app succeeds
-- [x] 3.5 `VERIFY_EMAIL` / `VERIFY_PASSWORD` are exported in the shell running the script, and appear in no committed file
+- [x] 3.2 `wrangler tail` during the verification run shows the OpenAI call completing after the HTTP response was already sent, with no uncaught exceptions — cafa8b1
+- [x] 3.3 `wrangler secret list` shows `OPENAI_API_KEY` present in production — cafa8b1
+- [x] 3.4 A test account exists in the hosted Supabase project with its email confirmed, and signing in with it through the deployed app succeeds — cafa8b1
+- [x] 3.5 `VERIFY_EMAIL` / `VERIFY_PASSWORD` are exported in the shell running the script, and appear in no committed file — cafa8b1

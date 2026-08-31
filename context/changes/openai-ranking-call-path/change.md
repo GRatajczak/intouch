@@ -1,7 +1,7 @@
 ---
 change_id: openai-ranking-call-path
 title: Non-blocking OpenAI call path from the Worker
-status: implementing
+status: implemented
 created: 2026-08-26
 updated: 2026-08-31
 archived_at: null
