@@ -14,7 +14,8 @@
     "preview:upload": "astro build && wrangler versions upload",
     "cf-typegen": "wrangler types",
     "db:types": "supabase gen types typescript --local > src/db/database.types.ts",
-    "verify:rls": "tsx scripts/verify-rls.ts"
+    "verify:rls": "tsx scripts/verify-rls.ts",
+    "verify:ai-call": "tsx scripts/verify-openai-call.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",

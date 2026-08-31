@@ -18,6 +18,7 @@ function json(body: unknown, status: number) {
 }
 
 async function runPing(jobId: string) {
+  const startedAt = Date.now();
   try {
     const openai = createOpenAIClient();
     if (!openai) {
@@ -29,6 +30,10 @@ async function runPing(jobId: string) {
     });
     const result = completion.choices[0]?.message.content ?? "";
     await writeJob(jobId, { status: "done", result });
+    // Without this the happy path is invisible in `wrangler tail`, and the whole
+    // claim of this foundation -- that the call finishes after the response was
+    // already sent -- has nothing to observe. Also what S-02 debugs against.
+    console.log(`[ai-ping] job ${jobId} done in ${String(Date.now() - startedAt)}ms`);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[ai-ping] job ${jobId} failed: ${message}`);

@@ -250,32 +250,32 @@ Not applicable — no Supabase schema changes in this foundation.
 #### Manual
 
 - [x] 1.3 User has added their real `OPENAI_API_KEY` to local `.dev.vars` — 7cbd2b3
-- [ ] 1.4 User has added `OPENAI_API_KEY` to the GitHub repo's Actions secrets
+- [x] 1.4 User has added `OPENAI_API_KEY` to the GitHub repo's Actions secrets
 - [x] 1.5 `npm run dev` boots without a new config-related error — 7cbd2b3
 
 ### Phase 2: KV-backed async call route
 
 #### Automated
 
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Build succeeds: `npm run build`
-- [x] 2.3 Lint passes: `npm run lint`
+- [x] 2.1 Type check passes: `npx astro check` — d73f3e9
+- [x] 2.2 Build succeeds: `npm run build` — d73f3e9
+- [x] 2.3 Lint passes: `npm run lint` — d73f3e9
 
 #### Manual
 
-- [x] 2.4 `npm run dev` → authenticated `POST /api/internal/ai-ping` returns `202` with a job id near-instantly
-- [x] 2.5 Polling `GET /api/internal/ai-ping?jobId=...` shows `pending` then eventually `done` with a result string
-- [x] 2.6 Unauthenticated request to either method returns `401`
+- [x] 2.4 `npm run dev` → authenticated `POST /api/internal/ai-ping` returns `202` with a job id near-instantly — d73f3e9
+- [x] 2.5 Polling `GET /api/internal/ai-ping?jobId=...` shows `pending` then eventually `done` with a result string — d73f3e9
+- [x] 2.6 Unauthenticated request to either method returns `401` — d73f3e9
 
 ### Phase 3: Production secret + verification
 
 #### Automated
 
-- [ ] 3.1 `npm run verify:ai-call -- <preview-url>` passes against a deployed preview URL
+- [x] 3.1 `npm run verify:ai-call -- <preview-url>` passes against a deployed preview URL
 
 #### Manual
 
 - [ ] 3.2 `wrangler tail` during the verification run shows the OpenAI call completing after the HTTP response was already sent, with no uncaught exceptions
-- [ ] 3.3 `wrangler secret list` shows `OPENAI_API_KEY` present in production
-- [ ] 3.4 A test account exists in the hosted Supabase project with its email confirmed, and signing in with it through the deployed app succeeds
-- [ ] 3.5 `VERIFY_EMAIL` / `VERIFY_PASSWORD` are exported in the shell running the script, and appear in no committed file
+- [x] 3.3 `wrangler secret list` shows `OPENAI_API_KEY` present in production
+- [x] 3.4 A test account exists in the hosted Supabase project with its email confirmed, and signing in with it through the deployed app succeeds
+- [x] 3.5 `VERIFY_EMAIL` / `VERIFY_PASSWORD` are exported in the shell running the script, and appear in no committed file
