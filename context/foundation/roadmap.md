@@ -42,7 +42,7 @@ successfully done").
 | ID   | Change ID                    | Outcome (user can …)                                              | Prerequisites | PRD refs                       | Status   |
 | ---- | ---------------------------- | ----------------------------------------------------------------- | ------------- | ------------------------------ | -------- |
 | F-01 | `per-user-data-isolation`    | (foundation) migrations + default-deny RLS + a proof of isolation | —             | NFR-privacy, Access Control    | done        |
-| F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | ready    |
+| F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | in-progress |
 | F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | done                                        |
 | F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | ready    |
 | F-05 | `design-alignment-pass`      | (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design | F-03, S-01 | NFR-browser (mobile usability) | done      |
@@ -108,7 +108,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - What is the non-blocking generation shape — deferred work with a "ready" notification, or an in-view async state the user may navigate away from? Owner: user, during F-02's plan. Block: no — resolving this *is* the work of this foundation.
 - **Risk:** Sequenced here because `lessons.md` already records that a fast local `astro dev` run proves nothing about the Workers free-tier ceilings, and an LLM call is exactly the kind of per-request work that finds them. Discovering this inside `S-02` would invalidate that slice's whole design rather than just its plan. Scope is capped at one proven call path plus the secret in all three places (`.dev.vars`, `wrangler secret`, GitHub Secrets) — not a prompt, not a ranking, not a schema.
-- **Status:** ready
+- **Status:** in-progress
 
 ### F-03: Design system and product identity
 

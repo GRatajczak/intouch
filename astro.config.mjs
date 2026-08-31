@@ -24,6 +24,9 @@ export default defineConfig({
     schema: {
       SUPABASE_URL: envField.string({ context: "server", access: "secret", optional: false }),
       SUPABASE_KEY: envField.string({ context: "server", access: "secret", optional: false }),
+      // Optional until S-02 depends on it: the client factory in src/lib/openai.ts
+      // returns null when the key is absent, mirroring src/lib/supabase.ts.
+      OPENAI_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
 });

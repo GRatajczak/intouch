@@ -244,14 +244,14 @@ Not applicable — no Supabase schema changes in this foundation.
 
 #### Automated
 
-- [ ] 1.1 Type check passes: `npx astro check`
-- [ ] 1.2 Build succeeds locally with `OPENAI_API_KEY` present in `.dev.vars`: `npm run build`
+- [x] 1.1 Type check passes: `npx astro check`
+- [x] 1.2 Build succeeds locally with `OPENAI_API_KEY` present in `.dev.vars`: `npm run build`
 
 #### Manual
 
-- [ ] 1.3 User has added their real `OPENAI_API_KEY` to local `.dev.vars`
+- [x] 1.3 User has added their real `OPENAI_API_KEY` to local `.dev.vars`
 - [ ] 1.4 User has added `OPENAI_API_KEY` to the GitHub repo's Actions secrets
-- [ ] 1.5 `npm run dev` boots without a new config-related error
+- [x] 1.5 `npm run dev` boots without a new config-related error
 
 ### Phase 2: KV-backed async call route
 
