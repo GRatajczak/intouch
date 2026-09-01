@@ -521,31 +521,31 @@ components, recoverable from git history.
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `npx astro check`
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Build succeeds: `npm run build`
+- [x] 1.1 Type checking passes: `npx astro check` — edcfa48
+- [x] 1.2 Linting passes: `npm run lint` — edcfa48
+- [x] 1.3 Build succeeds: `npm run build` — edcfa48
 
 #### Manual
 
-- [x] 1.4 `/auth/signin`, `/auth/signup`, `/dashboard` and `/people` render visually unchanged — no caller of `Logo`, `Button` or `Layout` shifted
-- [x] 1.5 Page source of an existing page shows no new empty `<meta>` tags
+- [x] 1.4 `/auth/signin`, `/auth/signup`, `/dashboard` and `/people` render visually unchanged — no caller of `Logo`, `Button` or `Layout` shifted — edcfa48
+- [x] 1.5 Page source of an existing page shows no new empty `<meta>` tags — edcfa48
 
 ### Phase 2: Page shell, navigation and hero
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npx astro check`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Build succeeds: `npm run build`
-- [ ] 2.4 No references remain: `grep -rn "Welcome\|Topbar" src/` returns nothing
+- [x] 2.1 Type checking passes: `npx astro check`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Build succeeds: `npm run build`
+- [x] 2.4 No references remain: `grep -rn "Welcome\|Topbar" src/` returns nothing
 
 #### Manual
 
-- [ ] 2.5 `/` renders the designed header and hero, matching `InTouch.dc.html:860-914` at 1200px
-- [ ] 2.6 Hero stacks correctly at 390px with no horizontal scroll, and the preview card is legible
-- [ ] 2.7 "Zacznij" and "Dodaj pierwsze osoby" both land on `/auth/signup`
-- [ ] 2.8 Visiting `/` while signed in lands on `/dashboard`; while signed out, the page renders
-- [ ] 2.9 Link-preview metadata is present in page source (`description`, `og:title`, `og:url`)
+- [x] 2.5 `/` renders the designed header and hero, matching `InTouch.dc.html:860-914` at 1200px
+- [x] 2.6 Hero stacks correctly at 390px with no horizontal scroll, and the preview card is legible
+- [x] 2.7 "Zacznij" and "Dodaj pierwsze osoby" both land on `/auth/signup`
+- [x] 2.8 Visiting `/` while signed in lands on `/dashboard`; while signed out, the page renders
+- [x] 2.9 Link-preview metadata is present in page source (`description`, `og:title`, `og:url`)
 
 ### Phase 3: Middle content bands
 

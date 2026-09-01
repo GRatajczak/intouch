@@ -1,8 +1,26 @@
 ---
-import Welcome from "@/components/Welcome.astro";
 import Layout from "@/layouts/Layout.astro";
+import LandingNav from "@/components/landing/LandingNav.astro";
+import LandingHero from "@/components/landing/LandingHero.astro";
+
+// A signed-in visitor has no use for a signup pitch. `/` stays out of
+// middleware's PROTECTED_ROUTES — that list matches with startsWith, so "/"
+// there would protect every route in the app.
+if (Astro.locals.user) {
+  return Astro.redirect("/dashboard");
+}
 ---
 
-<Layout>
-  <Welcome />
+<Layout
+  title="InTouch — bądź blisko bez pilnowania"
+  description="InTouch układa Twoich bliskich w kolejność: kto czeka najdłużej, na kim najbardziej Ci zależy. Raz dziennie podpowiada jedną osobę i mówi, dlaczego akurat ją."
+>
+  <!-- The landing's base surface is the mock's #FBF8F4 card tone, not the
+       app's #EFE9E1 background; bands alternate to bg-muted from here. -->
+  <div class="bg-card text-foreground min-h-screen">
+    <LandingNav />
+    <main>
+      <LandingHero />
+    </main>
+  </div>
 </Layout>

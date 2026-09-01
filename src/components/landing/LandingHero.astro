@@ -1,0 +1,89 @@
+---
+import { Button } from "@/components/ui/button";
+
+/**
+ * The preview card illustrates S-02's ranked hierarchy, which does not exist
+ * yet. It is inert, decorative markup — hence `aria-hidden` — and its rank
+ * colours use the same urgency tokens the real hierarchy will use.
+ */
+const quietRows = [
+  { rank: "2", name: "Maciej", window: "2 tygodnie", badge: "bg-warning-bg text-warning", label: "text-warning" },
+  { rank: "3", name: "Kasia", window: "miesiąc", badge: "bg-success-bg text-success", label: "text-success" },
+];
+---
+
+<section class="mx-auto max-w-[1200px] px-5 pt-14 pb-14 sm:px-8 lg:px-14 lg:pt-[72px] lg:pb-16">
+  <div class="flex flex-col items-center gap-10 lg:flex-row lg:gap-14">
+    <div class="flex w-full flex-col gap-6 lg:flex-1">
+      <h1
+        class="font-display text-display-lg lg:text-display-xl text-foreground leading-[1.05] tracking-[-0.01em] text-balance"
+      >
+        Bliscy nie znikają nagle. Znikają po cichu.
+      </h1>
+
+      <p class="text-foreground/80 max-w-[520px] text-lg leading-[1.65] text-pretty">
+        InTouch układa Twoich bliskich w kolejność — kto czeka najdłużej, na kim najbardziej Ci zależy, u kogo właśnie
+        coś się dzieje. Raz dziennie podpowiada jedną osobę i mówi, dlaczego akurat ją.
+      </p>
+
+      <div class="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
+        <Button asChild size="xl">
+          <a href="/auth/signup">Dodaj pierwsze osoby</a>
+        </Button>
+        <Button asChild size="xl" variant="outline" className="bg-secondary">
+          <a href="#jak-to-dziala">Zobacz, jak to wygląda</a>
+        </Button>
+      </div>
+
+      <p class="text-text-tertiary text-[13px]">
+        Bez integracji z kontaktami i skrzynką. Sam decydujesz, kto jest na liście.
+      </p>
+    </div>
+
+    <div
+      aria-hidden="true"
+      class="border-border bg-muted flex w-full flex-col gap-3 rounded-2xl border p-6 lg:w-[420px] lg:flex-shrink-0"
+    >
+      <div class="text-text-tertiary text-xs font-bold tracking-[0.06em] uppercase">Twój poniedziałek w InTouch</div>
+
+      <div class="border-urgent-bg bg-secondary flex flex-col gap-3 rounded-lg border p-[18px]">
+        <div class="flex items-center gap-3">
+          <div
+            class="bg-urgent-bg text-urgent flex size-[34px] flex-shrink-0 items-center justify-center rounded-[11px] text-sm font-bold"
+          >
+            1
+          </div>
+          <div class="flex min-w-0 flex-1 flex-col gap-0.5">
+            <div class="text-base font-bold">Rodzina z gór</div>
+            <div class="text-text-tertiary text-xs">cisza od 12 miesięcy</div>
+          </div>
+          <div class="bg-urgent-bg text-urgent rounded-full px-2.5 py-1.5 text-[11px] font-bold whitespace-nowrap">
+            ten tydzień
+          </div>
+        </div>
+        <div class="bg-card text-foreground/80 mt-3 rounded-xl p-3 text-[13px] leading-[1.55]">
+          Najwyższa waga na Twojej liście, a poprzednia próba się nie udała.
+        </div>
+      </div>
+
+      {
+        quietRows.map((row) => (
+          <div class="border-border bg-secondary flex items-center gap-3 rounded-lg border px-[18px] py-3.5">
+            <div
+              class:list={[
+                "flex size-[30px] flex-shrink-0 items-center justify-center rounded-[10px] text-[13px] font-bold",
+                row.badge,
+              ]}
+            >
+              {row.rank}
+            </div>
+            <div class="min-w-0 flex-1 text-[15px] font-semibold">{row.name}</div>
+            <div class:list={["text-xs whitespace-nowrap", row.label]}>{row.window}</div>
+          </div>
+        ))
+      }
+
+      <div class="text-text-tertiary pt-1 text-center text-xs">pozostałe 11 osób jest spokojnych</div>
+    </div>
+  </div>
+</section>

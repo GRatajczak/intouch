@@ -65,6 +65,12 @@ const astroConfig = tseslint.config({
     "astro/no-set-html-directive": "error",
     "astro/no-unused-css-selector": "warn",
     "astro/prefer-class-list-directive": "warn",
+    // astro-eslint-parser emits frontmatter `return` as a top-level
+    // ReturnStatement with no enclosing function; the rule's checkReturnStatement
+    // assumes a parent and throws ("Expected node to have a parent"), crashing the
+    // whole run rather than reporting. Any page doing `return Astro.redirect(...)`
+    // trips it. Stays on for .ts/.tsx, where it guards React handlers.
+    "@typescript-eslint/no-misused-promises": "off",
   },
 });
 

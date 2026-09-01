@@ -1,0 +1,44 @@
+---
+import Logo from "@/components/Logo.astro";
+import { Button } from "@/components/ui/button";
+
+/**
+ * Landing header. Not sticky — the mock's band scrolls away with the page, so
+ * the in-page anchors need no scroll-offset compensation.
+ */
+const links = [
+  { href: "#jak-to-dziala", label: "Jak to działa" },
+  { href: "#dla-kogo", label: "Dla kogo" },
+  { href: "#zasady", label: "Prywatność" },
+];
+---
+
+<header class="border-border border-b">
+  <div class="mx-auto flex max-w-[1200px] items-center justify-between px-5 py-5 sm:px-8 lg:px-14 lg:py-[26px]">
+    <a href="/" class="cursor-pointer" aria-label="InTouch — strona główna">
+      <Logo size={24} withWordmark wordmarkSize={24} />
+    </a>
+
+    <nav class="flex items-center gap-5 sm:gap-7" aria-label="Nawigacja strony">
+      <!-- Anchor links stand down on small screens; their targets are the
+           sections the visitor is about to scroll through anyway. -->
+      <ul class="hidden items-center gap-7 md:flex">
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="text-muted-foreground hover:text-foreground cursor-pointer text-sm transition-colors"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <Button asChild size="lg">
+        <a href="/auth/signup">Zacznij</a>
+      </Button>
+    </nav>
+  </div>
+</header>
