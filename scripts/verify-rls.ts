@@ -198,8 +198,7 @@ async function main() {
       .eq("owner_id", userBId)
       .select();
     assert(
-      crossProfileDeleteAErr?.code === "42501" ||
-        (!crossProfileDeleteAErr && crossProfileDeleteA?.length === 0),
+      crossProfileDeleteAErr?.code === "42501" || (!crossProfileDeleteAErr && crossProfileDeleteA.length === 0),
       "user A's delete of user B's profile affects zero rows (or is rejected for lacking the delete grant)",
     );
 

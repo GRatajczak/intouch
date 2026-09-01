@@ -676,35 +676,35 @@ orphaned rows. `S-05` should confirm that is still the behaviour it wants when i
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly against a reset local stack: `supabase db reset`
-- [x] 1.2 Types regenerate and contain both new tables: `npm run db:types`
-- [x] 1.3 Type checking passes: `npx astro check`
-- [x] 1.4 Linting passes: `npm run lint`
-- [x] 1.5 The existing isolation proof still passes: `npm run verify:rls`
+- [x] 1.1 Migration applies cleanly against a reset local stack: `supabase db reset` — c5a73a4
+- [x] 1.2 Types regenerate and contain both new tables: `npm run db:types` — c5a73a4
+- [x] 1.3 Type checking passes: `npx astro check` — c5a73a4
+- [x] 1.4 Linting passes: `npm run lint` — c5a73a4
+- [x] 1.5 The existing isolation proof still passes: `npm run verify:rls` — c5a73a4
 
 #### Manual
 
-- [x] 1.6 RLS enabled with four policies on each new table, matching the `people` shape
-- [x] 1.7 Deleting a test user removes their `rankings` and `ranking_entries` rows
+- [x] 1.6 RLS enabled with four policies on each new table, matching the `people` shape — c5a73a4
+- [x] 1.7 Deleting a test user removes their `rankings` and `ranking_entries` rows — c5a73a4
 
 ### Phase 2: Ranking contract, prompt assembly, and the call path
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npx astro check`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 `POST /api/rankings` returns `202` with a job id well under an OpenAI round-trip
-- [ ] 2.4 Polling `GET /api/rankings?jobId=…` reaches `done` with one entry per person
-- [ ] 2.5 An immediate second `POST` returns `200` with `reason: "fresh"`
-- [ ] 2.6 `POST` with `{ force: true }` starts a new run despite the fresh ranking
+- [x] 2.1 Type checking passes: `npx astro check`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 `POST /api/rankings` returns `202` with a job id well under an OpenAI round-trip
+- [x] 2.4 Polling `GET /api/rankings?jobId=…` reaches `done` with one entry per person
+- [x] 2.5 An immediate second `POST` returns `200` with `reason: "fresh"`
+- [x] 2.6 `POST` with `{ force: true }` starts a new run despite the fresh ranking
 
 #### Manual
 
-- [ ] 2.7 Same-weight people land in different positions and the reason names the differentiator
-- [ ] 2.8 Every reason is natural Polish and asserts nothing absent from the input
-- [ ] 2.9 With rhythm fields empty, every `rhythm_note` is null
-- [ ] 2.10 With rhythm fields filled, `rhythm_note` reflects the actual selections
-- [ ] 2.11 An unset API key yields a `failed` job and leaves the stored ranking intact
+- [x] 2.7 Same-weight people land in different positions and the reason names the differentiator
+- [x] 2.8 Every reason is natural Polish and asserts nothing absent from the input
+- [x] 2.9 With rhythm fields empty, every `rhythm_note` is null
+- [x] 2.10 With rhythm fields filled, `rhythm_note` reflects the actual selections
+- [x] 2.11 An unset API key yields a `failed` job and leaves the stored ranking intact
 
 ### Phase 3: The Dziś hierarchy view
 
