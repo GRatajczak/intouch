@@ -6,9 +6,17 @@ import { missingConfigs } from "@/lib/config-status";
 
 interface Props {
   title?: string;
+  /** Meta description and `og:description`. Omitted entirely when absent. */
+  description?: string;
+  /** Absolute or site-relative social card image. No default asset exists yet. */
+  ogImage?: string;
 }
 
-const { title = "InTouch" } = Astro.props;
+const { title = "InTouch", description, ogImage } = Astro.props;
+
+// `site` in astro.config.mjs makes this absolute, which og:url requires.
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const ogImageUrl = ogImage ? new URL(ogImage, Astro.site ?? Astro.url).href : undefined;
 ---
 
 <!doctype html>
@@ -25,6 +33,22 @@ const { title = "InTouch" } = Astro.props;
       rel="stylesheet"
     />
     <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {
+      /* Social card tags ride along with `description`: a page that opts into one
+         is a page meant to be shared. Auth-gated screens pass nothing and so emit
+         nothing new. */
+      description && (
+        <>
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content={canonicalUrl} />
+          {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+          <meta name="twitter:card" content={ogImageUrl ? "summary_large_image" : "summary"} />
+        </>
+      )
+    }
   </head>
   <body>
     {

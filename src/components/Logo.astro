@@ -2,13 +2,19 @@
 interface Props {
   size?: number;
   withWordmark?: boolean;
+  /**
+   * Overrides the default 1.28x mark-to-wordmark ratio, which comes from the
+   * design's title block (50px mark / 64px wordmark). The landing nav sets both
+   * to 24px, so it passes this explicitly.
+   */
+  wordmarkSize?: number;
   class?: string;
 }
 
-const { size = 24, withWordmark = false, class: className } = Astro.props;
+const { size = 24, withWordmark = false, wordmarkSize: wordmarkSizeProp, class: className } = Astro.props;
 
 const markWidth = size * 1.56;
-const wordmarkSize = size * 1.28;
+const wordmarkSize = wordmarkSizeProp ?? size * 1.28;
 const gap = size * 0.36;
 ---
 
