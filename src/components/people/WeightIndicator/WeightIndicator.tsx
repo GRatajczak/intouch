@@ -13,7 +13,9 @@ export function WeightIndicator({ value }: WeightIndicatorProps) {
           // At the selector's fixed `size-6` the 10 segments need 276px, which
           // overflows a `lg:grid-cols-3` catalog cell (~248px of content). Shrink
           // to fill the available width instead, capped at the selector's size.
-          className={cn(weightSegmentShapeClassName(segment <= value), "h-6 w-auto max-w-6 min-w-0 flex-1")}
+          // `aspect-square` (not a fixed `h-6`) keeps each segment a true dot as
+          // it shrinks, rather than flattening into an oval.
+          className={cn(weightSegmentShapeClassName(segment <= value), "aspect-square w-auto max-w-6 min-w-0 flex-1")}
         />
       ))}
     </div>

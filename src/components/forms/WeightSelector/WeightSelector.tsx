@@ -10,7 +10,7 @@ export const WEIGHT_MAX = 10;
 // Sizing is deliberately NOT included: the selector is fixed-size, while the
 // indicator has to shrink to fit a catalog grid cell.
 export function weightSegmentShapeClassName(filled: boolean): string {
-  return cn("rounded-md border transition-colors", filled ? "bg-primary border-primary" : "bg-input border-border");
+  return cn("rounded-full border transition-colors", filled ? "bg-primary border-primary" : "bg-input border-border");
 }
 
 export function weightSegmentClassName(filled: boolean): string {

@@ -1,29 +1,51 @@
 ---
 import AppShell from "@/components/layout/AppShell.astro";
-import { Button } from "@/components/ui/button";
+import { HierarchyView } from "@/components/hierarchy/HierarchyView";
+import { HierarchyEmptyState } from "@/components/hierarchy/HierarchyEmptyState";
+import { createClient } from "@/lib/supabase";
 import { loadProfileName } from "@/lib/shell-summary";
+import { loadLatestRanking, isStale } from "@/lib/ranking/store";
 
 const { user } = Astro.locals;
 
-// No `peopleCount` here — the shell footer shows the name alone, so this page
-// adds exactly one subrequest, not two.
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+let hasProfile = false;
+let peopleCount = 0;
+let ranking = null;
+
+if (supabase && user) {
+  // No-profile is reachable: middleware.ts gates only /people on profile
+  // existence, so a signed-up user who skipped /profile still lands here.
+  const [{ data: profile }, { count }] = await Promise.all([
+    supabase.from("profiles").select("owner_id").eq("owner_id", user.id).maybeSingle(),
+    supabase.from("people").select("*", { count: "exact", head: true }).eq("owner_id", user.id),
+  ]);
+  hasProfile = !!profile;
+  peopleCount = count ?? 0;
+
+  if (hasProfile && peopleCount > 0) {
+    ranking = await loadLatestRanking(supabase, user.id);
+  }
+}
+
+const staleOnLoad = isStale(ranking);
+
+// peopleCount now costs nothing extra since the query above already runs --
+// this replaces AppShell.astro's prior comment justifying its omission here.
 const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, user?.id);
 ---
 
-<AppShell title="Panel" profileName={profileName}>
-  <div class="border-border bg-card text-card-foreground shadow-card max-w-xl rounded-2xl border p-8 text-center">
-    <h1 class="font-display text-display-md mb-4">Panel</h1>
-    <p class="text-muted-foreground">
-      Witaj, <span class="text-foreground font-semibold">{user?.email}</span>
-    </p>
-    <p class="text-text-tertiary mt-2 text-sm">Ta strona jest dostępna tylko dla zalogowanych użytkowników.</p>
-    <div class="mt-6 flex flex-col gap-2">
-      <Button asChild>
-        <a href="/profile">Uzupełnij profil</a>
-      </Button>
-      <Button asChild variant="secondary">
-        <a href="/people">Twoi bliscy</a>
-      </Button>
-    </div>
-  </div>
+<AppShell title="Dziś" profileName={profileName} peopleCount={peopleCount}>
+  <h1 class="font-display text-display-sm text-foreground mb-6">Kto teraz czeka na Twój telefon</h1>
+
+  {
+    !hasProfile ? (
+      <HierarchyEmptyState variant="no-profile" />
+    ) : peopleCount === 0 ? (
+      <HierarchyEmptyState variant="no-people" />
+    ) : (
+      <HierarchyView initialRanking={ranking} staleOnLoad={staleOnLoad} client:load />
+    )
+  }
 </AppShell>

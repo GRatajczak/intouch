@@ -691,39 +691,39 @@ orphaned rows. `S-05` should confirm that is still the behaviour it wants when i
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npx astro check`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 `POST /api/rankings` returns `202` with a job id well under an OpenAI round-trip
-- [x] 2.4 Polling `GET /api/rankings?jobId=…` reaches `done` with one entry per person
-- [x] 2.5 An immediate second `POST` returns `200` with `reason: "fresh"`
-- [x] 2.6 `POST` with `{ force: true }` starts a new run despite the fresh ranking
+- [x] 2.1 Type checking passes: `npx astro check` — 762175d
+- [x] 2.2 Linting passes: `npm run lint` — 762175d
+- [x] 2.3 `POST /api/rankings` returns `202` with a job id well under an OpenAI round-trip — 762175d
+- [x] 2.4 Polling `GET /api/rankings?jobId=…` reaches `done` with one entry per person — 762175d
+- [x] 2.5 An immediate second `POST` returns `200` with `reason: "fresh"` — 762175d
+- [x] 2.6 `POST` with `{ force: true }` starts a new run despite the fresh ranking — 762175d
 
 #### Manual
 
-- [x] 2.7 Same-weight people land in different positions and the reason names the differentiator
-- [x] 2.8 Every reason is natural Polish and asserts nothing absent from the input
-- [x] 2.9 With rhythm fields empty, every `rhythm_note` is null
-- [x] 2.10 With rhythm fields filled, `rhythm_note` reflects the actual selections
-- [x] 2.11 An unset API key yields a `failed` job and leaves the stored ranking intact
+- [x] 2.7 Same-weight people land in different positions and the reason names the differentiator — 762175d
+- [x] 2.8 Every reason is natural Polish and asserts nothing absent from the input — 762175d
+- [x] 2.9 With rhythm fields empty, every `rhythm_note` is null — 762175d
+- [x] 2.10 With rhythm fields filled, `rhythm_note` reflects the actual selections — 762175d
+- [x] 2.11 An unset API key yields a `failed` job and leaves the stored ranking intact — 762175d
 
 ### Phase 3: The Dziś hierarchy view
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npx astro check`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Production build succeeds: `npm run build`
+- [x] 3.1 Type checking passes: `npx astro check`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Production build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 3.4 Ranked list on first paint, top three expanded, rest collapsed
-- [ ] 3.5 `Rozwiń` reveals a collapsed entry's reason and chips
-- [ ] 3.6 "Przelicz teraz" swaps the new order in without a reload, old order readable throughout
-- [ ] 3.7 Reloading or navigating away mid-refresh still ends with the new ranking visible
-- [ ] 3.8 No-profile state renders and links to `/profile`
-- [ ] 3.9 No-people state renders instead of an error
+- [x] 3.4 Ranked list on first paint, top three expanded, rest collapsed
+- [x] 3.5 `Rozwiń` reveals a collapsed entry's reason and chips
+- [x] 3.6 "Przelicz teraz" swaps the new order in without a reload, old order readable throughout
+- [x] 3.7 Reloading or navigating away mid-refresh still ends with the new ranking visible
+- [x] 3.8 No-profile state renders and links to `/profile`
+- [x] 3.9 No-people state renders instead of an error
 - [ ] 3.10 Failure states correct both with and without a stored ranking
-- [ ] 3.11 Mobile viewport holds, bottom nav does not overlap the last card
+- [x] 3.11 Mobile viewport holds, bottom nav does not overlap the last card
 
 ### Phase 4: Production verification against real limits
 
