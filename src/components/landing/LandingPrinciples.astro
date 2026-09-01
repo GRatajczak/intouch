@@ -1,0 +1,42 @@
+---
+const principles = [
+  {
+    title: "Maksymalnie jedno przypomnienie dziennie",
+    body: "Zero serii, zero czerwonych kropek, zero straszenia utratą passy.",
+  },
+  {
+    title: "Zawsze wiesz, skąd wzięła się propozycja",
+    body: "Każda pozycja ma rozpisane czynniki i ich wagę. Możesz się z nią nie zgodzić.",
+  },
+  {
+    title: "Twoje notatki zostają Twoje",
+    body: "Nie czytamy Twojej skrzynki i nie importujemy kontaktów z telefonu. Lista powstaje z tego, co sam wpiszesz.",
+  },
+  {
+    title: "Nie zastępujemy kalendarza",
+    body: "Urodziny i spotkania trzymaj tam, gdzie trzymasz. My pilnujemy tylko relacji, które cichną.",
+  },
+];
+---
+
+<section id="zasady" class="scroll-mt-6">
+  <div class="mx-auto flex max-w-[1200px] flex-col gap-7 px-5 py-16 sm:px-8 lg:px-14">
+    <div class="flex max-w-[620px] flex-col gap-2.5">
+      <p class="text-text-tertiary text-xs font-bold tracking-[0.08em] uppercase">Zasady, których się trzymamy</p>
+      <h2 class="font-display text-display-sm sm:text-display-md leading-[1.15]">
+        Cicha aplikacja, nie kolejny licznik
+      </h2>
+    </div>
+
+    <ul class="grid grid-cols-1 gap-3.5 md:grid-cols-2">
+      {
+        principles.map((item) => (
+          <li class="border-border bg-muted/40 flex flex-col gap-2 rounded-lg border p-[22px]">
+            <h3 class="text-base font-bold">{item.title}</h3>
+            <p class="text-muted-foreground text-sm leading-[1.6]">{item.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

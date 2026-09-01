@@ -534,33 +534,33 @@ components, recoverable from git history.
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npx astro check`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Build succeeds: `npm run build`
-- [x] 2.4 No references remain: `grep -rn "Welcome\|Topbar" src/` returns nothing
+- [x] 2.1 Type checking passes: `npx astro check` — d075527
+- [x] 2.2 Linting passes: `npm run lint` — d075527
+- [x] 2.3 Build succeeds: `npm run build` — d075527
+- [x] 2.4 No references remain: `grep -rn "Welcome\|Topbar" src/` returns nothing — d075527
 
 #### Manual
 
-- [x] 2.5 `/` renders the designed header and hero, matching `InTouch.dc.html:860-914` at 1200px
-- [x] 2.6 Hero stacks correctly at 390px with no horizontal scroll, and the preview card is legible
-- [x] 2.7 "Zacznij" and "Dodaj pierwsze osoby" both land on `/auth/signup`
-- [x] 2.8 Visiting `/` while signed in lands on `/dashboard`; while signed out, the page renders
-- [x] 2.9 Link-preview metadata is present in page source (`description`, `og:title`, `og:url`)
+- [x] 2.5 `/` renders the designed header and hero, matching `InTouch.dc.html:860-914` at 1200px — d075527
+- [x] 2.6 Hero stacks correctly at 390px with no horizontal scroll, and the preview card is legible — d075527
+- [x] 2.7 "Zacznij" and "Dodaj pierwsze osoby" both land on `/auth/signup` — d075527
+- [x] 2.8 Visiting `/` while signed in lands on `/dashboard`; while signed out, the page renders — d075527
+- [x] 2.9 Link-preview metadata is present in page source (`description`, `og:title`, `og:url`) — d075527
 
 ### Phase 3: Middle content bands
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npx astro check`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Build succeeds: `npm run build`
+- [x] 3.1 Type checking passes: `npx astro check`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 3.4 All four bands match `InTouch.dc.html:915-1019` at 1200px, including band backgrounds and the border seams between them
-- [ ] 3.5 Each grid collapses cleanly at `md` and at 390px with no clipped or overflowing card
-- [ ] 3.6 The dark band's text is legible against its background at every card and eyebrow
-- [ ] 3.7 Clicking the nav's three links scrolls to the correct section
+- [x] 3.4 All four bands match `InTouch.dc.html:915-1019` at 1200px, including band backgrounds and the border seams between them
+- [x] 3.5 Each grid collapses cleanly at `md` and at 390px with no clipped or overflowing card
+- [x] 3.6 The dark band's text is legible against its background at every card and eyebrow
+- [x] 3.7 Clicking the nav's three links scrolls to the correct section
 
 ### Phase 4: Close, footer and whole-page sweep
 

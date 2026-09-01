@@ -1,0 +1,42 @@
+---
+const cards = [
+  {
+    swatch: "bg-swatch-family",
+    title: "Myślisz o wszystkich naraz",
+    body: "Trzydzieści osób w głowie kończy się tym, że nie dzwonisz do nikogo. Wina zostaje, kontakt nie.",
+  },
+  {
+    swatch: "bg-swatch-friend",
+    title: "Kalendarz tu nie pomaga",
+    body: "„Zadzwoń do cioci” w cyklu co 30 dni zamienia relację w obowiązek i przestaje działać po dwóch tygodniach.",
+  },
+  {
+    swatch: "bg-swatch-other",
+    title: "Cisza rośnie niepostrzeżenie",
+    body: "Miesiąc bez kontaktu wydaje się niczym. Rok później nie wiesz, jak zacząć rozmowę.",
+  },
+];
+---
+
+<section class="border-border bg-muted border-y">
+  <div class="mx-auto flex max-w-[1200px] flex-col gap-8 px-5 py-14 sm:px-8 lg:px-14">
+    <div class="flex max-w-[620px] flex-col gap-2.5">
+      <p class="text-text-tertiary text-xs font-bold tracking-[0.08em] uppercase">Problem</p>
+      <h2 class="font-display text-display-sm sm:text-display-md leading-[1.15]">
+        Nie brakuje Ci chęci. Brakuje Ci porządku.
+      </h2>
+    </div>
+
+    <ul class="grid grid-cols-1 gap-4 md:grid-cols-3">
+      {
+        cards.map((card) => (
+          <li class="border-border bg-card flex flex-col gap-2.5 rounded-lg border p-6">
+            <div class:list={["size-8 rounded-[11px]", card.swatch]} />
+            <h3 class="text-[17px] font-bold">{card.title}</h3>
+            <p class="text-muted-foreground text-sm leading-[1.6]">{card.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

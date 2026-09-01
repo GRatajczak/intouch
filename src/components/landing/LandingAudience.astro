@@ -1,0 +1,46 @@
+---
+const audiences = [
+  {
+    title: "Rozproszona rodzina",
+    body: "Dziadkowie w innym mieście, kuzyni za granicą, rodzeństwo w innej strefie czasowej.",
+  },
+  {
+    title: "Przyjaźnie z dawnego etapu",
+    body: "Ludzie ze studiów i poprzedniej pracy, z którymi nadal chcesz mieć kontakt, choć nie widzicie się co tydzień.",
+  },
+  {
+    title: "Zajęte życie z dziećmi lub pracą",
+    body: "Kiedy masz w tygodniu jedną wolną godzinę, ma znaczenie, na kogo ją przeznaczysz.",
+  },
+];
+---
+
+{
+  /* This band inverts the page's surface/text pair, so both are set explicitly
+    rather than inherited from the base layer. */
+}
+<section id="dla-kogo" class="bg-primary text-primary-foreground scroll-mt-6">
+  <div class="mx-auto flex max-w-[1200px] flex-col gap-10 px-5 py-16 sm:px-8 lg:flex-row lg:gap-14 lg:px-14">
+    <div class="flex flex-col gap-3 lg:flex-1">
+      <p class="text-primary-foreground/60 text-xs font-bold tracking-[0.08em] uppercase">Dla kogo</p>
+      <h2 class="font-display text-display-sm sm:text-display-md leading-[1.15]">
+        Dla ludzi, którym zależy na swoich najbliższych osobach
+      </h2>
+      <p class="text-primary-foreground/75 max-w-[420px] pt-2 text-base leading-[1.65]">
+        Nie dla sprzedawców i nie dla networkingu. InTouch jest o rodzinie, przyjaciołach i sąsiadach — relacjach,
+        których nikt nie prowadzi w CRM-ie.
+      </p>
+    </div>
+
+    <ul class="flex flex-col gap-3 lg:flex-1">
+      {
+        audiences.map((item) => (
+          <li class="bg-primary-foreground/[0.07] flex flex-col gap-1.5 rounded-lg px-[22px] py-5">
+            <h3 class="text-base font-bold">{item.title}</h3>
+            <p class="text-primary-foreground/70 text-sm leading-[1.6]">{item.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,52 @@
+---
+const steps = [
+  {
+    rule: "bg-swatch-family",
+    number: "01",
+    title: "Wypisz bliskich",
+    body: "Imię, kim są dla Ciebie, co ich cieszy i jak ważna jest ta relacja w skali 1–5. Grupy też się liczą — „rodzina z gór” to jedna pozycja.",
+  },
+  {
+    rule: "bg-swatch-friend",
+    number: "02",
+    title: "Powiedz o sobie",
+    body: "Ile realnie masz czasu w tygodniu, jak wolisz się odzywać i kiedy masz na to przestrzeń. Podpowiedzi trafiają w Twój rytm, nie w średnią.",
+  },
+  {
+    rule: "bg-swatch-colleague",
+    number: "03",
+    title: "Dostajesz kolejność",
+    body: "Lista od najpilniejszych do spokojnych, z okienkiem czasowym i wyjaśnieniem: waga relacji, czas ciszy, kontekst, poprzednia próba.",
+  },
+  {
+    rule: "bg-swatch-other",
+    number: "04",
+    title: "Mówisz, czy się udało",
+    body: "Jedno kliknięcie po terminie. Nie udało się? Wracamy z tym później, bez wyrzutów. Kolejność uczy się z Twoich odpowiedzi.",
+  },
+];
+---
+
+<section id="jak-to-dziala" class="scroll-mt-6">
+  <div class="mx-auto flex max-w-[1200px] flex-col gap-9 px-5 py-16 sm:px-8 lg:px-14">
+    <div class="flex max-w-[640px] flex-col gap-2.5">
+      <p class="text-text-tertiary text-xs font-bold tracking-[0.08em] uppercase">Jak to działa</p>
+      <h2 class="font-display text-display-sm sm:text-display-md leading-[1.15]">
+        Cztery kroki, potem już tylko odpowiadasz
+      </h2>
+    </div>
+
+    <ol class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        steps.map((step) => (
+          <li class="flex flex-col gap-3">
+            <div class:list={["h-1 rounded-full", step.rule]} />
+            <p class="text-text-tertiary text-[13px] font-bold">{step.number}</p>
+            <h3 class="text-lg font-bold">{step.title}</h3>
+            <p class="text-muted-foreground text-sm leading-[1.6]">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
