@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { UserRound, Info, CircleAlert } from "lucide-react";
 import { TextField } from "@/components/forms/TextField";
-import { SubmitButton } from "@/components/auth/SubmitButton";
-import { ServerError } from "@/components/auth/ServerError";
+import { ChoiceChips } from "@/components/forms/ChoiceChips";
+import { Button } from "@/components/ui/button";
+import { showToast } from "@/components/layout/Toaster";
 import { cn } from "@/lib/utils";
-import { profileSchema } from "@/lib/validation/profile";
+import {
+  profileSchema,
+  WEEKLY_TIME_BUDGET_OPTIONS,
+  PREFERRED_CHANNEL_OPTIONS,
+  AVAILABILITY_WINDOW_OPTIONS,
+} from "@/lib/validation/profile";
 import type { ProfileFormProps } from "./types";
 
 const LIFE_CONTEXT_EXAMPLE = "np. zapracowany rodzic dwójki dzieci, często w podróżach służbowych";
@@ -12,14 +18,27 @@ const LIFE_CONTEXT_EXAMPLE = "np. zapracowany rodzic dwójki dzieci, często w p
 const textareaBase =
   "w-full rounded-lg bg-input border border-border px-3 py-2 text-foreground placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-ring transition-colors resize-none";
 
-export default function ProfileForm({ initialValues, serverError }: ProfileFormProps) {
+export default function ProfileForm({ initialValues }: ProfileFormProps) {
   const [name, setName] = useState(initialValues?.name ?? "");
   const [birthDate, setBirthDate] = useState(initialValues?.birthDate ?? "");
   const [lifeContext, setLifeContext] = useState(initialValues?.lifeContext ?? "");
+  const [weeklyTimeBudget, setWeeklyTimeBudget] = useState<string[]>(
+    initialValues?.weeklyTimeBudget ? [initialValues.weeklyTimeBudget] : [],
+  );
+  const [preferredChannels, setPreferredChannels] = useState<string[]>(initialValues?.preferredChannels ?? []);
+  const [availabilityWindows, setAvailabilityWindows] = useState<string[]>(initialValues?.availabilityWindows ?? []);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function validate() {
-    const result = profileSchema.safeParse({ name, birthDate, lifeContext });
+    const result = profileSchema.safeParse({
+      name,
+      birthDate,
+      lifeContext,
+      weeklyTimeBudget: weeklyTimeBudget[0],
+      preferredChannels,
+      availabilityWindows,
+    });
     if (result.success) {
       setErrors({});
       return true;
@@ -39,9 +58,31 @@ export default function ProfileForm({ initialValues, serverError }: ProfileFormP
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   }
 
-  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    if (!validate()) {
-      e.preventDefault();
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/profile", { method: "POST", body: new FormData(e.currentTarget) });
+
+      if (response.status === 401) {
+        window.location.href = "/auth/signin";
+        return;
+      }
+
+      const body = (await response.json().catch(() => null)) as { error?: string } | null;
+
+      if (!response.ok) {
+        showToast("error", body?.error ?? "Nie udało się zapisać profilu");
+        return;
+      }
+
+      showToast("success", "Zapisano zmiany profilu");
+    } catch {
+      showToast("error", "Nie udało się połączyć z serwerem");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -99,11 +140,56 @@ export default function ProfileForm({ initialValues, serverError }: ProfileFormP
         )}
       </div>
 
-      <ServerError message={serverError} />
+      <div className="border-border space-y-4 border-t pt-4">
+        <div>
+          <h2 className="text-foreground text-sm font-semibold">Twój rytm</h2>
+          <p className="text-muted-foreground text-xs">Opcjonalne — możesz to później zmienić.</p>
+        </div>
 
-      <SubmitButton pendingText="Zapisywanie..." icon={<UserRound className="size-4" />}>
-        Zapisz profil
-      </SubmitButton>
+        <ChoiceChips
+          id="weeklyTimeBudget"
+          name="weeklyTimeBudget"
+          label="Ile czasu realnie masz w tygodniu na kontakt z bliskimi?"
+          mode="single"
+          options={WEEKLY_TIME_BUDGET_OPTIONS}
+          value={weeklyTimeBudget}
+          onChange={setWeeklyTimeBudget}
+        />
+
+        <ChoiceChips
+          id="preferredChannels"
+          name="preferredChannels"
+          label="Jak najchętniej się odzywasz?"
+          mode="multi"
+          options={PREFERRED_CHANNEL_OPTIONS}
+          value={preferredChannels}
+          onChange={setPreferredChannels}
+        />
+
+        <ChoiceChips
+          id="availabilityWindows"
+          name="availabilityWindows"
+          label="Kiedy zwykle masz na to przestrzeń?"
+          mode="multi"
+          options={AVAILABILITY_WINDOW_OPTIONS}
+          value={availabilityWindows}
+          onChange={setAvailabilityWindows}
+        />
+      </div>
+
+      <Button type="submit" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? (
+          <span className="flex items-center gap-2">
+            <span className="border-primary-foreground/30 border-t-primary-foreground size-4 animate-spin rounded-full border-2" />
+            Zapisywanie...
+          </span>
+        ) : (
+          <span className="flex items-center gap-2">
+            <UserRound className="size-4" />
+            Zapisz profil
+          </span>
+        )}
+      </Button>
     </form>
   );
 }

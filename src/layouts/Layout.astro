@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Banner from "@/components/Banner.astro";
+import { Toaster } from "@/components/layout/Toaster";
 import { missingConfigs } from "@/lib/config-status";
 
 interface Props {
@@ -42,6 +43,7 @@ const { title = "InTouch" } = Astro.props;
         </Banner>
       ))
     }
+    <Toaster client:load />
     <slot />
   </body>
 </html>

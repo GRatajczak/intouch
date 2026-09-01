@@ -379,30 +379,30 @@ Phase 1's migration is forward-compatible per `CLAUDE.md`: every column is nulla
 
 #### Automated
 
-- [x] 2.1 Linting passes, including `jsx-a11y`
-- [x] 2.2 Type checking passes
-- [x] 2.3 Component folder carries `ChoiceChips.tsx`, `types.ts` and `index.ts`
+- [x] 2.1 Linting passes, including `jsx-a11y` — b4fc52d
+- [x] 2.2 Type checking passes — b4fc52d
+- [x] 2.3 Component folder carries `ChoiceChips.tsx`, `types.ts` and `index.ts` — b4fc52d
 
 #### Manual
 
-- [ ] 2.4 Screen reader announces each chip group by its label and reports chip selected state
-- [ ] 2.5 Keyboard alone reaches, toggles and clears chips
+- [x] 2.4 Screen reader announces each chip group by its label and reports chip selected state
+- [x] 2.5 Keyboard alone reaches, toggles and clears chips
 
 ### Phase 3: Form Wiring and Page
 
 #### Automated
 
-- [ ] 3.1 Linting passes
-- [ ] 3.2 Type checking passes
-- [ ] 3.3 `npm run build` succeeds
+- [x] 3.1 Linting passes
+- [x] 3.2 Type checking passes
+- [x] 3.3 `npm run build` succeeds
 
 #### Manual
 
-- [ ] 3.4 Selections persist across save and reload
-- [ ] 3.5 Saving with the section untouched works and redirects to `/people`
-- [ ] 3.6 A pre-slice profile opens with the section empty and no error
-- [ ] 3.7 Card reads well at mobile width
-- [ ] 3.8 Clearing a saved single-answer chip persists the cleared state
+- [x] 3.4 Selections persist across save and reload
+- [x] 3.5 Saving with the section untouched works and shows the success toast (redirect-to-`/people` behavior superseded during manual verification — see Phase 4 divergence notes)
+- [x] 3.6 A pre-slice profile opens with the section empty and no error
+- [x] 3.7 Card reads well at mobile width
+- [x] 3.8 Clearing a saved single-answer chip persists the cleared state
 
 ### Phase 4: Close-Out
 

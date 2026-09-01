@@ -1,4 +1,4 @@
-import { Sun, UsersRound, Settings } from "lucide-react";
+import { Sun, UsersRound, User, Settings } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export interface NavItem {
@@ -15,6 +15,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dziś", icon: Sun },
   { href: "/people", label: "Bliscy", icon: UsersRound },
+  { href: "/profile", label: "Profil", icon: User },
   { href: "/settings", label: "Ustawienia", icon: Settings },
 ];
 
