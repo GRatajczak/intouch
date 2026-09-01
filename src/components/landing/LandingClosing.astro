@@ -1,0 +1,17 @@
+---
+import Logo from "@/components/Logo.astro";
+import { buttonVariants } from "@/components/ui/button";
+---
+
+<section class="border-border bg-muted border-t">
+  <div class="mx-auto flex max-w-[1200px] flex-col items-center gap-[22px] px-5 py-16 sm:px-8 lg:px-14">
+    <Logo size={40} />
+    <h2 class="font-display text-display-md sm:text-display-lg max-w-[620px] text-center leading-[1.15] text-balance">
+      Zacznij od trzech osób, które najdłużej odkładasz
+    </h2>
+    <p class="text-muted-foreground max-w-[480px] text-center text-base leading-[1.6] text-pretty">
+      Konfiguracja zajmuje kilka minut. Pierwszą podpowiedź dostaniesz następnego dnia rano.
+    </p>
+    <a href="/auth/signup" class:list={buttonVariants({ size: "xl" })}>Zacznij</a>
+  </div>
+</section>

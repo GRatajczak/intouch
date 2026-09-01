@@ -551,31 +551,31 @@ components, recoverable from git history.
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `npx astro check`
-- [x] 3.2 Linting passes: `npm run lint`
-- [x] 3.3 Build succeeds: `npm run build`
+- [x] 3.1 Type checking passes: `npx astro check` — 28676b1
+- [x] 3.2 Linting passes: `npm run lint` — 28676b1
+- [x] 3.3 Build succeeds: `npm run build` — 28676b1
 
 #### Manual
 
-- [x] 3.4 All four bands match `InTouch.dc.html:915-1019` at 1200px, including band backgrounds and the border seams between them
-- [x] 3.5 Each grid collapses cleanly at `md` and at 390px with no clipped or overflowing card
-- [x] 3.6 The dark band's text is legible against its background at every card and eyebrow
-- [x] 3.7 Clicking the nav's three links scrolls to the correct section
+- [x] 3.4 All four bands match `InTouch.dc.html:915-1019` at 1200px, including band backgrounds and the border seams between them — 28676b1
+- [x] 3.5 Each grid collapses cleanly at `md` and at 390px with no clipped or overflowing card — 28676b1
+- [x] 3.6 The dark band's text is legible against its background at every card and eyebrow — 28676b1
+- [x] 3.7 Clicking the nav's three links scrolls to the correct section — 28676b1
 
 ### Phase 4: Close, footer and whole-page sweep
 
 #### Automated
 
-- [ ] 4.1 Type checking passes: `npx astro check`
-- [ ] 4.2 Linting passes: `npm run lint`
-- [ ] 4.3 Build succeeds: `npm run build`
+- [x] 4.1 Type checking passes: `npx astro check`
+- [x] 4.2 Linting passes: `npm run lint`
+- [x] 4.3 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 4.4 The full page matches `InTouch.dc.html:852-1046` end to end at 1200px, section order and band backgrounds included
-- [ ] 4.5 The page reads correctly at 360px, 768px and 1440px, with no horizontal scroll at any width
-- [ ] 4.6 Every link and button resolves: three primary CTAs → `/auth/signup`, four anchors → their sections, no dead links anywhere on the page
-- [ ] 4.7 Keyboard-only traversal reaches every interactive element in visual order, with a visible focus ring on each
-- [ ] 4.8 Smooth scrolling is suppressed when the OS "reduce motion" setting is on
-- [ ] 4.9 The preview card is skipped by a screen reader; the surrounding copy is not
-- [ ] 4.10 Signed-in redirect to `/dashboard` still holds after all sections are in place
+- [x] 4.4 The full page matches `InTouch.dc.html:852-1046` end to end at 1200px, section order and band backgrounds included
+- [x] 4.5 The page reads correctly at 360px, 768px and 1440px, with no horizontal scroll at any width
+- [x] 4.6 Every link and button resolves: three primary CTAs → `/auth/signup`, four anchors → their sections, no dead links anywhere on the page
+- [x] 4.7 Keyboard-only traversal reaches every interactive element in visual order, with a visible focus ring on each
+- [x] 4.8 Smooth scrolling is suppressed when the OS "reduce motion" setting is on
+- [x] 4.9 The preview card is skipped by a screen reader; the surrounding copy is not
+- [x] 4.10 Signed-in redirect to `/dashboard` still holds after all sections are in place

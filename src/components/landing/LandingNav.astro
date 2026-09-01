@@ -1,6 +1,6 @@
 ---
 import Logo from "@/components/Logo.astro";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 /**
  * Landing header. Not sticky — the mock's band scrolls away with the page, so
@@ -36,9 +36,7 @@ const links = [
           ))
         }
       </ul>
-      <Button asChild size="lg">
-        <a href="/auth/signup">Zacznij</a>
-      </Button>
+      <a href="/auth/signup" class:list={buttonVariants({ size: "lg" })}>Zacznij już dziś</a>
     </nav>
   </div>
 </header>

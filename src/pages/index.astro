@@ -6,6 +6,8 @@ import LandingProblem from "@/components/landing/LandingProblem.astro";
 import LandingHowItWorks from "@/components/landing/LandingHowItWorks.astro";
 import LandingAudience from "@/components/landing/LandingAudience.astro";
 import LandingPrinciples from "@/components/landing/LandingPrinciples.astro";
+import LandingClosing from "@/components/landing/LandingClosing.astro";
+import LandingFooter from "@/components/landing/LandingFooter.astro";
 
 // A signed-in visitor has no use for a signup pitch. `/` stays out of
 // middleware's PROTECTED_ROUTES — that list matches with startsWith, so "/"
@@ -29,6 +31,19 @@ if (Astro.locals.user) {
       <LandingHowItWorks />
       <LandingAudience />
       <LandingPrinciples />
+      <LandingClosing />
     </main>
+    <LandingFooter />
   </div>
 </Layout>
+
+<!-- Scoped to this page: the app screens keep their default jump behaviour.
+     Guarded so an anchor on a page this tall never forces motion on someone
+     who has asked their OS not to. -->
+<style is:global>
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 ---
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
  * The preview card illustrates S-02's ranked hierarchy, which does not exist
@@ -27,12 +28,10 @@ const quietRows = [
       </p>
 
       <div class="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
-        <Button asChild size="xl">
-          <a href="/auth/signup">Dodaj pierwsze osoby</a>
-        </Button>
-        <Button asChild size="xl" variant="outline" className="bg-secondary">
-          <a href="#jak-to-dziala">Zobacz, jak to wygląda</a>
-        </Button>
+        <a href="/auth/signup" class:list={buttonVariants({ size: "xl" })}>Dodaj pierwsze osoby</a>
+        <a href="#jak-to-dziala" class:list={cn(buttonVariants({ size: "xl", variant: "outline" }), "bg-secondary")}>
+          Zobacz, jak to wygląda
+        </a>
       </div>
 
       <p class="text-text-tertiary text-[13px]">
@@ -82,8 +81,6 @@ const quietRows = [
           </div>
         ))
       }
-
-      <div class="text-text-tertiary pt-1 text-center text-xs">pozostałe 11 osób jest spokojnych</div>
     </div>
   </div>
 </section>
