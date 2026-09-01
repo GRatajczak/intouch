@@ -1,7 +1,7 @@
 ---
 change_id: landing-page
 title: Public landing page at /
-status: implementing
+status: implemented
 created: 2026-09-01
 updated: 2026-09-01
 archived_at: null
