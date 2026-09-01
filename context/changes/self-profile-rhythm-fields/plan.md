@@ -385,36 +385,36 @@ Phase 1's migration is forward-compatible per `CLAUDE.md`: every column is nulla
 
 #### Manual
 
-- [x] 2.4 Screen reader announces each chip group by its label and reports chip selected state
-- [x] 2.5 Keyboard alone reaches, toggles and clears chips
+- [x] 2.4 Screen reader announces each chip group by its label and reports chip selected state — a4c7f99
+- [x] 2.5 Keyboard alone reaches, toggles and clears chips — a4c7f99
 
 ### Phase 3: Form Wiring and Page
 
 #### Automated
 
-- [x] 3.1 Linting passes
-- [x] 3.2 Type checking passes
-- [x] 3.3 `npm run build` succeeds
+- [x] 3.1 Linting passes — a4c7f99
+- [x] 3.2 Type checking passes — a4c7f99
+- [x] 3.3 `npm run build` succeeds — a4c7f99
 
 #### Manual
 
-- [x] 3.4 Selections persist across save and reload
-- [x] 3.5 Saving with the section untouched works and shows the success toast (redirect-to-`/people` behavior superseded during manual verification — see Phase 4 divergence notes)
-- [x] 3.6 A pre-slice profile opens with the section empty and no error
-- [x] 3.7 Card reads well at mobile width
-- [x] 3.8 Clearing a saved single-answer chip persists the cleared state
+- [x] 3.4 Selections persist across save and reload — a4c7f99
+- [x] 3.5 Saving with the section untouched works and shows the success toast (redirect-to-`/people` behavior superseded during manual verification — see Phase 4 divergence notes) — a4c7f99
+- [x] 3.6 A pre-slice profile opens with the section empty and no error — a4c7f99
+- [x] 3.7 Card reads well at mobile width — a4c7f99
+- [x] 3.8 Clearing a saved single-answer chip persists the cleared state — a4c7f99
 
 ### Phase 4: Close-Out
 
 #### Automated
 
-- [ ] 4.1 `.ai/` bundle tracked with `project/uploads/` excluded
-- [ ] 4.2 Full gate passes on the committed tree — lint, check, build
-- [ ] 4.3 `npm run verify:rls` passes
-- [ ] 4.4 `git status --short` is empty
+- [x] 4.1 `.ai/` bundle tracked with `project/uploads/` excluded
+- [x] 4.2 Full gate passes on the committed tree — lint, check, build
+- [x] 4.3 `npm run verify:rls` passes
+- [x] 4.4 `git status --short` is empty (known exception: `.claude/fiszki/`, untracked and unrelated to this plan, predates this session — left alone)
 
 #### Manual
 
-- [ ] 4.5 `InTouch.dc.html` line citations resolve in the committed copy
-- [ ] 4.6 Roadmap `S-09` reads `done` in both the table and the item body
-- [ ] 4.7 `[S-09]` Linear issue synced with a comment carrying SHAs and the Phase 0 rationale
+- [x] 4.5 `InTouch.dc.html` line citations resolve in the committed copy
+- [x] 4.6 Roadmap `S-09` reads `done` in both the table and the item body
+- [x] 4.7 `[S-09]` Linear issue synced with a comment carrying SHAs and the Phase 0 rationale

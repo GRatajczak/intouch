@@ -3,7 +3,7 @@ project: "InTouch"
 version: 2
 status: draft
 created: 2026-08-15
-updated: 2026-08-31
+updated: 2026-09-01
 prd_version: 2
 main_goal: speed
 top_blocker: time
@@ -47,11 +47,14 @@ successfully done").
 | F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | ready    |
 | F-05 | `design-alignment-pass`      | (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design | F-03, S-01 | NFR-browser (mobile usability) | done      |
 | S-01 | `profile-and-first-people`   | fill a self-profile and add people with a weight, and see them    | F-01, F-03    | FR-001, FR-002, FR-003, FR-004 | done      |
-| S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02    | US-01, FR-007                  | proposed |
+| S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02, S-09 | US-01, FR-007               | proposed |
 | S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | proposed |
 | S-04 | `decay-driven-reminders`     | be reminded, unprompted, about relationships going quiet          | S-03, F-04    | FR-008, NFR-once-per-day       | blocked  |
 | S-05 | `person-lifecycle-and-erasure`| edit, deactivate and permanently delete a person                  | S-01          | FR-005, NFR-privacy            | proposed |
 | S-06 | `landing-page`                | see a real marketing page at `/` explaining what InTouch is, before signing in | F-03          | Access Control ("unauthenticated visitor") | proposed |
+| S-07 | `account-and-profile-settings` | edit their own profile after first fill and manage their account from `/settings`       | S-01, F-05    | FR-001, FR-002, FR-008 (address), Access Control | proposed |
+| S-08 | `password-recovery`           | get back into their account after forgetting the password         | F-03          | FR-001                         | proposed |
+| S-09 | `self-profile-rhythm-fields`  | tell the app their own contact rhythm (time budget, channels, slots) so suggestions land in it | S-01          | FR-002, FR-007                 | done |
 
 ## Streams
 
@@ -59,12 +62,13 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 
 | Stream | Theme                     | Chain                                | Note                                                                                          |
 | ------ | ------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------- |
-| A      | The loop                  | `F-01` + `F-03` → `S-01` → `S-02` → `S-03` | The must-have path — the shortest chain of `must-have` requirements that reaches the north star, with nothing optional in it. Under `main_goal: speed`, nothing outranks this chain. |
+| A      | The loop                  | `F-01` + `F-03` → `S-01` → `S-09` → `S-02` → `S-03` | The must-have path — the shortest chain of `must-have` requirements that reaches the north star, with nothing optional in it. Under `main_goal: speed`, nothing outranks this chain. |
 | B      | AI call path              | `F-02`                               | Runs in parallel with `F-01`/`S-01`; joins Stream A at `S-02`.                                 |
 | C      | Data lifecycle & erasure  | `S-05`                               | Branches off `S-01`, runs parallel to `S-02`/`S-03`. Carries the binary privacy NFR.           |
 | D      | Proactive reminders       | `F-04` → `S-04`                      | `F-04` is unblocked and can start now; `S-04` still waits on the cadence decision.             |
 | E      | Visual foundation         | `F-03` → `F-05`                      | Runs in parallel with `F-01`/`F-02`; joins Stream A at `S-01`, the first slice that renders product screens. `F-05` follows once `S-01` ships, since its shell needs real people/profile data to show. |
 | F      | Public landing page       | `F-03` → `S-06`                      | Parallel with everything else once `F-03` lands. A leaf outcome — nothing downstream depends on it; it's the first thing a visitor meets, not a foundation for anything. |
+| G      | Account & credentials     | `F-05` → `S-07`; `F-03` → `S-08`     | Two independent branches on the same theme. `S-07` fills the `/settings` stub `F-05` created — its account half; the reminder half of that page belongs to `S-04`, so those two meet on one route without depending on each other. `S-08` is unauthenticated and shares nothing but Supabase Auth, so it needs neither `S-01` nor the shell. |
 
 ## Baseline
 
@@ -142,10 +146,10 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ### F-05: App shell navigation and catalog visual alignment
 
-- **Outcome:** (foundation) `/dashboard`, `/people`, and a new `/ustawienia` stub render inside one persistent app shell — a desktop sidebar and a mobile bottom tab bar sharing one nav-items config with server-rendered active-route highlighting — and `/people` renders as a responsive card grid instead of a flat list. Every card in the app carries a shared shadow token matching the finished design bundle.
+- **Outcome:** (foundation) `/dashboard`, `/people`, and a new `/settings` stub (labelled "Ustawienia") render inside one persistent app shell — a desktop sidebar and a mobile bottom tab bar sharing one nav-items config with server-rendered active-route highlighting — and `/people` renders as a responsive card grid instead of a flat list. Every card in the app carries a shared shadow token matching the finished design bundle.
 - **Change ID:** `design-alignment-pass`
 - **PRD refs:** NFR "the product is usable in a current mainstream desktop/mobile web browser" (drives the mobile bottom-bar pattern, not just a sidebar squeezed down). Not tied to a numbered FR — closes a visual gap the roadmap didn't originally carve out, the same way `S-06` did for the landing page.
-- **Unlocks:** Gives `S-02` ("Dziś" real ranked content) and `S-04` ("Ustawienia" real reminder settings) a shell to render their content into, instead of each slice inventing its own nav from scratch.
+- **Unlocks:** Gives `S-02` ("Dziś" real ranked content), `S-04` ("Ustawienia" real reminder settings) and `S-07` (the account half of that same settings page) a shell to render their content into, instead of each slice inventing its own nav from scratch.
 - **Prerequisites:** F-03 (done), S-01 (done)
 - **Parallel with:** S-02, S-03, S-05 — touches shared chrome and the catalog's visual layout, not their data or logic.
 - **Blockers:** —
@@ -173,7 +177,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Outcome:** User can see a ranked "who to reconnect with" list computed from their self-profile, their people's descriptions and weights, where each entry carries a suggested time window ("worth contacting Maciej within 2 weeks").
 - **Change ID:** `ai-contact-hierarchy`
 - **PRD refs:** US-01, FR-007
-- **Prerequisites:** S-01, F-02
+- **Prerequisites:** S-01, F-02, S-09 (the self-profile rhythm fields the "Twój rytm" half of each explanation is derived from)
 - **Parallel with:** S-05
 - **Blockers:** —
 - **Unknowns:**
@@ -236,6 +240,50 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Low technical risk — static content, no data model, no auth, no AI call — but real product risk if skipped: it's the page every prospect meets first, and today `/` still renders the starter's cosmic placeholder under the starter's own title. Sequenced after `F-03` specifically so it becomes the *next* screen styled correctly rather than a second migration; building it before `F-03` lands would hardcode this design's palette straight into `src/pages/`, recreating the exact "two disconnected visual systems" problem `F-03`'s baseline already describes. Scope is capped at the one page in the mock — hero, problem, how-it-works, who-it's-for, principles, closing CTA, footer — using InTouch's copy verbatim from the design file; no CMS, no blog, no additional marketing pages, no A/B testing.
 - **Status:** proposed
 
+### S-07: Account and profile settings
+
+- **Outcome:** User can open `/settings` and actually manage their account there — re-open and change the self-profile they filled during `S-01` (name, date of birth, life context) after its first save, see which email address the account and its FR-008 reminders hang off, and change their password — rendered inside the app shell instead of the placeholder card that stands there today.
+- **Change ID:** `account-and-profile-settings`
+- **PRD refs:** FR-001 (its post-signup half — an account the user can create and sign in to is also an account they must be able to maintain), FR-002 (the self-profile form exists but is a one-way trip today), FR-008 ("delivered as email to the address on their account" — the user has to be able to see that address to trust the reminders), `## Access Control` (flat model — a user manages their own account and nobody else's)
+- **Unlocks:** — (leaf outcome). It does, however, give `S-04` a settled page to add reminder settings to, rather than `S-04` having to build the settings screen and its cadence controls in one go.
+- **Prerequisites:** S-01 (there must be a profile worth editing), F-05 (the shell and the `/settings` route it stubbed)
+- **Parallel with:** S-02, S-03, S-04, S-05, S-06 — touches the profile row the user already owns and Supabase auth, not the ranking, the people table, or the delivery path.
+- **Blockers:** —
+- **Unknowns:**
+  - May a user delete their whole account, and with it every person they entered? The PRD's irreversible-deletion NFR is written about a *person* (`S-05`'s job), never about an account. Owner: user, during this slice's plan. Block: no — for an MVP whose only user is the author, no self-serve account deletion is a legitimate answer, as long as it is a decision rather than an omission.
+  - Changing the account email changes where FR-008 reminders land, and Supabase treats it as a re-verification round trip, not a field update — and `supabase/config.toml` currently sets `double_confirm_changes = true`, so it is two confirmation emails (old address and new), on whichever mailer Open Question 10 settles. Display it read-only, or build the verification flow? Owner: user, during this slice's plan. Block: no — read-only is a legitimate MVP answer under `main_goal: speed`.
+  - Does the profile edit live inline on `/settings`, or does `/settings` link out to the existing `/profile` page — which today renders full-screen outside `AppShell` and redirects to `/people` on save? Owner: resolved during this slice's plan. Block: no.
+- **Risk:** Low technical risk, and almost none of it is new code: the profile form, its `POST /api/profile` upsert and the RLS-scoped read all shipped with `S-01`. The risk this slice removes is a silent one. `/profile` is reachable from exactly one place — the sidebar prompt that disappears the moment a name is saved — so a user who mistyped their date of birth or wrote their life context in a hurry has no route back, and `S-02` keeps ranking on context nobody can correct. That surfaces as bad AI suggestions, not as a visible bug, which makes it exactly the kind of gap that survives to launch. Scope is capped at the account half of the settings page: profile edit, account email visibility, and password change *for a signed-in user* — recovering a password nobody remembers is `S-08`, a different screen for a user who cannot get in at all. No reminder settings (that is `S-04`'s content on the same route), no notification preferences, no data export, no theme toggle, no account deletion unless the Unknown above resolves toward it.
+- **Status:** proposed
+
+### S-08: Password recovery
+
+- **Outcome:** A user who cannot sign in because they forgot their password can request a reset link from `/auth/signin`, receive it by email, set a new password, and land signed in — without an admin, a support request, or a second account. The signin screen actually offers the route out; today it links only to signup.
+- **Change ID:** `password-recovery`
+- **PRD refs:** FR-001 ("User can create an account and sign in") — its recovery half. The PRD's Socrates note on FR-001 resolves that login stays mandatory for security and AI-cost reasons; a mandatory login with no recovery path converts one forgotten password into a permanently lost circle of people, which is the same requirement failing quietly.
+- **Unlocks:** — (leaf outcome). It does settle who sends the product's *auth* email, which `S-07` inherits if its email-change Unknown resolves toward a real change flow.
+- **Prerequisites:** F-03 (the auth screens are already styled on the token layer; this adds two more in the same family)
+- **Parallel with:** everything. Unauthenticated, touches no table, no RLS, no ranking — `/auth/*` is outside `middleware.ts`'s `PROTECTED_ROUTES`, so it shares nothing with the app shell or the domain model.
+- **Blockers:** —
+- **Unknowns:**
+  - Which mailer sends the reset email? Supabase's built-in mailer is rate-limited and documented as unsuitable for production, and `supabase/config.toml` has `[auth.email.smtp]` commented out — so making this reliable likely means pointing Supabase Auth's SMTP at **Resend**, the provider `F-04` is already standing up for FR-008. Same vendor, different channel: Supabase Auth sends these, not the Worker, so `F-04`'s code path is not reused — only its account and its sending identity are. Owner: user, during this slice's plan. Block: no — but it is the item worth checking against `F-04`'s sending-identity decision (Open Question 4) so the two do not settle on different senders.
+  - Does the reset link land on a page that sets the new password immediately (Supabase establishes a recovery session from the token in the URL), or on an interstitial first? Owner: resolved during this slice's plan. Block: no.
+- **Risk:** Technically the smallest slice on the board — two pages, two Supabase Auth calls, one link on `/auth/signin` — and that is exactly why it is easy to leave undone until someone is locked out. The failure mode is unrecoverable from the user's side and total: under `F-01`'s owner-scoped RLS nobody else can reach that user's rows to help, and the account holds the only copy of the relationship data the product exists to keep. The real risk in the slice is the mailer above: a reset flow that "works" on Supabase's default mailer can start silently dropping mail under its rate limits, which looks identical to a user mistyping their address. Scope is capped at forgotten-password recovery — no magic links, no OAuth providers, no 2FA, no account lockout policy, and no password change for a *signed-in* user (that is `S-07`'s half of the same concern).
+- **Status:** proposed
+
+### S-09: Self-profile rhythm fields
+
+- **Outcome:** User can tell the app how much time they realistically have for their close ones in a week, which ways of reaching out they actually prefer, and when in the week they have space for it — three optional pill-selectors on the existing `/profile` form, stored on `profiles` and available to the ranking prompt.
+- **Change ID:** `self-profile-rhythm-fields`
+- **PRD refs:** FR-002 (its field set — amended by this slice), FR-007 (the self-profile half of what the hierarchy is computed from), PRD Open Question 2 (self-profile half closed by this slice)
+- **Unlocks:** `S-02` — without these three fields the ranking can produce a *who* and a *how urgent*, but has nothing to derive a channel, a weekday/weekend slot, or a realistic session length from, and no cap on how many suggestions one user's week can absorb. They are the whole source of the design's `Twój rytm` factor chip. `S-04`'s reminder copy (`Twój rytm: rozmowa telefoniczna w weekend`) reads the same three columns.
+- **Prerequisites:** S-01 (the `profiles` table and the `/profile` form this extends)
+- **Parallel with:** F-02, F-04, S-05, S-06, S-08 — touches one table's columns and one form, nothing else.
+- **Blockers:** —
+- **Unknowns:** —
+- **Risk:** Low, and deliberately so: the columns are nullable/defaulted and the fields are optional, so nothing that exists today breaks and no user is forced back through a form they already filled. The risk this slice removes is `S-02` being designed around a self-profile that cannot answer *when* or *how* — a shape that is cheap to fix now and expensive once a prompt, a ranking view and a reminder template are all built on it. Note the design's own onboarding (`InTouch.dc.html:87-135`) frames these as step 2 of a 3-step wizard; the wizard is explicitly **not** in scope here — the fields land on the existing single-card `/profile`. Also out of scope: the design's `Push` channel (PRD v2 FR-008 is email-only) and every field on the *person* form, which is the still-open half of Open Question 2.
+- **Status:** done
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                      | Suggested issue title                                         | Ready for `/10x-plan` | Notes                                                       |
@@ -246,28 +294,34 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-01       | `profile-and-first-people`     | Self-profile + add people with description and weight          | done                  | Shipped `4ac61e6`…`a54295b`; impl-reviewed. Linear GRA-7     |
 | S-02       | `ai-contact-hierarchy`         | AI-ranked contact hierarchy with suggested time windows        | no                    | S-01 done; waits only on F-02                                |
 | S-03       | `did-it-happen-feedback-loop`  | Did-it-happen confirmation feeding the next ranking            | no                    | North star. Needs S-02                                       |
+| S-09       | `self-profile-rhythm-fields`   | Self-profile rhythm fields feeding the AI schedule             | yes                   | Shipped `adae754`…`a4c7f99`. Linear GRA-20 |
 | F-04       | `resend-email-delivery-path`   | Send one real email from the Worker on a schedule via Resend   | yes                   | Parallel with F-01/F-02/F-03; start the sending domain first  |
 | F-05       | `design-alignment-pass`        | App shell (sidebar/bottom-nav) + catalog grid reskin from the finished design | done | Shipped `ab2fded`…`ff28367`. Linear GRA-18                  |
 | S-04       | `decay-driven-reminders`       | Decay-driven reminders, at most once per day                   | no                    | Needs S-03 and F-04. Blocked: reminder cadence undecided      |
 | S-05       | `person-lifecycle-and-erasure` | Edit, deactivate and irreversibly delete a person              | no                    | Needs S-01; then runs parallel to the whole Stream A chain   |
 | S-06       | `landing-page`                 | Public landing page at `/` from the existing design + copy     | yes                   | F-03 done — unblocked. Copy/layout in `.ai/intouch-design-preparation/` |
+| S-07       | `account-and-profile-settings` | Editable profile + account settings on the `/settings` page    | yes                   | S-01 and F-05 done — unblocked. Replaces the stub's placeholder copy |
+| S-08       | `password-recovery`            | Forgot-password reset flow from the signin screen              | yes                   | F-03 done — unblocked. Check the mailer against F-04's sender   |
 
 ## Open Roadmap Questions
 
 1. **AI-suggestion explainability** — how much of the "why this order / why this time window" should be shown so users trust the hierarchy? Ties to the PRD's AI-relevance guardrail. Owner: user, during design. Block: `S-02`.
 2. **Structured-form fields** — the exact fields for the self-profile (FR-002) and the per-person form (FR-003) are not pinned. Owner: user, during design. Block: `S-01`.
 3. **Reminder cadence** — how frequently reminders fire without becoming spam users mute. Bounded by the once-per-day NFR, but the decay-driven trigger logic is unresolved. Owner: user, during design. Block: `S-04`.
-4. **Resend sending identity** — an owned domain (DNS records plus a verification wait nobody can compress) or Resend's `onboarding@resend.dev` test sender (instant, but delivers only to the account owner's own address). Owner: user, during `F-04`'s plan. Block: `F-04` — not hard-blocking (F-04 is `ready`), but it is the longest-lead item on the board, so start it before writing any reminder code.
+4. **Resend sending identity** — an owned domain (DNS records plus a verification wait nobody can compress) or Resend's `onboarding@resend.dev` test sender (instant, but delivers only to the account owner's own address). Owner: user, during `F-04`'s plan. Block: `F-04` — not hard-blocking (F-04 is `ready`), but it is the longest-lead item on the board, so start it before writing any reminder code. Whatever identity is chosen also serves the auth emails in Open Question 10, so decide it once.
    > Resolved and closed: **reminder delivery channel**. FR-008 reminders are email, sent through Resend (PRD v2). The wiring lives in `F-04`; what remains open is only the sending identity above.
 5. **Reminder email content** — one email per most-urgent person, a top-few, or the whole hierarchy? Decides whether the email pulls the user back into the app to close the FR-009 loop or is a digest they read and dismiss. Owner: user, during design. Block: `S-04` — not hard-blocking; affects the email's template, not whether the slice can be built.
 6. **Palette direction** — warm and personal versus neutral-utility (shadcn's current `baseColor: neutral`). The PRD never describes a visual character, and the repo's current look is the starter's, not the product's. Owner: user, during design. Block: `F-03`. The `S-06` landing design (`.ai/intouch-design-preparation/`) already proposes a concrete warm/personal palette and type scale — a candidate answer to confirm or reject during `F-03`'s plan, not a foregone conclusion.
 7. **Dark mode in the MVP** — light-only, dark-only, or both with a toggle. Today all three states are partly present and none is chosen (see `## Baseline`). Owner: user, during design. Block: `F-03`. The `S-06` landing design is light-only with no `.dark` variant — a data point toward light-only, not a decision by itself.
 8. **Landing page legal/contact placeholders and CTA target** — footer links to Prywatność/Regulamin/Kontakt and nav anchors to Jak to działa/Dla kogo/Prywatność appear in the design but no privacy policy, terms, or contact target exists yet; also whether the primary CTA routes straight to signup or scrolls to an on-page section first. Owner: user, during `S-06`'s plan. Block: `S-06` — not hard-blocking; scroll anchors and placeholder footer links are a legitimate MVP answer, but should be a decision.
+9. **Account-level deletion and email change** — may a user delete their whole account (and with it every person they entered), and can they change the email their account and its FR-008 reminders hang off? The PRD's irreversible-deletion NFR is written about a *person* (`S-05`), never about an account, and an email change in Supabase is a re-verification round trip rather than a field update. Owner: user, during `S-07`'s plan. Block: `S-07` — not hard-blocking; read-only email and no self-serve account deletion are legitimate MVP answers, but they should be decisions rather than omissions.
+10. **Who sends the product's auth emails** — Supabase's built-in mailer (rate-limited, documented as not for production; `[auth.email.smtp]` is commented out in `supabase/config.toml`) or Supabase Auth pointed at **Resend**, the provider `F-04` already stands up for FR-008. Note these are two channels, not one path: reminder mail leaves the Worker, auth mail leaves Supabase — they share a vendor and a sending identity, not code. Owner: user, during `S-08`'s plan, cross-checked against Open Question 4. Block: `S-08` — not hard-blocking; the built-in mailer is enough to prove the flow, just not to rely on it.
 
 ## Parked
 
 - **Categories / tabs for organizing people (FR-006)** — Why parked: nice-to-have in the PRD, purely organizational, does not touch the AI logic. Under `main_goal: speed` it is not on the must-have path.
 - **Application-level error tracking / logging library** — Why parked: Workers platform observability is already enabled; adding a vendor is maintenance cost the 3-week after-hours budget does not have. Revisit if `S-02`'s ranking quality becomes hard to debug from platform logs alone.
+- **User-supplied OpenAI API key ("bring your own key")** — Why parked: the MVP runs on the author's single key in Workers Secrets (`F-02`), and that is also what keeps AI spend under the app's control — the exact reason the PRD makes login mandatory in FR-001. Accepting a user's own key turns a secret the app owns into user-submitted credential storage: encryption at rest, rotation, revocation, and a real error path for the day someone's key hits its quota — none of which buys anything while the only user is the author. Revisit if AI cost per user becomes the thing limiting who can be invited; `S-07`'s settings page is where it would land.
 - **Calendar integration** — Why parked: PRD §Non-Goals, deferred to v2. Reminders concern weakening relationships, not same-day events.
 - **Native mobile app** — Why parked: PRD §Non-Goals; the MVP is web-only.
 - **Event / meeting scheduling** — Why parked: PRD §Non-Goals. The app suggests a time window; the user initiates contact themselves.

@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# design bundle duplicates stale copies of context/foundation/ docs here
+.ai/intouch-design-preparation/project/uploads/

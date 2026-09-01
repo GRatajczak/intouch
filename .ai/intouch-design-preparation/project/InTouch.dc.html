@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #EFE9E1; }
+  a { color: #6E5A86; text-decoration: none; }
+  a:hover { color: #4B3D5E; }
+  * { box-sizing: border-box; }
+</style>
+</helmet>
+
+<div style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #2A2724; padding: 64px; display: flex; flex-direction: column; gap: 72px; background: #EFE9E1;">
+
+  <div style="display: flex; flex-direction: column; gap: 10px; max-width: 720px;">
+    <div style="display: flex; align-items: center; gap: 18px;">
+      <div style="position: relative; width: 78px; height: 50px; flex-shrink: 0;">
+        <div style="position: absolute; left: 0; top: 0; width: 50px; height: 50px; border-radius: 50%; background: #F3C7CD;"></div>
+        <div style="position: absolute; right: 0; top: 0; width: 50px; height: 50px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+      </div>
+      <div style="font-family: 'Instrument Serif', serif; font-size: 64px; line-height: 1;">InTouch</div>
+    </div>
+    <div style="font-size: 17px; line-height: 1.6; color: #6B645C;">Ekrany aplikacji do pielęgnowania relacji z bliskimi. Pastelowa paleta, ciepły ton, pełne uzasadnienie propozycji AI. Widoki desktopowe 1200 px i mobilne 390 px.</div>
+    <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+      <div style="background: #F7D9DC; color: #8C4A52; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;">Ciepły, osobisty</div>
+      <div style="background: #DCE0F5; color: #4B5480; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;">Polski UI</div>
+      <div style="background: #D9E8DC; color: #4A6B52; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;">Desktop + mobile</div>
+    </div>
+  </div>
+
+  <!-- 1. WEJŚCIE -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">1 — Wejście do aplikacji</div>
+      <div style="font-size: 13px; color: #8B837A;">FR-001, FR-002</div>
+    </div>
+    <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Logowanie</div>
+        <div style="width: 480px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; padding: 44px 40px; display: flex; flex-direction: column; gap: 26px; box-shadow: 0 18px 40px -28px rgba(60,45,30,0.45);">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="position: relative; width: 40px; height: 26px; flex-shrink: 0;">
+                <div style="position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; background: #F3C7CD;"></div>
+                <div style="position: absolute; right: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+              </div>
+              <div style="font-family: 'Instrument Serif', serif; font-size: 24px;">InTouch</div>
+            </div>
+            <div style="font-family: 'Instrument Serif', serif; font-size: 34px; line-height: 1.15; margin-top: 12px;">Dobrze Cię widzieć z powrotem.</div>
+            <div style="font-size: 14px; color: #6B645C; line-height: 1.55;">Twoi bliscy czekają w tym samym miejscu, w którym ich zostawiłeś.</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="font-size: 13px; font-weight: 600; color: #55504A;">E-mail</div>
+              <div style="height: 48px; border: 1px solid #E4DCD1; background: #FFFFFF; border-radius: 14px; display: flex; align-items: center; padding: 0 16px; font-size: 15px; color: #2A2724;">anna@przyklad.pl</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <div style="font-size: 13px; font-weight: 600; color: #55504A;">Hasło</div>
+                <a href="#1a" style="font-size: 12px;">Nie pamiętam</a>
+              </div>
+              <div style="height: 48px; border: 1px solid #E4DCD1; background: #FFFFFF; border-radius: 14px; display: flex; align-items: center; padding: 0 16px; font-size: 15px; letter-spacing: 0.2em; color: #9A928A;">••••••••</div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="height: 50px; border-radius: 14px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600;" style-hover="background: #443F39;">Zaloguj się</div>
+            <div style="height: 50px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 15px; font-weight: 600; color: #2A2724;">
+              <div style="width: 18px; height: 18px; border-radius: 50%; background: #DCE0F5;"></div>
+              Kontynuuj z Google
+            </div>
+          </div>
+          <div style="font-size: 13px; color: #6B645C; text-align: center;">Pierwszy raz tutaj? <a href="#1a" style="font-weight: 600;">Załóż konto</a></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Onboarding — profil o Tobie (krok 2 z 3)</div>
+        <div style="width: 600px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; padding: 40px; display: flex; flex-direction: column; gap: 26px; box-shadow: 0 18px 40px -28px rgba(60,45,30,0.45);">
+          <div style="display: flex; gap: 6px;">
+            <div style="height: 5px; flex: 1; border-radius: 999px; background: #C9B7CF;"></div>
+            <div style="height: 5px; flex: 1; border-radius: 999px; background: #C9B7CF;"></div>
+            <div style="height: 5px; flex: 1; border-radius: 999px; background: #E4DCD1;"></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-family: 'Instrument Serif', serif; font-size: 32px; line-height: 1.15;">Powiedz nam kilka rzeczy o sobie</div>
+            <div style="font-size: 14px; color: #6B645C; line-height: 1.55;">Dzięki temu podpowiedzi będą trafiać w Twój rytm życia, a nie w średnią. Zajmie minutę, możesz to później zmienić.</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 13px; font-weight: 600; color: #55504A;">Jak masz na imię?</div>
+              <div style="height: 46px; border: 1px solid #E4DCD1; background: #FFFFFF; border-radius: 14px; display: flex; align-items: center; padding: 0 16px; font-size: 15px;">Anna</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 13px; font-weight: 600; color: #55504A;">Ile czasu realnie masz w tygodniu na kontakt z bliskimi?</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <div style="padding: 10px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 14px; color: #55504A;">Mniej niż godzinę</div>
+                <div style="padding: 10px 16px; border-radius: 999px; background: #E9DFEE; border: 1px solid #C9B7CF; font-size: 14px; font-weight: 600; color: #55446B;">1–3 godziny</div>
+                <div style="padding: 10px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 14px; color: #55504A;">Więcej niż 3</div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 13px; font-weight: 600; color: #55504A;">Jak najchętniej się odzywasz?</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <div style="padding: 10px 16px; border-radius: 999px; background: #E9DFEE; border: 1px solid #C9B7CF; font-size: 14px; font-weight: 600; color: #55446B;">Telefon</div>
+                <div style="padding: 10px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 14px; color: #55504A;">Wiadomość</div>
+                <div style="padding: 10px 16px; border-radius: 999px; background: #E9DFEE; border: 1px solid #C9B7CF; font-size: 14px; font-weight: 600; color: #55446B;">Spotkanie na żywo</div>
+                <div style="padding: 10px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 14px; color: #55504A;">Wideo</div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 13px; font-weight: 600; color: #55504A;">Kiedy zwykle masz na to przestrzeń?</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <div style="padding: 10px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 14px; color: #55504A;">Rano w tygodniu</div>
+                <div style="padding: 10px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 14px; color: #55504A;">Wieczorem w tygodniu</div>
+                <div style="padding: 10px 16px; border-radius: 999px; background: #E9DFEE; border: 1px solid #C9B7CF; font-size: 14px; font-weight: 600; color: #55446B;">Weekend</div>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 4px;">
+            <div style="font-size: 14px; color: #8B837A; font-weight: 600;">Wstecz</div>
+            <div style="height: 48px; padding: 0 28px; border-radius: 14px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; font-size: 15px; font-weight: 600;">Dalej</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. PUSTY STAN -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">2 — Pusty stan</div>
+      <div style="font-size: 13px; color: #8B837A;">US-01: brak osób to wyjaśnienie, nie błąd</div>
+    </div>
+    <div style="width: 1200px; height: 720px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; overflow: hidden; display: flex; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+      <div style="width: 248px; background: #F3EDE5; border-right: 1px solid #E4DCD1; padding: 28px 20px; display: flex; flex-direction: column; gap: 28px;">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;">
+          <div style="position: relative; width: 37px; height: 24px; flex-shrink: 0;">
+            <div style="position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: #F3C7CD;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+          </div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 21px;">InTouch</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; background: #FFFFFF; font-size: 14px; font-weight: 600; color: #2A2724;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #C9B7CF;"></div>Dziś</div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; font-size: 14px; color: #6B645C;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #DED6CB;"></div>Bliscy</div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; font-size: 14px; color: #6B645C;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #DED6CB;"></div>Historia</div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; font-size: 14px; color: #6B645C;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #DED6CB;"></div>Ustawienia</div>
+        </div>
+        <div style="margin-top: auto; background: #FFFFFF; border: 1px solid #E4DCD1; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="font-size: 13px; font-weight: 700;">Anna Wójcik</div>
+          <div style="font-size: 12px; color: #8B837A;">Profil uzupełniony</div>
+        </div>
+      </div>
+      <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px;">
+        <div style="max-width: 520px; display: flex; flex-direction: column; gap: 22px; align-items: flex-start;">
+          <div style="display: flex; gap: 10px;">
+            <div style="width: 56px; height: 56px; border-radius: 18px; background: #F7D9DC;"></div>
+            <div style="width: 56px; height: 56px; border-radius: 18px; background: #DCE0F5;"></div>
+            <div style="width: 56px; height: 56px; border-radius: 18px; background: #D9E8DC;"></div>
+            <div style="width: 56px; height: 56px; border-radius: 18px; background: #F5E7CE; border: 1px dashed #D6C4A2;"></div>
+          </div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 40px; line-height: 1.15;">Jeszcze nikogo tu nie ma</div>
+          <div style="font-size: 16px; line-height: 1.65; color: #6B645C;">Dodaj pierwsze osoby — imię, kilka zdań o tym, kim są i co je cieszy, oraz jak ważna jest dla Ciebie ta relacja. Kiedy będzie ich co najmniej troje, ułożymy dla Ciebie kolejność kontaktów i podpowiemy, na kiedy warto się odezwać.</div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <div style="height: 48px; padding: 0 24px; border-radius: 14px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; font-size: 15px; font-weight: 600;">Dodaj pierwszą osobę</div>
+            <div style="height: 48px; padding: 0 20px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 15px; font-weight: 600;">Zobacz przykład</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. HIERARCHIA -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">3 — Hierarchia kontaktów</div>
+      <div style="font-size: 13px; color: #8B837A;">FR-007, US-01 — główny widok z pełnym uzasadnieniem</div>
+    </div>
+    <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+
+      <div style="width: 1200px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; overflow: hidden; display: flex; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+        <div style="width: 248px; background: #F3EDE5; border-right: 1px solid #E4DCD1; padding: 28px 20px; display: flex; flex-direction: column; gap: 28px;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;">
+            <div style="position: relative; width: 37px; height: 24px; flex-shrink: 0;">
+            <div style="position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: #F3C7CD;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+          </div>
+            <div style="font-family: 'Instrument Serif', serif; font-size: 21px;">InTouch</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; border-radius: 12px; background: #FFFFFF; font-size: 14px; font-weight: 600;">
+              <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #C9B7CF;"></div>Dziś</div>
+              <div style="background: #F7D9DC; color: #8C4A52; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px;">2</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; font-size: 14px; color: #6B645C;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #DED6CB;"></div>Bliscy</div>
+            <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; font-size: 14px; color: #6B645C;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #DED6CB;"></div>Historia</div>
+            <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; font-size: 14px; color: #6B645C;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #DED6CB;"></div>Ustawienia</div>
+          </div>
+          <div style="background: #E9DFEE; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 12px; font-weight: 700; color: #55446B;">Kolejność odświeżona</div>
+            <div style="font-size: 12px; line-height: 1.5; color: #6E5A86;">dziś o 6:00, na podstawie 14 osób i Twoich ostatnich potwierdzeń</div>
+            <div style="font-size: 12px; font-weight: 600; color: #55446B; text-decoration: underline;">Przelicz teraz</div>
+          </div>
+          <div style="margin-top: auto; background: #FFFFFF; border: 1px solid #E4DCD1; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+            <div style="font-size: 13px; font-weight: 700;">Anna Wójcik</div>
+            <div style="font-size: 12px; color: #8B837A;">14 bliskich osób</div>
+          </div>
+        </div>
+
+        <div style="flex: 1; padding: 36px 40px 40px; display: flex; flex-direction: column; gap: 26px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="font-size: 13px; color: #8B837A;">Poniedziałek, 10 sierpnia</div>
+              <div style="font-family: 'Instrument Serif', serif; font-size: 38px; line-height: 1.1;">Kto teraz czeka na Twój telefon</div>
+            </div>
+            <div style="height: 44px; padding: 0 20px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 14px; font-weight: 600;">+ Dodaj osobę</div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+
+            <div style="background: #FFFFFF; border: 1px solid #E9C9CE; border-radius: 20px; padding: 24px; display: flex; gap: 20px; box-shadow: 0 10px 30px -24px rgba(140,74,82,0.6);">
+              <div style="width: 44px; height: 44px; border-radius: 14px; background: #F7D9DC; color: #8C4A52; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; flex-shrink: 0;">1</div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div style="font-size: 21px; font-weight: 700;">Rodzina z gór</div>
+                      <div style="background: #F1EBE2; color: #7C756C; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px;">grupa</div>
+                    </div>
+                    <div style="font-size: 14px; color: #6B645C;">Ciocia Basia, wujek Marek i dziadkowie · Zakopane</div>
+                  </div>
+                  <div style="background: #F7D9DC; color: #8C4A52; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px; white-space: nowrap;">Odezwij się w tym tygodniu</div>
+                </div>
+
+                <div style="background: #FAF6F1; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+                  <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8B837A;">Dlaczego teraz</div>
+                  <div style="font-size: 15px; line-height: 1.6;">Minął rok od ostatniej rozmowy, a to relacja, którą oznaczyłaś jako najważniejszą. We wrześniu dziadek ma urodziny — dobry moment, żeby odezwać się wcześniej, bez okazji.</div>
+                  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 9px 13px;">
+                      <div style="font-size: 12px; color: #8B837A;">Waga relacji</div>
+                      <div style="display: flex; gap: 3px;"><div style="width: 7px; height: 7px; border-radius: 50%; background: #C48A93;"></div><div style="width: 7px; height: 7px; border-radius: 50%; background: #C48A93;"></div><div style="width: 7px; height: 7px; border-radius: 50%; background: #C48A93;"></div><div style="width: 7px; height: 7px; border-radius: 50%; background: #C48A93;"></div><div style="width: 7px; height: 7px; border-radius: 50%; background: #C48A93;"></div></div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 9px 13px; font-size: 12px; color: #8B837A;">Ostatni kontakt <span style="color: #8C4A52; font-weight: 700;">12 miesięcy temu</span></div>
+                    <div style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 9px 13px; font-size: 12px; color: #8B837A;">Twój rytm <span style="color: #2A2724; font-weight: 700;">rozmowa 20 min</span></div>
+                    <div style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 9px 13px; font-size: 12px; color: #8B837A;">Poprzednia próba <span style="color: #8C4A52; font-weight: 700;">nie udała się</span></div>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <div style="height: 42px; padding: 0 20px; border-radius: 12px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; font-size: 14px; font-weight: 600;">Zaplanowałam kontakt</div>
+                  <div style="height: 42px; padding: 0 18px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 14px; font-weight: 600;">Odłóż o tydzień</div>
+                  <div style="font-size: 14px; color: #8B837A; font-weight: 600; margin-left: 4px;">Otwórz profil</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 20px; padding: 24px; display: flex; gap: 20px;">
+              <div style="width: 44px; height: 44px; border-radius: 14px; background: #F5E7CE; color: #8A6A34; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; flex-shrink: 0;">2</div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <div style="font-size: 21px; font-weight: 700;">Maciej</div>
+                    <div style="font-size: 14px; color: #6B645C;">Przyjaciel ze studiów · Gdańsk</div>
+                  </div>
+                  <div style="background: #F5E7CE; color: #8A6A34; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px; white-space: nowrap;">Warto w ciągu 2 tygodni</div>
+                </div>
+                <div style="background: #FAF6F1; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+                  <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8B837A;">Dlaczego teraz</div>
+                  <div style="font-size: 15px; line-height: 1.6;">Ta sama waga co u Kasi, ale Maciej zmienił niedawno pracę i przy ostatniej rozmowie mówił, że jest mu ciężko. Kontekst przeważył — u niego dzieje się więcej.</div>
+                  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 9px 13px;">
+                      <div style="font-size: 12px; color: #8B837A;">Waga relacji</div>
+                      <div style="display: flex; gap: 3px;"><div style="width: 7px; height: 7px; border-radius: 50%; background: #C9A96A;"></div><div style="width: 7px; height: 7px; border-radius: 50%; background: #C9A96A;"></div><div style="width: 7px; height: 7px; border-radius: 50%; background: #C9A96A;"></div><div style="width: 7px; height: 7px; border-radius: 50%; background: #C9A96A;"></div><div style="width: 7px; height: 7px; border-radius: 50%; background: #E4DCD1;"></div></div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 9px 13px; font-size: 12px; color: #8B837A;">Ostatni kontakt <span style="color: #2A2724; font-weight: 700;">3 miesiące temu</span></div>
+                    <div style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 9px 13px; font-size: 12px; color: #8B837A;">Kontekst <span style="color: #2A2724; font-weight: 700;">zmiana pracy</span></div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <div style="height: 42px; padding: 0 20px; border-radius: 12px; background: #FFFFFF; border: 1px solid #D8CFC3; display: flex; align-items: center; font-size: 14px; font-weight: 600;">Zaplanowałam kontakt</div>
+                  <div style="height: 42px; padding: 0 18px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #6B645C;">Odłóż o tydzień</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 20px; padding: 20px 24px; display: flex; gap: 20px; align-items: center;">
+              <div style="width: 40px; height: 40px; border-radius: 13px; background: #D9E8DC; color: #4A6B52; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0;">3</div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+                <div style="font-size: 18px; font-weight: 700;">Kasia</div>
+                <div style="font-size: 14px; color: #6B645C;">Siostra · kontakt 3 tygodnie temu, wszystko na bieżąco</div>
+              </div>
+              <div style="background: #D9E8DC; color: #4A6B52; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px;">W ciągu miesiąca</div>
+              <div style="font-size: 14px; color: #8B837A; font-weight: 600;">Rozwiń</div>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 20px; padding: 20px 24px; display: flex; gap: 20px; align-items: center;">
+              <div style="width: 40px; height: 40px; border-radius: 13px; background: #D9E8DC; color: #4A6B52; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0;">4</div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+                <div style="font-size: 18px; font-weight: 700;">Tomek i Ola</div>
+                <div style="font-size: 14px; color: #6B645C;">Sąsiedzi z dawnego mieszkania · kontakt 6 tygodni temu</div>
+              </div>
+              <div style="background: #D9E8DC; color: #4A6B52; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px;">W ciągu miesiąca</div>
+              <div style="font-size: 14px; color: #8B837A; font-weight: 600;">Rozwiń</div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px; padding: 4px 4px 0;">
+              <div style="height: 1px; flex: 1; background: #E4DCD1;"></div>
+              <div style="font-size: 13px; color: #8B837A;">Pozostałe 10 osób jest spokojnych — pokaż wszystkie</div>
+              <div style="height: 1px; flex: 1; background: #E4DCD1;"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Mobile — ten sam widok</div>
+        <div style="width: 390px; height: 800px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 36px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+          <div style="padding: 18px 22px 8px; display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: #8B837A;"><div>9:41</div><div>InTouch</div></div>
+          <div style="padding: 12px 22px 18px; display: flex; flex-direction: column; gap: 4px;">
+            <div style="font-size: 12px; color: #8B837A;">Poniedziałek, 10 sierpnia</div>
+            <div style="font-family: 'Instrument Serif', serif; font-size: 30px; line-height: 1.15;">Kto teraz czeka</div>
+          </div>
+          <div style="flex: 1; padding: 0 18px; display: flex; flex-direction: column; gap: 12px; overflow: hidden;">
+            <div style="background: #FFFFFF; border: 1px solid #E9C9CE; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; border-radius: 12px; background: #F7D9DC; color: #8C4A52; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px;">1</div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+                  <div style="font-size: 17px; font-weight: 700;">Rodzina z gór</div>
+                  <div style="font-size: 12px; color: #8B837A;">grupa · Zakopane</div>
+                </div>
+              </div>
+              <div style="background: #F7D9DC; color: #8C4A52; font-size: 12px; font-weight: 700; padding: 7px 12px; border-radius: 999px; align-self: flex-start;">Odezwij się w tym tygodniu</div>
+              <div style="background: #FAF6F1; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8B837A;">Dlaczego teraz</div>
+                <div style="font-size: 14px; line-height: 1.55;">Rok bez rozmowy, a to relacja z wagą 5/5. Poprzednia próba się nie udała.</div>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 10px; padding: 6px 10px; font-size: 11px; color: #8B837A;">Waga <span style="color: #8C4A52; font-weight: 700;">5/5</span></div>
+                  <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 10px; padding: 6px 10px; font-size: 11px; color: #8B837A;">Cisza <span style="color: #8C4A52; font-weight: 700;">12 mies.</span></div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <div style="flex: 1; height: 46px; border-radius: 12px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">Zaplanuję</div>
+                <div style="height: 46px; padding: 0 16px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 14px; font-weight: 600;">Odłóż</div>
+              </div>
+            </div>
+            <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 20px; padding: 16px 18px; display: flex; align-items: center; gap: 12px;">
+              <div style="width: 34px; height: 34px; border-radius: 11px; background: #F5E7CE; color: #8A6A34; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+                <div style="font-size: 16px; font-weight: 700;">Maciej</div>
+                <div style="font-size: 12px; color: #8B837A;">w ciągu 2 tygodni</div>
+              </div>
+            </div>
+            <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 20px; padding: 16px 18px; display: flex; align-items: center; gap: 12px;">
+              <div style="width: 34px; height: 34px; border-radius: 11px; background: #D9E8DC; color: #4A6B52; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+                <div style="font-size: 16px; font-weight: 700;">Kasia</div>
+                <div style="font-size: 12px; color: #8B837A;">w ciągu miesiąca</div>
+              </div>
+            </div>
+          </div>
+          <div style="border-top: 1px solid #E4DCD1; background: #F3EDE5; padding: 14px 28px 22px; display: flex; justify-content: space-between;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;"><div style="width: 22px; height: 22px; border-radius: 8px; background: #C9B7CF;"></div><div style="font-size: 11px; font-weight: 700; color: #2A2724;">Dziś</div></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;"><div style="width: 22px; height: 22px; border-radius: 8px; background: #DED6CB;"></div><div style="font-size: 11px; color: #8B837A;">Bliscy</div></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;"><div style="width: 22px; height: 22px; border-radius: 8px; background: #DED6CB;"></div><div style="font-size: 11px; color: #8B837A;">Historia</div></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;"><div style="width: 22px; height: 22px; border-radius: 8px; background: #DED6CB;"></div><div style="font-size: 11px; color: #8B837A;">Ty</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. BLISCY -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">4 — Bliscy: katalog i kategorie</div>
+      <div style="font-size: 13px; color: #8B837A;">FR-006</div>
+    </div>
+    <div style="width: 1200px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; overflow: hidden; display: flex; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+      <div style="width: 248px; background: #F3EDE5; border-right: 1px solid #E4DCD1; padding: 28px 20px; display: flex; flex-direction: column; gap: 28px;">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;">
+          <div style="position: relative; width: 37px; height: 24px; flex-shrink: 0;">
+            <div style="position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: #F3C7CD;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+          </div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 21px;">InTouch</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; font-size: 14px; color: #6B645C;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #DED6CB;"></div>Dziś</div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; background: #FFFFFF; font-size: 14px; font-weight: 600;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #C9B7CF;"></div>Bliscy</div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; font-size: 14px; color: #6B645C;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #DED6CB;"></div>Historia</div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; font-size: 14px; color: #6B645C;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #DED6CB;"></div>Ustawienia</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #A39A90; padding: 0 8px;">Kategorie</div>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <div style="display: flex; justify-content: space-between; padding: 9px 12px; border-radius: 10px; font-size: 13px; color: #6B645C;"><div>Rodzina</div><div style="color: #A39A90;">5</div></div>
+            <div style="display: flex; justify-content: space-between; padding: 9px 12px; border-radius: 10px; font-size: 13px; color: #6B645C;"><div>Przyjaciele</div><div style="color: #A39A90;">6</div></div>
+            <div style="display: flex; justify-content: space-between; padding: 9px 12px; border-radius: 10px; font-size: 13px; color: #6B645C;"><div>Sąsiedzi</div><div style="color: #A39A90;">2</div></div>
+            <div style="display: flex; justify-content: space-between; padding: 9px 12px; border-radius: 10px; font-size: 13px; color: #6B645C;"><div>Praca</div><div style="color: #A39A90;">1</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="flex: 1; padding: 36px 40px 40px; display: flex; flex-direction: column; gap: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-family: 'Instrument Serif', serif; font-size: 34px;">Twoi bliscy</div>
+          <div style="display: flex; gap: 10px;">
+            <div style="height: 42px; padding: 0 16px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 14px; color: #8B837A; min-width: 220px;">Szukaj po imieniu…</div>
+            <div style="height: 42px; padding: 0 20px; border-radius: 12px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; font-size: 14px; font-weight: 600;">+ Dodaj osobę</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <div style="padding: 9px 16px; border-radius: 999px; background: #2A2724; color: #FBF8F4; font-size: 13px; font-weight: 600;">Wszyscy · 14</div>
+          <div style="padding: 9px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 13px; color: #55504A;">Rodzina</div>
+          <div style="padding: 9px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 13px; color: #55504A;">Przyjaciele</div>
+          <div style="padding: 9px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 13px; color: #55504A;">Sąsiedzi</div>
+          <div style="padding: 9px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 13px; color: #55504A;">Praca</div>
+          <div style="padding: 9px 16px; border-radius: 999px; background: #F3EDE5; border: 1px dashed #D8CFC3; font-size: 13px; color: #8B837A;">Nieaktywni · 2</div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+
+          <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 13px; background: #F7D9DC;"></div>
+              <div style="display: flex; gap: 3px; padding-top: 6px;"><div style="width: 6px; height: 6px; border-radius: 50%; background: #C48A93;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #C48A93;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #C48A93;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #C48A93;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #C48A93;"></div></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="font-size: 17px; font-weight: 700;">Rodzina z gór</div>
+              <div style="font-size: 13px; color: #8B837A;">Rodzina · grupa</div>
+            </div>
+            <div style="font-size: 13px; color: #8C4A52; font-weight: 600;">Cisza od 12 miesięcy</div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 13px; background: #DCE0F5;"></div>
+              <div style="display: flex; gap: 3px; padding-top: 6px;"><div style="width: 6px; height: 6px; border-radius: 50%; background: #8E96C4;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #8E96C4;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #8E96C4;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #8E96C4;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #E4DCD1;"></div></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="font-size: 17px; font-weight: 700;">Maciej</div>
+              <div style="font-size: 13px; color: #8B837A;">Przyjaciele · osoba</div>
+            </div>
+            <div style="font-size: 13px; color: #6B645C;">Kontakt 3 miesiące temu</div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 13px; background: #D9E8DC;"></div>
+              <div style="display: flex; gap: 3px; padding-top: 6px;"><div style="width: 6px; height: 6px; border-radius: 50%; background: #83A88D;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #83A88D;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #83A88D;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #83A88D;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #83A88D;"></div></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="font-size: 17px; font-weight: 700;">Kasia</div>
+              <div style="font-size: 13px; color: #8B837A;">Rodzina · osoba</div>
+            </div>
+            <div style="font-size: 13px; color: #4A6B52;">Kontakt 3 tygodnie temu</div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 13px; background: #F5E7CE;"></div>
+              <div style="display: flex; gap: 3px; padding-top: 6px;"><div style="width: 6px; height: 6px; border-radius: 50%; background: #C9A96A;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #C9A96A;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #C9A96A;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #E4DCD1;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #E4DCD1;"></div></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="font-size: 17px; font-weight: 700;">Tomek i Ola</div>
+              <div style="font-size: 13px; color: #8B837A;">Sąsiedzi · grupa</div>
+            </div>
+            <div style="font-size: 13px; color: #6B645C;">Kontakt 6 tygodni temu</div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 13px; background: #E9DFEE;"></div>
+              <div style="display: flex; gap: 3px; padding-top: 6px;"><div style="width: 6px; height: 6px; border-radius: 50%; background: #A78FB5;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #A78FB5;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #E4DCD1;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #E4DCD1;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #E4DCD1;"></div></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="font-size: 17px; font-weight: 700;">Grześ</div>
+              <div style="font-size: 13px; color: #8B837A;">Praca · osoba</div>
+            </div>
+            <div style="font-size: 13px; color: #6B645C;">Kontakt 2 tygodnie temu</div>
+          </div>
+
+          <div style="background: #F6F1EA; border: 1px solid #E4DCD1; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px; opacity: 0.75;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 13px; background: #E4DCD1;"></div>
+              <div style="background: #EAE3D9; color: #8B837A; font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px;">nieaktywna</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="font-size: 17px; font-weight: 700; color: #6B645C;">Paweł</div>
+              <div style="font-size: 13px; color: #A39A90;">Przyjaciele · osoba</div>
+            </div>
+            <div style="font-size: 13px; color: #A39A90;">Pominięty w podpowiedziach, historia zachowana</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. PROFIL OSOBY + FORMULARZ -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">5 — Profil osoby i dodawanie</div>
+      <div style="font-size: 13px; color: #8B837A;">FR-003, FR-004, FR-005</div>
+    </div>
+    <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Szczegóły osoby i historia kontaktu</div>
+        <div style="width: 720px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; padding: 36px; display: flex; flex-direction: column; gap: 28px; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="display: flex; gap: 18px; align-items: center;">
+              <div style="width: 64px; height: 64px; border-radius: 20px; background: #DCE0F5;"></div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div style="font-family: 'Instrument Serif', serif; font-size: 34px; line-height: 1;">Maciej</div>
+                <div style="font-size: 14px; color: #6B645C;">Przyjaciel ze studiów · Gdańsk · pojedyncza osoba</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <div style="height: 38px; padding: 0 16px; border-radius: 11px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 13px; font-weight: 600;">Edytuj</div>
+              <div style="height: 38px; padding: 0 16px; border-radius: 11px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 13px; font-weight: 600; color: #8B837A;">Dezaktywuj</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <div style="flex: 1; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 12px; color: #8B837A;">Waga relacji</div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="font-size: 22px; font-weight: 700;">4</div>
+                <div style="display: flex; gap: 4px;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #8E96C4;"></div><div style="width: 8px; height: 8px; border-radius: 50%; background: #8E96C4;"></div><div style="width: 8px; height: 8px; border-radius: 50%; background: #8E96C4;"></div><div style="width: 8px; height: 8px; border-radius: 50%; background: #8E96C4;"></div><div style="width: 8px; height: 8px; border-radius: 50%; background: #E4DCD1;"></div></div>
+              </div>
+            </div>
+            <div style="flex: 1; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 12px; color: #8B837A;">Ostatni kontakt</div>
+              <div style="font-size: 22px; font-weight: 700;">3 mies. temu</div>
+            </div>
+            <div style="flex: 1; background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 12px; color: #8B837A;">Propozycja</div>
+              <div style="font-size: 22px; font-weight: 700; color: #8A6A34;">2 tygodnie</div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8B837A;">Co o nim wiemy</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 10px 14px; font-size: 13px;">Wspinaczka</div>
+              <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 10px 14px; font-size: 13px;">Dwoje małych dzieci</div>
+              <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 10px 14px; font-size: 13px;">Nowa praca od maja</div>
+              <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 10px 14px; font-size: 13px;">Woli telefon niż pisanie</div>
+              <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 12px; padding: 10px 14px; font-size: 13px;">Urodziny 14 marca</div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8B837A;">Historia kontaktu</div>
+              <div style="font-size: 13px; font-weight: 600; color: #8B837A;">+ Dopisz kontakt</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0;">
+              <div style="display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #EAE3D9;">
+                <div style="width: 10px; height: 10px; border-radius: 50%; background: #83A88D; margin-top: 5px; flex-shrink: 0;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+                  <div style="font-size: 14px; font-weight: 600;">Rozmowa telefoniczna — udana</div>
+                  <div style="font-size: 13px; color: #8B837A;">12 maja · potwierdzone przez Ciebie</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #EAE3D9;">
+                <div style="width: 10px; height: 10px; border-radius: 50%; background: #C48A93; margin-top: 5px; flex-shrink: 0;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+                  <div style="font-size: 14px; font-weight: 600;">Propozycja kontaktu — nie udało się</div>
+                  <div style="font-size: 13px; color: #8B837A;">2 kwietnia · przesunięte na kolejny tydzień</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 14px; padding: 14px 0;">
+                <div style="width: 10px; height: 10px; border-radius: 50%; background: #83A88D; margin-top: 5px; flex-shrink: 0;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+                  <div style="font-size: 14px; font-weight: 600;">Spotkanie na żywo — udane</div>
+                  <div style="font-size: 13px; color: #8B837A;">18 lutego · kawa w Gdańsku</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Dodawanie osoby</div>
+        <div style="width: 620px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; padding: 36px; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">Kogo dopisujemy?</div>
+            <div style="font-size: 14px; color: #6B645C; line-height: 1.55;">Wystarczy kilka pól. Im więcej kontekstu, tym trafniejsza kolejność — ale nic nie jest obowiązkowe poza imieniem i wagą.</div>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+              <div style="font-size: 13px; font-weight: 600; color: #55504A;">Imię lub nazwa</div>
+              <div style="height: 46px; border: 1px solid #E4DCD1; background: #FFFFFF; border-radius: 14px; display: flex; align-items: center; padding: 0 16px; font-size: 15px;">Maciej</div>
+            </div>
+            <div style="width: 200px; display: flex; flex-direction: column; gap: 6px;">
+              <div style="font-size: 13px; font-weight: 600; color: #55504A;">Kategoria</div>
+              <div style="height: 46px; border: 1px solid #E4DCD1; background: #FFFFFF; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-size: 15px;">Przyjaciele <span style="color: #A39A90;">▾</span></div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 13px; font-weight: 600; color: #55504A;">To jedna osoba czy grupa?</div>
+            <div style="display: flex; gap: 8px;">
+              <div style="flex: 1; height: 46px; border-radius: 14px; background: #E9DFEE; border: 1px solid #C9B7CF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #55446B;">Pojedyncza osoba</div>
+              <div style="flex: 1; height: 46px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #55504A;">Grupa, np. rodzina z gór</div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 13px; font-weight: 600; color: #55504A;">Kim jest dla Ciebie?</div>
+            <div style="height: 46px; border: 1px solid #E4DCD1; background: #FFFFFF; border-radius: 14px; display: flex; align-items: center; padding: 0 16px; font-size: 15px;">Przyjaciel ze studiów</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 13px; font-weight: 600; color: #55504A;">Co go cieszy, co jest u niego ważne?</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div style="background: #E9DFEE; border: 1px solid #C9B7CF; border-radius: 12px; padding: 9px 13px; font-size: 13px; font-weight: 600; color: #55446B;">Wspinaczka ×</div>
+              <div style="background: #E9DFEE; border: 1px solid #C9B7CF; border-radius: 12px; padding: 9px 13px; font-size: 13px; font-weight: 600; color: #55446B;">Małe dzieci ×</div>
+              <div style="background: #FFFFFF; border: 1px dashed #D8CFC3; border-radius: 12px; padding: 9px 13px; font-size: 13px; color: #8B837A;">+ dopisz</div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <div style="font-size: 13px; font-weight: 600; color: #55504A;">Jak ważna jest ta relacja?</div>
+              <div style="font-size: 13px; color: #8B837A;">4 — bardzo mi na niej zależy</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <div style="flex: 1; height: 52px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #8B837A;">1</div>
+              <div style="flex: 1; height: 52px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #8B837A;">2</div>
+              <div style="flex: 1; height: 52px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #8B837A;">3</div>
+              <div style="flex: 1; height: 52px; border-radius: 14px; background: #DCE0F5; border: 1px solid #B8C0E4; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; color: #4B5480;">4</div>
+              <div style="flex: 1; height: 52px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #8B837A;">5</div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 13px; font-weight: 600; color: #55504A;">Kiedy ostatnio rozmawialiście?</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div style="padding: 10px 14px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 13px; color: #55504A;">W tym miesiącu</div>
+              <div style="padding: 10px 14px; border-radius: 999px; background: #E9DFEE; border: 1px solid #C9B7CF; font-size: 13px; font-weight: 600; color: #55446B;">2–6 miesięcy temu</div>
+              <div style="padding: 10px 14px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 13px; color: #55504A;">Ponad pół roku</div>
+              <div style="padding: 10px 14px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4DCD1; font-size: 13px; color: #55504A;">Nie pamiętam</div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 4px;">
+            <div style="height: 48px; padding: 0 20px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #6B645C;">Anuluj</div>
+            <div style="height: 48px; padding: 0 26px; border-radius: 14px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; font-size: 15px; font-weight: 600;">Zapisz osobę</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 6. PĘTLA -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">6 — Przypomnienie i pętla zwrotna</div>
+      <div style="font-size: 13px; color: #8B837A;">FR-008, FR-009 — maksymalnie raz dziennie</div>
+    </div>
+    <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Powiadomienie na telefonie</div>
+        <div style="width: 390px; background: #D6CFC6; border-radius: 36px; padding: 22px 16px; display: flex; flex-direction: column; gap: 14px; min-height: 300px;">
+          <div style="text-align: center; color: #FBF8F4; font-family: 'Instrument Serif', serif; font-size: 46px; padding-top: 12px;">8:15</div>
+          <div style="text-align: center; color: #FBF8F4; font-size: 14px; opacity: 0.9; padding-bottom: 8px;">poniedziałek, 10 sierpnia</div>
+          <div style="background: rgba(251,248,244,0.92); border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="position: relative; width: 28px; height: 18px; flex-shrink: 0;">
+                <div style="position: absolute; left: 0; top: 0; width: 18px; height: 18px; border-radius: 50%; background: #F3C7CD;"></div>
+                <div style="position: absolute; right: 0; top: 0; width: 18px; height: 18px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+              </div>
+              <div style="font-size: 12px; font-weight: 700; color: #6B645C;">InTouch</div>
+              <div style="font-size: 12px; color: #A39A90; margin-left: auto;">teraz</div>
+            </div>
+            <div style="font-size: 15px; font-weight: 700;">Rodzina z gór czeka najdłużej</div>
+            <div style="font-size: 14px; line-height: 1.5; color: #55504A;">Minął rok od ostatniej rozmowy. Warto zadzwonić w tym tygodniu — najlepiej w weekend, jak zwykle.</div>
+          </div>
+          <div style="background: rgba(251,248,244,0.55); border-radius: 18px; padding: 14px 18px; font-size: 13px; color: #55504A;">Kolejne przypomnienie najwcześniej jutro</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">„Czy się udało?” — po terminie</div>
+        <div style="width: 520px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; padding: 34px; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="width: 48px; height: 48px; border-radius: 16px; background: #F7D9DC;"></div>
+            <div style="font-family: 'Instrument Serif', serif; font-size: 30px; line-height: 1.2;">Udało się odezwać do rodziny z gór?</div>
+            <div style="font-size: 14px; color: #6B645C; line-height: 1.6;">Pytamy raz, bez oceniania. Odpowiedź wpływa tylko na to, kiedy przypomnimy następnym razem.</div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1; height: 56px; border-radius: 16px; background: #D9E8DC; border: 1px solid #B6D2BE; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #3F6049;">Tak, rozmawialiśmy</div>
+            <div style="flex: 1; height: 56px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: #55504A;">Jeszcze nie</div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="font-size: 13px; font-weight: 600; color: #55504A;">Chcesz dopisać notatkę? (opcjonalnie)</div>
+            <div style="min-height: 64px; border: 1px solid #E4DCD1; background: #FBF8F4; border-radius: 12px; padding: 12px 14px; font-size: 14px; color: #A39A90; line-height: 1.5;">np. dziadek wraca do zdrowia, umówiliśmy się na wrzesień</div>
+          </div>
+          <div style="font-size: 13px; color: #8B837A; text-align: center;">Zapytamy ponownie za tydzień</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Ustawienia przypomnień</div>
+        <div style="width: 620px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; padding: 34px; display: flex; flex-direction: column; gap: 26px; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+          <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">Przypomnienia</div>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 16px; padding: 18px; display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="font-size: 15px; font-weight: 700;">Jak często</div>
+                <div style="font-size: 13px; color: #8B837A;">Nigdy więcej niż raz dziennie</div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <div style="padding: 9px 14px; border-radius: 999px; background: #FBF8F4; border: 1px solid #E4DCD1; font-size: 13px; color: #6B645C;">Codziennie</div>
+                <div style="padding: 9px 14px; border-radius: 999px; background: #E9DFEE; border: 1px solid #C9B7CF; font-size: 13px; font-weight: 600; color: #55446B;">2× w tygodniu</div>
+                <div style="padding: 9px 14px; border-radius: 999px; background: #FBF8F4; border: 1px solid #E4DCD1; font-size: 13px; color: #6B645C;">Raz w tygodniu</div>
+              </div>
+            </div>
+            <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 16px; padding: 18px; display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="font-size: 15px; font-weight: 700;">O której porze</div>
+                <div style="font-size: 13px; color: #8B837A;">Wtedy, kiedy realnie masz chwilę</div>
+              </div>
+              <div style="height: 42px; padding: 0 18px; border-radius: 12px; background: #FBF8F4; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 15px; font-weight: 600;">8:15</div>
+            </div>
+            <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 16px; padding: 18px; display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="font-size: 15px; font-weight: 700;">Kanał</div>
+                <div style="font-size: 13px; color: #8B837A;">E-mail i powiadomienia w przeglądarce</div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <div style="padding: 9px 14px; border-radius: 999px; background: #E9DFEE; border: 1px solid #C9B7CF; font-size: 13px; font-weight: 600; color: #55446B;">E-mail</div>
+                <div style="padding: 9px 14px; border-radius: 999px; background: #E9DFEE; border: 1px solid #C9B7CF; font-size: 13px; font-weight: 600; color: #55446B;">Push</div>
+              </div>
+            </div>
+            <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 16px; padding: 18px; display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="font-size: 15px; font-weight: 700;">Cisza na czas urlopu</div>
+                <div style="font-size: 13px; color: #8B837A;">Wstrzymaj wszystkie przypomnienia do wybranej daty</div>
+              </div>
+              <div style="width: 52px; height: 30px; border-radius: 999px; background: #E4DCD1; padding: 3px; display: flex;"><div style="width: 24px; height: 24px; border-radius: 50%; background: #FFFFFF;"></div></div>
+            </div>
+          </div>
+          <div style="background: #E9DFEE; border-radius: 16px; padding: 18px; font-size: 14px; line-height: 1.6; color: #55446B;">Przypomnienia dotyczą wyłącznie relacji, które cichną. Nie zobaczysz tu przypomnień o dzisiejszych wydarzeniach — od tego masz kalendarz.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 7. LOGO -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">7 — Logo</div>
+      <div style="font-size: 13px; color: #8B837A;">Dwa okręgi w kontakcie: Ty i bliska osoba, część wspólna to rozmowa</div>
+    </div>
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: stretch;">
+
+      <div style="width: 420px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; padding: 40px; display: flex; flex-direction: column; gap: 28px; box-shadow: 0 18px 40px -30px rgba(60,45,30,0.45);">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Znak podstawowy</div>
+        <div style="display: flex; justify-content: center; padding: 20px 0;">
+          <div style="position: relative; width: 168px; height: 104px;">
+            <div style="position: absolute; left: 0; top: 0; width: 104px; height: 104px; border-radius: 50%; background: #F3C7CD;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 104px; height: 104px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Dwa koła zachodzą na siebie na tyle, żeby powstało trzecie pole — moment kontaktu. Róż i lawenda to te same akcenty, którymi aplikacja oznacza pilność relacji.</div>
+      </div>
+
+      <div style="width: 480px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; padding: 40px; display: flex; flex-direction: column; gap: 32px; box-shadow: 0 18px 40px -30px rgba(60,45,30,0.45);">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Lockupy</div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="position: relative; width: 46px; height: 30px; flex-shrink: 0;">
+            <div style="position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; background: #F3C7CD;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+          </div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 34px; line-height: 1;">InTouch</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+          <div style="position: relative; width: 62px; height: 40px;">
+            <div style="position: absolute; left: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: #F3C7CD;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+          </div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 30px; line-height: 1;">InTouch</div>
+          <div style="font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #8B837A;">bądź blisko bez pilnowania</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 34px; height: 34px; border: 1px solid #E4DCD1; border-radius: 11px; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
+            <div style="position: relative; width: 24px; height: 15px;">
+              <div style="position: absolute; left: 0; top: 0; width: 15px; height: 15px; border-radius: 50%; background: #F3C7CD;"></div>
+              <div style="position: absolute; right: 0; top: 0; width: 15px; height: 15px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+            </div>
+          </div>
+          <div style="font-size: 13px; color: #8B837A;">favicon 32 px — sam znak, bez sygnatury</div>
+        </div>
+      </div>
+
+      <div style="width: 300px; background: #2A2724; border-radius: 24px; padding: 40px; display: flex; flex-direction: column; gap: 26px; justify-content: space-between;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A39A90;">Na ciemnym tle</div>
+        <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+          <div style="position: relative; width: 62px; height: 40px;">
+            <div style="position: absolute; left: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: #F3C7CD;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: screen;"></div>
+          </div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 32px; color: #FBF8F4; line-height: 1;">InTouch</div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div style="width: 44px; height: 44px; border-radius: 14px; background: #FBF8F4; display: flex; align-items: center; justify-content: center;">
+            <div style="position: relative; width: 30px; height: 19px;">
+              <div style="position: absolute; left: 0; top: 0; width: 19px; height: 19px; border-radius: 50%; background: #F3C7CD;"></div>
+              <div style="position: absolute; right: 0; top: 0; width: 19px; height: 19px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: #A39A90; line-height: 1.5;">ikona aplikacji<br>na ekranie telefonu</div>
+        </div>
+      </div>
+
+      <div style="width: 340px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; padding: 40px; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 18px 40px -30px rgba(60,45,30,0.45);">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Jednokolorowo i w małych rozmiarach</div>
+        <div style="display: flex; align-items: flex-end; gap: 26px;">
+          <div style="position: relative; width: 62px; height: 40px;">
+            <div style="position: absolute; left: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: #2A2724;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #2A2724; background: transparent;"></div>
+          </div>
+          <div style="position: relative; width: 37px; height: 24px;">
+            <div style="position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: #2A2724;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #2A2724;"></div>
+          </div>
+          <div style="position: relative; width: 25px; height: 16px;">
+            <div style="position: absolute; left: 0; top: 0; width: 16px; height: 16px; border-radius: 50%; background: #2A2724;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #2A2724;"></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Poniżej 24 px pastele zlewają się z tłem — wtedy wersja jednokolorowa: koło pełne plus obrys.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 8. LANDING -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">8 — Landing page</div>
+      <div style="font-size: 13px; color: #8B837A;">Czym jest InTouch, dla kogo, jak działa</div>
+    </div>
+    <div style="width: 1200px; background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 24px; overflow: hidden; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+
+      <div style="padding: 26px 56px; border-bottom: 1px solid #EAE3D9; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="position: relative; width: 37px; height: 24px; flex-shrink: 0;">
+            <div style="position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: #F3C7CD;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+          </div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 24px;">InTouch</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 28px;">
+          <div style="font-size: 14px; color: #6B645C;">Jak to działa</div>
+          <div style="font-size: 14px; color: #6B645C;">Dla kogo</div>
+          <div style="font-size: 14px; color: #6B645C;">Prywatność</div>
+          <div style="height: 42px; padding: 0 20px; border-radius: 12px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; font-size: 14px; font-weight: 600;">Zacznij</div>
+        </div>
+      </div>
+
+      <div style="padding: 72px 56px 64px; display: flex; gap: 56px; align-items: center;">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 24px;">
+          
+          <div style="font-family: 'Instrument Serif', serif; font-size: 62px; line-height: 1.05; letter-spacing: -0.01em;">Bliscy nie znikają nagle. Znikają po cichu.</div>
+          <div style="font-size: 18px; line-height: 1.65; color: #55504A; max-width: 520px; text-wrap: pretty;">InTouch układa Twoich bliskich w kolejność — kto czeka najdłużej, na kim najbardziej Ci zależy, u kogo właśnie coś się dzieje. Raz dziennie podpowiada jedną osobę i mówi, dlaczego akurat ją.</div>
+          <div style="display: flex; gap: 12px; align-items: center; padding-top: 4px;">
+            <div style="height: 54px; padding: 0 28px; border-radius: 14px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; font-size: 16px; font-weight: 600;">Dodaj pierwsze osoby</div>
+            <div style="height: 54px; padding: 0 24px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; font-size: 16px; font-weight: 600;">Zobacz, jak to wygląda</div>
+          </div>
+          <div style="font-size: 13px; color: #8B837A;">Bez integracji z kontaktami i skrzynką. Sam decydujesz, kto jest na liście.</div>
+        </div>
+
+        <div style="width: 420px; background: #F3EDE5; border: 1px solid #E4DCD1; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0;">
+          <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8B837A;">Twój poniedziałek w InTouch</div>
+          <div style="background: #FFFFFF; border: 1px solid #E9C9CE; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 34px; height: 34px; border-radius: 11px; background: #F7D9DC; color: #8C4A52; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+                <div style="font-size: 16px; font-weight: 700;">Rodzina z gór</div>
+                <div style="font-size: 12px; color: #8B837A;">cisza od 12 miesięcy</div>
+              </div>
+              <div style="background: #F7D9DC; color: #8C4A52; font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 999px;">ten tydzień</div>
+            </div>
+            <div style="background: #FAF6F1; border-radius: 12px; padding: 12px; font-size: 13px; line-height: 1.55; color: #55504A; margin-top: 12px;">Najwyższa waga na Twojej liście, a poprzednia próba się nie udała.</div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 18px; padding: 14px 18px; display: flex; align-items: center; gap: 12px;">
+            <div style="width: 30px; height: 30px; border-radius: 10px; background: #F5E7CE; color: #8A6A34; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">2</div>
+            <div style="flex: 1; font-size: 15px; font-weight: 600;">Maciej</div>
+            <div style="font-size: 12px; color: #8A6A34;">2 tygodnie</div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 18px; padding: 14px 18px; display: flex; align-items: center; gap: 12px;">
+            <div style="width: 30px; height: 30px; border-radius: 10px; background: #D9E8DC; color: #4A6B52; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">3</div>
+            <div style="flex: 1; font-size: 15px; font-weight: 600;">Kasia</div>
+            <div style="font-size: 12px; color: #4A6B52;">miesiąc</div>
+          </div>
+          <div style="font-size: 12px; color: #A39A90; text-align: center; padding-top: 4px;">pozostałe 11 osób jest spokojnych</div>
+        </div>
+      </div>
+
+      <div style="background: #F3EDE5; border-top: 1px solid #EAE3D9; border-bottom: 1px solid #EAE3D9; padding: 56px; display: flex; flex-direction: column; gap: 32px;">
+        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 620px;">
+          <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Problem</div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 40px; line-height: 1.15;">Nie brakuje Ci chęci. Brakuje Ci porządku.</div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+          <div style="background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 11px; background: #F7D9DC;"></div>
+            <div style="font-size: 17px; font-weight: 700;">Myślisz o wszystkich naraz</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Trzydzieści osób w głowie kończy się tym, że nie dzwonisz do nikogo. Wina zostaje, kontakt nie.</div>
+          </div>
+          <div style="background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 11px; background: #DCE0F5;"></div>
+            <div style="font-size: 17px; font-weight: 700;">Kalendarz tu nie pomaga</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">„Zadzwoń do cioci” w cyklu co 30 dni zamienia relację w obowiązek i przestaje działać po dwóch tygodniach.</div>
+          </div>
+          <div style="background: #FBF8F4; border: 1px solid #E4DCD1; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 11px; background: #D9E8DC;"></div>
+            <div style="font-size: 17px; font-weight: 700;">Cisza rośnie niepostrzeżenie</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Miesiąc bez kontaktu wydaje się niczym. Rok później nie wiesz, jak zacząć rozmowę.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 64px 56px; display: flex; flex-direction: column; gap: 36px;">
+        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 640px;">
+          <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Jak to działa</div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 40px; line-height: 1.15;">Cztery kroki, potem już tylko odpowiadasz</div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="height: 4px; border-radius: 999px; background: #F3C7CD;"></div>
+            <div style="font-size: 13px; font-weight: 700; color: #8B837A;">01</div>
+            <div style="font-size: 18px; font-weight: 700;">Wypisz bliskich</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Imię, kim są dla Ciebie, co ich cieszy i jak ważna jest ta relacja w skali 1–5. Grupy też się liczą — „rodzina z gór” to jedna pozycja.</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="height: 4px; border-radius: 999px; background: #C6CDEE;"></div>
+            <div style="font-size: 13px; font-weight: 700; color: #8B837A;">02</div>
+            <div style="font-size: 18px; font-weight: 700;">Powiedz o sobie</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Ile realnie masz czasu w tygodniu, jak wolisz się odzywać i kiedy masz na to przestrzeń. Podpowiedzi trafiają w Twój rytm, nie w średnią.</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="height: 4px; border-radius: 999px; background: #E9DFEE;"></div>
+            <div style="font-size: 13px; font-weight: 700; color: #8B837A;">03</div>
+            <div style="font-size: 18px; font-weight: 700;">Dostajesz kolejność</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Lista od najpilniejszych do spokojnych, z okienkiem czasowym i wyjaśnieniem: waga relacji, czas ciszy, kontekst, poprzednia próba.</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="height: 4px; border-radius: 999px; background: #D9E8DC;"></div>
+            <div style="font-size: 13px; font-weight: 700; color: #8B837A;">04</div>
+            <div style="font-size: 18px; font-weight: 700;">Mówisz, czy się udało</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Jedno kliknięcie po terminie. Nie udało się? Wracamy z tym później, bez wyrzutów. Kolejność uczy się z Twoich odpowiedzi.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #2A2724; padding: 64px 56px; display: flex; gap: 56px;">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #A39A90;">Dla kogo</div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 40px; line-height: 1.15; color: #FBF8F4;">Dla ludzi, którym zależy na swoich najbliższych osobac</div>
+          <div style="font-size: 16px; line-height: 1.65; color: #C4BCB2; max-width: 420px; padding-top: 8px;">Nie dla sprzedawców i nie dla networkingu. InTouch jest o rodzinie, przyjaciołach i sąsiadach — relacjach, których nikt nie prowadzi w CRM-ie.</div>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+          <div style="background: #3A3530; border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 16px; font-weight: 700; color: #FBF8F4;">Rozproszona rodzina</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #B5ADA3;">Dziadkowie w innym mieście, kuzyni za granicą, rodzeństwo w innej strefie czasowej.</div>
+          </div>
+          <div style="background: #3A3530; border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 16px; font-weight: 700; color: #FBF8F4;">Przyjaźnie z dawnego etapu</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #B5ADA3;">Ludzie ze studiów i poprzedniej pracy, z którymi nadal chcesz mieć kontakt, choć nie widzicie się co tydzień.</div>
+          </div>
+          <div style="background: #3A3530; border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 16px; font-weight: 700; color: #FBF8F4;">Zajęte życie z dziećmi lub pracą</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #B5ADA3;">Kiedy masz w tygodniu jedną wolną godzinę, ma znaczenie, na kogo ją przeznaczysz.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 64px 56px; display: flex; flex-direction: column; gap: 28px;">
+        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 620px;">
+          <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Zasady, których się trzymamy</div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 40px; line-height: 1.15;">Cicha aplikacja, nie kolejny licznik</div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
+          <div style="background: #FAF6F1; border: 1px solid #EAE3D9; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 16px; font-weight: 700;">Maksymalnie jedno przypomnienie dziennie</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Zero serii, zero czerwonych kropek, zero straszenia utratą passy.</div>
+          </div>
+          <div style="background: #FAF6F1; border: 1px solid #EAE3D9; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 16px; font-weight: 700;">Zawsze wiesz, skąd wzięła się propozycja</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Każda pozycja ma rozpisane czynniki i ich wagę. Możesz się z nią nie zgodzić.</div>
+          </div>
+          <div style="background: #FAF6F1; border: 1px solid #EAE3D9; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 16px; font-weight: 700;">Twoje notatki zostają Twoje</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Nie czytamy Twojej skrzynki i nie importujemy kontaktów z telefonu. Lista powstaje z tego, co sam wpiszesz.</div>
+          </div>
+          <div style="background: #FAF6F1; border: 1px solid #EAE3D9; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 16px; font-weight: 700;">Nie zastępujemy kalendarza</div>
+            <div style="font-size: 14px; line-height: 1.6; color: #6B645C;">Urodziny i spotkania trzymaj tam, gdzie trzymasz. My pilnujemy tylko relacji, które cichną.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #F3EDE5; border-top: 1px solid #EAE3D9; padding: 64px 56px; display: flex; flex-direction: column; align-items: center; gap: 22px;">
+        <div style="position: relative; width: 62px; height: 40px;">
+          <div style="position: absolute; left: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: #F3C7CD;"></div>
+          <div style="position: absolute; right: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+        </div>
+        <div style="font-family: 'Instrument Serif', serif; font-size: 44px; line-height: 1.15; text-align: center; max-width: 620px;">Zacznij od trzech osób, które najdłużej odkładasz</div>
+        <div style="font-size: 16px; line-height: 1.6; color: #6B645C; text-align: center; max-width: 480px;">Konfiguracja zajmuje kilka minut. Pierwszą podpowiedź dostaniesz następnego dnia rano.</div>
+        <div style="height: 54px; padding: 0 30px; border-radius: 14px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; font-size: 16px; font-weight: 600;">Zacznij</div>
+      </div>
+
+      <div style="padding: 28px 56px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #EAE3D9;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="position: relative; width: 28px; height: 18px; flex-shrink: 0;">
+            <div style="position: absolute; left: 0; top: 0; width: 18px; height: 18px; border-radius: 50%; background: #F3C7CD;"></div>
+            <div style="position: absolute; right: 0; top: 0; width: 18px; height: 18px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+          </div>
+          <div style="font-size: 13px; color: #8B837A;">InTouch · bądź blisko bez pilnowania</div>
+        </div>
+        <div style="display: flex; gap: 22px; font-size: 13px; color: #8B837A;">
+          <div>Prywatność</div>
+          <div>Regulamin</div>
+          <div>Kontakt</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 9. EMAIL -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <div style="font-family: 'Instrument Serif', serif; font-size: 30px;">9 — Mail z przypomnieniem</div>
+      <div style="font-size: 13px; color: #8B837A;">FR-008 — jeden mail, jedna osoba, jedno wezwanie</div>
+    </div>
+    <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Skrzynka odbiorcza</div>
+        <div style="width: 640px; background: #FFFFFF; border: 1px solid #E4DCD1; border-radius: 18px; padding: 20px 24px; display: flex; gap: 16px; align-items: flex-start;">
+          <div style="width: 40px; height: 40px; border-radius: 13px; background: #FBF8F4; border: 1px solid #EAE3D9; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <div style="position: relative; width: 27px; height: 17px;">
+              <div style="position: absolute; left: 0; top: 0; width: 17px; height: 17px; border-radius: 50%; background: #F3C7CD;"></div>
+              <div style="position: absolute; right: 0; top: 0; width: 17px; height: 17px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+            </div>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; justify-content: space-between;">
+              <div style="font-size: 14px; font-weight: 700;">InTouch</div>
+              <div style="font-size: 13px; color: #A39A90;">8:15</div>
+            </div>
+            <div style="font-size: 15px; font-weight: 600;">Rodzina z gór — minął rok od rozmowy</div>
+            <div style="font-size: 14px; color: #8B837A;">Dobry moment, żeby zadzwonić w ten weekend. Bez okazji, po prostu…</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Treść maila · 600 px</div>
+        <div style="width: 640px; background: #EFE9E1; border-radius: 24px; padding: 20px; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+          <div style="width: 600px; background: #FBF8F4; border-radius: 20px; overflow: hidden;">
+
+            <div style="padding: 28px 40px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #EAE3D9;">
+              <div style="position: relative; width: 40px; height: 26px;">
+                <div style="position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; background: #F3C7CD;"></div>
+                <div style="position: absolute; right: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+              </div>
+              <div style="font-family: 'Instrument Serif', serif; font-size: 24px;">InTouch</div>
+              <div style="margin-left: auto; font-size: 12px; color: #A39A90;">poniedziałek, 10 sierpnia</div>
+            </div>
+
+            <div style="padding: 34px 40px 8px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="background: #F7D9DC; color: #8C4A52; font-size: 12px; font-weight: 700; padding: 7px 13px; border-radius: 999px; align-self: flex-start;">Odezwij się w tym tygodniu</div>
+              <div style="font-family: 'Instrument Serif', serif; font-size: 34px; line-height: 1.15;">Cześć Anno — rodzina z gór czeka najdłużej</div>
+              <div style="font-size: 16px; line-height: 1.65; color: #55504A;">Minął rok od ostatniej rozmowy z ciocią Basią, wujkiem Markiem i dziadkami. To relacja, którą oznaczyłaś jako najważniejszą, a poprzednia próba kontaktu nie doszła do skutku.</div>
+            </div>
+
+            <div style="padding: 24px 40px 0;">
+              <div style="background: #FFFFFF; border: 1px solid #EAE3D9; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 14px;">
+                <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8B837A;">Dlaczego akurat teraz</div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                  <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: #C48A93; flex-shrink: 0;"></div>
+                    <div style="font-size: 15px; color: #2A2724;">Waga relacji <span style="font-weight: 700;">5 na 5</span> — najwyższa w Twojej liście</div>
+                  </div>
+                  <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: #C48A93; flex-shrink: 0;"></div>
+                    <div style="font-size: 15px; color: #2A2724;">Cisza od <span style="font-weight: 700;">12 miesięcy</span></div>
+                  </div>
+                  <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: #C9A96A; flex-shrink: 0;"></div>
+                    <div style="font-size: 15px; color: #2A2724;">Poprzednia próba <span style="font-weight: 700;">nie udała się</span> — przesunięta z kwietnia</div>
+                  </div>
+                  <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: #8E96C4; flex-shrink: 0;"></div>
+                    <div style="font-size: 15px; color: #2A2724;">Twój rytm: <span style="font-weight: 700;">rozmowa telefoniczna w weekend</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding: 26px 40px 0; display: flex; flex-direction: column; gap: 12px;">
+              <div style="height: 52px; border-radius: 14px; background: #2A2724; color: #FBF8F4; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600;">Zaplanuję kontakt</div>
+              <div style="display: flex; gap: 10px;">
+                <div style="flex: 1; height: 46px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #55504A;">Odłóż o tydzień</div>
+                <div style="flex: 1; height: 46px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #55504A;">Już rozmawialiśmy</div>
+              </div>
+            </div>
+
+            <div style="padding: 26px 40px 0;">
+              <div style="border-top: 1px solid #EAE3D9; padding-top: 20px; display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8B837A;">W kolejce, ale bez pośpiechu</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+                  <div style="color: #2A2724; font-weight: 600;">Maciej</div>
+                  <div style="color: #8A6A34;">w ciągu 2 tygodni</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+                  <div style="color: #2A2724; font-weight: 600;">Kasia</div>
+                  <div style="color: #4A6B52;">w ciągu miesiąca</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin: 28px 0 0; background: #F3EDE5; padding: 24px 40px 30px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 13px; line-height: 1.6; color: #6B645C;">Wysyłamy maksymalnie jedną taką wiadomość dziennie, tylko o relacjach, które cichną.</div>
+              <div style="font-size: 13px; color: #8B837A;">Zmień częstotliwość · Wypisz się · InTouch</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8B837A;">Mail „czy się udało?” — 3 dni po terminie</div>
+        <div style="width: 640px; background: #EFE9E1; border-radius: 24px; padding: 20px; box-shadow: 0 24px 60px -40px rgba(60,45,30,0.5);">
+          <div style="width: 600px; background: #FBF8F4; border-radius: 20px; overflow: hidden;">
+            <div style="padding: 24px 40px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #EAE3D9;">
+              <div style="position: relative; width: 34px; height: 22px;">
+                <div style="position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: #F3C7CD;"></div>
+                <div style="position: absolute; right: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: #C6CDEE; mix-blend-mode: multiply;"></div>
+              </div>
+              <div style="font-family: 'Instrument Serif', serif; font-size: 21px;">InTouch</div>
+            </div>
+            <div style="padding: 30px 40px 26px; display: flex; flex-direction: column; gap: 16px;">
+              <div style="font-family: 'Instrument Serif', serif; font-size: 30px; line-height: 1.2;">Udało się odezwać do rodziny z gór?</div>
+              <div style="font-size: 16px; line-height: 1.65; color: #55504A;">Jedno kliknięcie wystarczy. Odpowiedź wpływa tylko na to, kiedy przypomnimy następnym razem — nie oceniamy.</div>
+              <div style="display: flex; gap: 10px; padding-top: 4px;">
+                <div style="flex: 1; height: 54px; border-radius: 14px; background: #D9E8DC; border: 1px solid #B6D2BE; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #3F6049;">Tak, rozmawialiśmy</div>
+                <div style="flex: 1; height: 54px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E4DCD1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: #55504A;">Jeszcze nie</div>
+              </div>
+            </div>
+            <div style="background: #F3EDE5; padding: 20px 40px 26px; font-size: 13px; color: #8B837A;">Zapytamy ponownie za tydzień · Wypisz się</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>
