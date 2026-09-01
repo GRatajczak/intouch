@@ -100,6 +100,84 @@ export type Database = {
         }
         Relationships: []
       }
+      ranking_entries: {
+        Row: {
+          context_note: string | null
+          id: string
+          owner_id: string
+          person_id: string
+          rank_position: number
+          ranking_id: string
+          reason: string
+          rhythm_note: string | null
+          time_window: string
+        }
+        Insert: {
+          context_note?: string | null
+          id?: string
+          owner_id: string
+          person_id: string
+          rank_position: number
+          ranking_id: string
+          reason: string
+          rhythm_note?: string | null
+          time_window: string
+        }
+        Update: {
+          context_note?: string | null
+          id?: string
+          owner_id?: string
+          person_id?: string
+          rank_position?: number
+          ranking_id?: string
+          reason?: string
+          rhythm_note?: string | null
+          time_window?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ranking_entries_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ranking_entries_ranking_id_fkey"
+            columns: ["ranking_id"]
+            isOneToOne: false
+            referencedRelation: "rankings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rankings: {
+        Row: {
+          created_at: string
+          id: string
+          model: string
+          owner_id: string
+          people_considered: number
+          people_total: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          model: string
+          owner_id: string
+          people_considered: number
+          people_total: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          model?: string
+          owner_id?: string
+          people_considered?: number
+          people_total?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

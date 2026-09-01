@@ -186,20 +186,21 @@ async function main() {
       "user A's update of user B's profile affects zero rows",
     );
 
-    // profiles has no delete policy (plan: "no delete -- nothing in this
-    // slice deletes a profile"). The table grant itself is broader (Supabase's
-    // local project applies default privileges to every new table), so the
-    // request reaches PostgREST fine; RLS's default-deny on the missing
-    // policy is what stops it -- a silent zero-row no-op, not an error, same
-    // shape as the people-table cross-delete assertions above.
+    // profiles has no delete policy AND no delete grant (plan: "no delete --
+    // nothing in this slice deletes a profile"). With no DELETE privilege on
+    // the table at all, PostgREST never reaches RLS -- it rejects the request
+    // at the grant level with 42501 "permission denied for table profiles"
+    // rather than a silent zero-row no-op. Both outcomes prove the same thing
+    // (user A cannot touch user B's profile via delete), so either is accepted.
     const { data: crossProfileDeleteA, error: crossProfileDeleteAErr } = await clientA
       .from("profiles")
       .delete()
       .eq("owner_id", userBId)
       .select();
     assert(
-      !crossProfileDeleteAErr && crossProfileDeleteA.length === 0,
-      "user A's delete of user B's profile affects zero rows",
+      crossProfileDeleteAErr?.code === "42501" ||
+        (!crossProfileDeleteAErr && crossProfileDeleteA?.length === 0),
+      "user A's delete of user B's profile affects zero rows (or is rejected for lacking the delete grant)",
     );
 
     const { data: stillThereProfileB, error: stillThereProfileBErr } = await clientB
