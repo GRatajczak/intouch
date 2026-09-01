@@ -349,31 +349,31 @@ Phase 1's migration is forward-compatible per `CLAUDE.md`: every column is nulla
 
 #### Automated
 
-- [x] 0.1 Remote columns dropped from `public.profiles`
-- [x] 0.2 Migration history clean on both sides — `supabase migration list` shows two matched rows
-- [x] 0.3 Working tree clean under `src/` and `scripts/`
-- [x] 0.4 Linting passes
-- [x] 0.5 Type checking passes
+- [x] 0.1 Remote columns dropped from `public.profiles` — adae754
+- [x] 0.2 Migration history clean on both sides — `supabase migration list` shows two matched rows — adae754
+- [x] 0.3 Working tree clean under `src/` and `scripts/` — adae754
+- [x] 0.4 Linting passes — adae754
+- [x] 0.5 Type checking passes — adae754
 
 #### Manual
 
-- [x] 0.6 Human confirmed the production DDL, having re-checked no deployed code reads the columns
-- [x] 0.7 `/profile` loads and saves the original three fields after the reset
+- [x] 0.6 Human confirmed the production DDL, having re-checked no deployed code reads the columns — adae754
+- [x] 0.7 `/profile` loads and saves the original three fields after the reset — adae754
 
 ### Phase 1: Schema and Generated Types
 
 #### Automated
 
-- [ ] 1.1 Migration applies locally via `supabase db reset`
-- [ ] 1.2 Migration applies remotely via `supabase db push`; `migration list` shows three matched rows
-- [ ] 1.3 `npm run db:types` regenerates cleanly with no diff on rerun
-- [ ] 1.4 `npm run verify:rls` passes with the new columns seeded
-- [ ] 1.5 Type checking passes
+- [x] 1.1 Migration applies locally via `supabase db reset`
+- [x] 1.2 Migration applies remotely via `supabase db push`; `migration list` shows three matched rows
+- [x] 1.3 `npm run db:types` regenerates cleanly with no diff on rerun
+- [x] 1.4 `npm run verify:rls` passes with the new columns seeded
+- [x] 1.5 Type checking passes
 
 #### Manual
 
-- [ ] 1.6 Column names and allowed values match the design bundle's onboarding card
-- [ ] 1.7 Existing profile rows survived the migration with usable defaults
+- [x] 1.6 Column names and allowed values match the design bundle's onboarding card
+- [x] 1.7 Existing profile rows survived the migration with usable defaults
 
 ### Phase 2: Validation Contract and Chip Component
 

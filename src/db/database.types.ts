@@ -69,25 +69,34 @@ export type Database = {
       }
       profiles: {
         Row: {
+          availability_windows: string[]
           birth_date: string
           life_context: string
           name: string
           owner_id: string
+          preferred_channels: string[]
           updated_at: string
+          weekly_time_budget: string | null
         }
         Insert: {
+          availability_windows?: string[]
           birth_date: string
           life_context: string
           name: string
           owner_id: string
+          preferred_channels?: string[]
           updated_at?: string
+          weekly_time_budget?: string | null
         }
         Update: {
+          availability_windows?: string[]
           birth_date?: string
           life_context?: string
           name?: string
           owner_id?: string
+          preferred_channels?: string[]
           updated_at?: string
+          weekly_time_budget?: string | null
         }
         Relationships: []
       }

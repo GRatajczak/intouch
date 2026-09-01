@@ -135,12 +135,18 @@ async function main() {
       name: "Profile A",
       birth_date: "1995-01-01",
       life_context: "Seeded by verify-rls",
+      weekly_time_budget: "hours_1_3",
+      preferred_channels: ["phone", "in_person"],
+      availability_windows: ["weekend"],
     };
     const profilePayloadB = {
       owner_id: userBId,
       name: "Profile B",
       birth_date: "1990-06-15",
       life_context: "Seeded by verify-rls",
+      weekly_time_budget: "under_1h",
+      preferred_channels: ["message", "video"],
+      availability_windows: ["weekday_morning", "weekday_evening"],
     };
     const { data: insertedProfileA, error: insertProfileAErr } = await clientA
       .from("profiles")
@@ -180,12 +186,21 @@ async function main() {
       "user A's update of user B's profile affects zero rows",
     );
 
-    // profiles has no delete policy and no DELETE grant (plan: "no delete --
-    // nothing in this slice deletes a profile"), so any delete attempt --
-    // even against one's own row -- is rejected at the table-grant layer
-    // with a permission error, not a silent zero-row no-op.
-    const { error: crossProfileDeleteAErr } = await clientA.from("profiles").delete().eq("owner_id", userBId).select();
-    assert(!!crossProfileDeleteAErr, "user A's delete of user B's profile is rejected (no delete grant on profiles)");
+    // profiles has no delete policy (plan: "no delete -- nothing in this
+    // slice deletes a profile"). The table grant itself is broader (Supabase's
+    // local project applies default privileges to every new table), so the
+    // request reaches PostgREST fine; RLS's default-deny on the missing
+    // policy is what stops it -- a silent zero-row no-op, not an error, same
+    // shape as the people-table cross-delete assertions above.
+    const { data: crossProfileDeleteA, error: crossProfileDeleteAErr } = await clientA
+      .from("profiles")
+      .delete()
+      .eq("owner_id", userBId)
+      .select();
+    assert(
+      !crossProfileDeleteAErr && crossProfileDeleteA.length === 0,
+      "user A's delete of user B's profile affects zero rows",
+    );
 
     const { data: stillThereProfileB, error: stillThereProfileBErr } = await clientB
       .from("profiles")
