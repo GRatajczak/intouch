@@ -408,13 +408,13 @@ Phase 1's migration is forward-compatible per `CLAUDE.md`: every column is nulla
 
 #### Automated
 
-- [x] 4.1 `.ai/` bundle tracked with `project/uploads/` excluded
-- [x] 4.2 Full gate passes on the committed tree — lint, check, build
-- [x] 4.3 `npm run verify:rls` passes
-- [x] 4.4 `git status --short` is empty (known exception: `.claude/fiszki/`, untracked and unrelated to this plan, predates this session — left alone)
+- [x] 4.1 `.ai/` bundle tracked with `project/uploads/` excluded — 28e00f7
+- [x] 4.2 Full gate passes on the committed tree — lint, check, build — 28e00f7
+- [x] 4.3 `npm run verify:rls` passes — 28e00f7
+- [x] 4.4 `git status --short` is empty (known exception: `.claude/fiszki/`, untracked and unrelated to this plan, predates this session — left alone) — 28e00f7
 
 #### Manual
 
-- [x] 4.5 `InTouch.dc.html` line citations resolve in the committed copy
-- [x] 4.6 Roadmap `S-09` reads `done` in both the table and the item body
-- [x] 4.7 `[S-09]` Linear issue synced with a comment carrying SHAs and the Phase 0 rationale
+- [x] 4.5 `InTouch.dc.html` line citations resolve in the committed copy — 28e00f7
+- [x] 4.6 Roadmap `S-09` reads `done` in both the table and the item body — 28e00f7
+- [x] 4.7 `[S-09]` Linear issue synced with a comment carrying SHAs and the Phase 0 rationale — 28e00f7
