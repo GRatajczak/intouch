@@ -364,24 +364,24 @@ Phase 1's migration is forward-compatible per `CLAUDE.md`: every column is nulla
 
 #### Automated
 
-- [x] 1.1 Migration applies locally via `supabase db reset`
-- [x] 1.2 Migration applies remotely via `supabase db push`; `migration list` shows three matched rows
-- [x] 1.3 `npm run db:types` regenerates cleanly with no diff on rerun
-- [x] 1.4 `npm run verify:rls` passes with the new columns seeded
-- [x] 1.5 Type checking passes
+- [x] 1.1 Migration applies locally via `supabase db reset` — 7a6c56e
+- [x] 1.2 Migration applies remotely via `supabase db push`; `migration list` shows three matched rows — 7a6c56e
+- [x] 1.3 `npm run db:types` regenerates cleanly with no diff on rerun — 7a6c56e
+- [x] 1.4 `npm run verify:rls` passes with the new columns seeded — 7a6c56e
+- [x] 1.5 Type checking passes — 7a6c56e
 
 #### Manual
 
-- [x] 1.6 Column names and allowed values match the design bundle's onboarding card
-- [x] 1.7 Existing profile rows survived the migration with usable defaults
+- [x] 1.6 Column names and allowed values match the design bundle's onboarding card — 7a6c56e
+- [x] 1.7 Existing profile rows survived the migration with usable defaults — 7a6c56e
 
 ### Phase 2: Validation Contract and Chip Component
 
 #### Automated
 
-- [ ] 2.1 Linting passes, including `jsx-a11y`
-- [ ] 2.2 Type checking passes
-- [ ] 2.3 Component folder carries `ChoiceChips.tsx`, `types.ts` and `index.ts`
+- [x] 2.1 Linting passes, including `jsx-a11y`
+- [x] 2.2 Type checking passes
+- [x] 2.3 Component folder carries `ChoiceChips.tsx`, `types.ts` and `index.ts`
 
 #### Manual
 
