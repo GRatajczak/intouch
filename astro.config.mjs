@@ -29,6 +29,13 @@ export default defineConfig({
       // absent, so a missing secret fails one screen's job rather than the whole
       // Worker (mirrors src/lib/supabase.ts).
       OPENAI_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+      // Same optional-secret shape as OPENAI_API_KEY: src/lib/resend.ts returns
+      // null when absent, so a missing key fails one scheduled send, not the
+      // whole Worker.
+      RESEND_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+      // The only address Resend's onboarding@resend.dev test sender can deliver
+      // to (the account owner's own verified email) — see F-04's plan.
+      RESEND_TEST_RECIPIENT: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
 });
