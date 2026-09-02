@@ -3,7 +3,7 @@ project: "InTouch"
 version: 2
 status: draft
 created: 2026-08-15
-updated: 2026-09-01
+updated: 2026-09-02
 prd_version: 2
 main_goal: speed
 top_blocker: time
@@ -42,15 +42,15 @@ successfully done").
 | ID   | Change ID                    | Outcome (user can …)                                              | Prerequisites | PRD refs                       | Status   |
 | ---- | ---------------------------- | ----------------------------------------------------------------- | ------------- | ------------------------------ | -------- |
 | F-01 | `per-user-data-isolation`    | (foundation) migrations + default-deny RLS + a proof of isolation | —             | NFR-privacy, Access Control    | done        |
-| F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | in-progress |
+| F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | done        |
 | F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | done                                        |
 | F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | ready    |
 | F-05 | `design-alignment-pass`      | (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design | F-03, S-01 | NFR-browser (mobile usability) | done      |
 | S-01 | `profile-and-first-people`   | fill a self-profile and add people with a weight, and see them    | F-01, F-03    | FR-001, FR-002, FR-003, FR-004 | done      |
-| S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02, S-09 | US-01, FR-007               | in-progress |
-| S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | proposed |
+| S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02, S-09 | US-01, FR-007               | done        |
+| S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | ready    |
 | S-04 | `decay-driven-reminders`     | be reminded, unprompted, about relationships going quiet          | S-03, F-04    | FR-008, NFR-once-per-day       | blocked  |
-| S-05 | `person-lifecycle-and-erasure`| edit, deactivate and permanently delete a person                  | S-01          | FR-005, NFR-privacy            | proposed |
+| S-05 | `person-lifecycle-and-erasure`| edit, deactivate and permanently delete a person                  | S-01          | FR-005, NFR-privacy            | ready    |
 | S-06 | `landing-page`                | see a real marketing page at `/` explaining what InTouch is, before signing in | F-03          | Access Control ("unauthenticated visitor") | done |
 | S-07 | `account-and-profile-settings` | edit their own profile after first fill and manage their account from `/settings`       | S-01, F-05    | FR-001, FR-002, FR-008 (address), Access Control | proposed |
 | S-08 | `password-recovery`           | get back into their account after forgetting the password         | F-03          | FR-001                         | proposed |
@@ -109,10 +109,10 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Prerequisites:** —
 - **Parallel with:** F-01, S-01
 - **Blockers:** — (OpenAI chosen; the user already holds the API key, so nothing external is pending)
-- **Unknowns:**
-  - What is the non-blocking generation shape — deferred work with a "ready" notification, or an in-view async state the user may navigate away from? Owner: user, during F-02's plan. Block: no — resolving this *is* the work of this foundation.
+- **Unknowns:** — resolved during this foundation's work:
+  - ~~The non-blocking generation shape~~ — settled as a KV-backed deferred job: the route enqueues, returns a job id, and the view polls; the user may leave or close it while the call runs. Shipped in `d73f3e9`, verified against production limits in `cafa8b1`.
 - **Risk:** Sequenced here because `lessons.md` already records that a fast local `astro dev` run proves nothing about the Workers free-tier ceilings, and an LLM call is exactly the kind of per-request work that finds them. Discovering this inside `S-02` would invalidate that slice's whole design rather than just its plan. Scope is capped at one proven call path plus the secret in all three places (`.dev.vars`, `wrangler secret`, GitHub Secrets) — not a prompt, not a ranking, not a schema.
-- **Status:** in-progress
+- **Status:** done
 
 ### F-03: Design system and product identity
 
@@ -180,10 +180,10 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Prerequisites:** S-01, F-02, S-09 (the self-profile rhythm fields the "Twój rytm" half of each explanation is derived from)
 - **Parallel with:** S-05
 - **Blockers:** —
-- **Unknowns:**
-  - How much of the "why this order / why this time window" reasoning is shown to the user? Owner: user, during this slice's plan. Block: no — affects the depth of the view, not whether the slice can be built.
+- **Unknowns:** — resolved during this slice's plan:
+  - ~~How much "why this order / why this time window" reasoning is shown~~ — full `Dlaczego teraz` plus factor chips for the top 3, one-line collapsed rows with `Rozwiń` below. Time windows are enum buckets with a Polish label map, never model-authored prose.
 - **Risk:** The PRD names AI relevance as a guardrail: a nonsensical ranking makes the core feature worthless even when every other part works. Two acceptance criteria are the real test — two people with the same weight must not be ordered identically, and a user with no people must get an explanatory empty state rather than an error. Sequenced immediately after its two prerequisites because it carries the product's biggest unknown and `main_goal: speed` means finding out early beats polishing around it.
-- **Status:** in-progress
+- **Status:** done
 
 ### S-03: Did-it-happen feedback loop
 
@@ -195,7 +195,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** This is the north star, and its risk is behavioural rather than technical: the PRD already flags that users will not bother marking did-it-happen unless the marker is frictionless, and an empty loop leaves the hierarchy permanently stale. Note this slice deliberately lands *before* reminders (`S-04`) — the confirmation can be prompted inside the app from the hierarchy view, which means the loop closes without waiting on a delivery channel that is still undecided.
-- **Status:** proposed
+- **Status:** ready
 
 ### S-04: Decay-driven reminders
 
@@ -222,7 +222,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Carries the second half of the privacy NFR, which is binary — partial deletion is a failure, not a smaller success. The deactivate-before-delete rule exists because deleting a person otherwise destroys the contact history feeding the ranking, so the two paths must not be collapsed into one "remove" action for speed. Fully parallel with the Stream A chain: it touches the same tables but none of the ranking logic, which under `top_blocker: time` makes it the natural candidate for a separate agent run.
-- **Status:** proposed
+- **Status:** ready
 
 ### S-06: Public landing page
 
@@ -291,23 +291,24 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | Roadmap ID | Change ID                      | Suggested issue title                                         | Ready for `/10x-plan` | Notes                                                       |
 | ---------- | ------------------------------ | ------------------------------------------------------------- | --------------------- | ----------------------------------------------------------- |
 | F-01       | `per-user-data-isolation`      | Migration path + default-deny RLS for user-owned data          | done                  | Shipped `c7fd8b5`…`54508d1`; impl-reviewed. Linear GRA-5     |
-| F-02       | `openai-ranking-call-path`     | Non-blocking OpenAI call path from the Worker                  | planned               | Plan written (`9aaf49d`), not implemented. Next on Stream A  |
+| F-02       | `openai-ranking-call-path`     | Non-blocking OpenAI call path from the Worker                  | done                  | Shipped `7cbd2b3`…`96e19b6`; plan-reviewed                   |
 | F-03       | `design-system-foundation`     | Design tokens + palette, drop the starter theme                | done                  | Shipped `e3a00ab`…`402cafb`. Linear GRA-16                   |
 | S-01       | `profile-and-first-people`     | Self-profile + add people with description and weight          | done                  | Shipped `4ac61e6`…`a54295b`; impl-reviewed. Linear GRA-7     |
-| S-02       | `ai-contact-hierarchy`         | AI-ranked contact hierarchy with suggested time windows        | no                    | S-01 done; waits only on F-02                                |
-| S-03       | `did-it-happen-feedback-loop`  | Did-it-happen confirmation feeding the next ranking            | no                    | North star. Needs S-02                                       |
+| S-02       | `ai-contact-hierarchy`         | AI-ranked contact hierarchy with suggested time windows        | done                  | Shipped `c5a73a4`…`0acfa76`; impl-reviewed (0 critical)      |
+| S-03       | `did-it-happen-feedback-loop`  | Did-it-happen confirmation feeding the next ranking            | yes                   | **North star.** S-02 done — unblocked. Next on Stream A      |
 | S-09       | `self-profile-rhythm-fields`   | Self-profile rhythm fields feeding the AI schedule             | done                  | Shipped `adae754`…`a4c7f99`; impl-reviewed. Linear GRA-20 |
 | F-04       | `resend-email-delivery-path`   | Send one real email from the Worker on a schedule via Resend   | yes                   | Parallel with F-01/F-02/F-03; start the sending domain first  |
 | F-05       | `design-alignment-pass`        | App shell (sidebar/bottom-nav) + catalog grid reskin from the finished design | done | Shipped `ab2fded`…`ff28367`. Linear GRA-18                  |
 | S-04       | `decay-driven-reminders`       | Decay-driven reminders, at most once per day                   | no                    | Needs S-03 and F-04. Blocked: reminder cadence undecided      |
-| S-05       | `person-lifecycle-and-erasure` | Edit, deactivate and irreversibly delete a person              | no                    | Needs S-01; then runs parallel to the whole Stream A chain   |
+| S-05       | `person-lifecycle-and-erasure` | Edit, deactivate and irreversibly delete a person              | yes                   | S-01 done — unblocked; runs parallel to the whole Stream A chain |
 | S-06       | `landing-page`                 | Public landing page at `/` from the existing design + copy     | done                  | Shipped `edcfa48`…`a01cb9f`. Linear GRA-19                   |
 | S-07       | `account-and-profile-settings` | Editable profile + account settings on the `/settings` page    | yes                   | S-01 and F-05 done — unblocked. Replaces the stub's placeholder copy |
 | S-08       | `password-recovery`            | Forgot-password reset flow from the signin screen              | yes                   | F-03 done — unblocked. Check the mailer against F-04's sender   |
 
 ## Open Roadmap Questions
 
-1. **AI-suggestion explainability** — how much of the "why this order / why this time window" should be shown so users trust the hierarchy? Ties to the PRD's AI-relevance guardrail. Owner: user, during design. Block: `S-02`.
+1. ~~**AI-suggestion explainability**~~
+   > **Resolved and closed** by `S-02` (`c5a73a4`…`0acfa76`). The hierarchy shows a full `Dlaczego teraz` plus factor chips for the top 3 entries, and one-line collapsed rows with `Rozwiń` below them. The suggested time window is an enum bucket rendered through a Polish label map — never model-authored prose — so the AI-relevance guardrail is checked against a fixed vocabulary rather than free text.
 2. **Structured-form fields** — the exact fields for the self-profile (FR-002) and the per-person form (FR-003) are not pinned. Owner: user, during design. Block: `S-01`.
 3. **Reminder cadence** — how frequently reminders fire without becoming spam users mute. Bounded by the once-per-day NFR, but the decay-driven trigger logic is unresolved. Owner: user, during design. Block: `S-04`.
 4. **Resend sending identity** — an owned domain (DNS records plus a verification wait nobody can compress) or Resend's `onboarding@resend.dev` test sender (instant, but delivers only to the account owner's own address). Owner: user, during `F-04`'s plan. Block: `F-04` — not hard-blocking (F-04 is `ready`), but it is the longest-lead item on the board, so start it before writing any reminder code. Whatever identity is chosen also serves the auth emails in Open Question 10, so decide it once.
