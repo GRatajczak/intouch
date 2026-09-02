@@ -15,7 +15,8 @@
     "cf-typegen": "wrangler types",
     "db:types": "supabase gen types typescript --local > src/db/database.types.ts",
     "verify:rls": "tsx scripts/verify-rls.ts",
-    "verify:ai-call": "tsx scripts/verify-openai-call.ts"
+    "verify:ai-call": "tsx scripts/verify-openai-call.ts",
+    "verify:ranking": "tsx scripts/verify-ranking.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
