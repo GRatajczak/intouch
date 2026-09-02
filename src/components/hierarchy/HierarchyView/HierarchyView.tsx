@@ -67,6 +67,12 @@ export function HierarchyView({ initialRanking, staleOnLoad }: HierarchyViewProp
   );
 
   const pollJob = useCallback((jobId: string) => {
+    // Defensive: a caller invoking pollJob a second time before the first
+    // finishes would otherwise leak the earlier interval -- unreachable
+    // today (the refresh button disables while refreshing) but cheap to guard.
+    if (pollTimerRef.current) {
+      clearInterval(pollTimerRef.current);
+    }
     let attempts = 0;
     const timer = setInterval(() => {
       attempts += 1;

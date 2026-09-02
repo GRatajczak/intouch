@@ -168,9 +168,11 @@ async function main() {
 
   if (ranking) {
     assert(
-      ranking.entries.length === ranking.peopleTotal,
-      `ranking has one entry per person on the account (${String(ranking.entries.length)} entries, ` +
-        `${String(ranking.peopleTotal)} people)`,
+      // Only people actually sent to the model (capped at PEOPLE_CAP = 50)
+      // are guaranteed an entry -- peopleConsidered, not peopleTotal.
+      ranking.entries.length === ranking.peopleConsidered,
+      `ranking has one entry per person considered (${String(ranking.entries.length)} entries, ` +
+        `${String(ranking.peopleConsidered)} considered)`,
     );
     const allHaveValidTimeWindow = ranking.entries.every((entry) => TIME_WINDOW_VALUES.includes(entry.timeWindow));
     assert(allHaveValidTimeWindow, "every entry has a time window from the enum");

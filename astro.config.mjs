@@ -24,8 +24,10 @@ export default defineConfig({
     schema: {
       SUPABASE_URL: envField.string({ context: "server", access: "secret", optional: false }),
       SUPABASE_KEY: envField.string({ context: "server", access: "secret", optional: false }),
-      // Optional until S-02 depends on it: the client factory in src/lib/openai.ts
-      // returns null when the key is absent, mirroring src/lib/supabase.ts.
+      // Stays optional by design even though S-02's ranking feature now depends on
+      // it: the client factory in src/lib/openai.ts returns null when the key is
+      // absent, so a missing secret fails one screen's job rather than the whole
+      // Worker (mirrors src/lib/supabase.ts).
       OPENAI_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },

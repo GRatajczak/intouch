@@ -46,6 +46,14 @@ export const POST: APIRoute = async (context) => {
   // In-flight guard: a double page load (or the auto-trigger racing a manual
   // "Przelicz teraz") must not fire two concurrent OpenAI calls for the same
   // owner. Reuse the running job's id instead of starting another.
+  //
+  // Known residual race (accepted for this slice): KV has no compare-and-swap,
+  // so two requests arriving close enough together can both read "no pending
+  // job" before either writes one, and both dispatch a run. Worst case is
+  // bounded -- duplicate OpenAI spend and one `rankings` row outranked by
+  // `created_at desc`, never a data-corruption or cross-user issue. Closing
+  // this fully needs a primitive KV doesn't have (a Durable Object or a
+  // DB-level advisory lock), which is out of scope here.
   const latestJobId = await readLatestRankingJobId(ownerId);
   if (latestJobId) {
     const latestJob = await readJob(latestJobId);
