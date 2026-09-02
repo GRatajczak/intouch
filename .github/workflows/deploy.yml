@@ -21,6 +21,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx astro sync
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_TEST_RECIPIENT: ${{ secrets.RESEND_TEST_RECIPIENT }}
       - run: npm run lint
       - run: npm run build
         env:
