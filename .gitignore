@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# local scratch output
+email-preview.html
+
 # generated types
 .astro/
 

@@ -1,11 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "intouch",
-  "main": "@astrojs/cloudflare/entrypoints/server",
+  "main": "./src/worker.ts",
   "compatibility_date": "2026-05-08",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "preview_urls": true,
+  // F-04: daily reminder-delivery proof send. Non-versioned — apply with
+  // `wrangler triggers deploy`, not `versions upload` alone.
+  "triggers": {
+    "crons": ["0 0 * * *"],
+  },
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist",

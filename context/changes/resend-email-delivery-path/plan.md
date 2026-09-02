@@ -49,6 +49,10 @@ Add `RESEND_API_KEY` and `RESEND_TEST_RECIPIENT` through the exact three-locatio
 
 Editing `wrangler.jsonc` and running `wrangler versions upload` will **not** apply the new Cron Trigger — non-versioned settings sync only via `wrangler triggers deploy` (or a full `wrangler deploy` / `versions deploy`). Treat a missing `Trigger Events` entry after an upload-only deploy as an unsynced-settings symptom, not a broken handler — same failure shape `lessons.md` already documents for `observability`/`tail_consumers`.
 
+### `--test-scheduled` cannot work in this project — `no_bundle: true` strips its injection point
+
+Discovered empirically during Phase 2 implementation (two dead-end fixes tried and reverted before finding this: `assets.run_worker_first`, and rebuilding to sync `@astrojs/cloudflare`'s redirected `dist/server/wrangler.json` — `wrangler dev`'s own banner shows it reads that generated file, not `wrangler.jsonc`, directly). `wrangler dev --test-scheduled`'s `/__scheduled` interception is not a Miniflare HTTP-layer feature — it's a **build-time middleware wrangler injects while bundling the entrypoint** (`node_modules/wrangler/wrangler-dist/cli.js:136553`, template `middleware-scheduled.ts`), which wraps the exported `fetch` and redirects a `/__scheduled` request to the `scheduled` export. It only gets injected when wrangler performs its own esbuild bundling pass. The generated `dist/server/wrangler.json` carries `"no_bundle": true`, because Astro's Cloudflare adapter does its own bundling via Vite and explicitly tells wrangler not to re-bundle. Wrangler therefore never injects the scheduled-test middleware here, so `/__scheduled` can never reach `scheduled()` in this project — no `wrangler.jsonc`/`assets` config fixes this; it is a structural incompatibility between the Astro adapter's build and `--test-scheduled`. Consequence: Phase 2's local verification cannot exercise the scheduled→Resend path at all; only Phase 3's real production Cron Trigger firing proves that path end-to-end. Phase 2's local check is scoped down to what plain `tsx` *can* verify in isolation — the email shell's markup — via `scripts/render-email-preview.ts`, which imports `renderEmailShell` directly (no Astro/Vite context needed, since that module has no `astro:env/server` dependency) and writes the output to a local HTML file for the user to open in a browser.
+
 ### Verification cadence swap sequencing
 
 Phase 3 ships a temporary tight interval (e.g. `*/5 * * * *`) via `wrangler triggers deploy` specifically to get a fast, real production firing to observe. Before this foundation is considered done, `wrangler.jsonc` must be edited back to the real daily schedule (`0 0 * * *`) and re-applied with another `wrangler triggers deploy` — the temporary interval must never be the one left shipped, both because it burns Cloudflare's account-wide 5-Cron-Trigger budget's log volume and because it isn't the schedule FR-008/NFR "at most once per day" actually calls for.
@@ -132,6 +136,14 @@ Add the `resend` package, the client factory, the reusable email shell, the cust
 
 **Contract**: `src/worker.ts` default-exports `{ fetch: handle, scheduled(controller, env, ctx) { ... } } satisfies ExportedHandler<Env>` (importing `handle` from `@astrojs/cloudflare/handler`). Inside `scheduled`, read `RESEND_API_KEY`/`RESEND_TEST_RECIPIENT` the same way any other server code does (`astro:env/server` is available outside a request too, since it's build-time-injected config, not a binding) and wrap the send in try/catch, logging `console.log("resend: sent", data.id)` on success or `console.error("resend: failed", error)` on failure — no KV/persisted status, matching this repo's "platform logs, no vendor" posture. `wrangler.jsonc` changes: `"main": "./src/worker.ts"` and `"triggers": { "crons": ["0 0 * * *"] }`.
 
+#### 4. Local email preview script
+
+**File**: `scripts/render-email-preview.ts` (new), `package.json` (new script)
+
+**Intent**: Since `--test-scheduled` cannot reach `scheduled()` in this project (see Critical Implementation Details), the only thing locally checkable before Phase 3's production proof is the email markup itself. A standalone `tsx` script imports `renderEmailShell` directly — no Astro/Vite context needed — and writes the rendered HTML to a local file for the user to open in a browser.
+
+**Contract**: `npm run render:email-preview` writes `email-preview.html` (gitignored, scratch output) to the repo root using the same proof-message body `src/worker.ts` sends.
+
 ### Success Criteria:
 
 #### Automated Verification:
@@ -142,9 +154,8 @@ Add the `resend` package, the client factory, the reusable email shell, the cust
 
 #### Manual Verification:
 
-- User runs `wrangler dev --test-scheduled` locally and curls `http://localhost:8787/__scheduled?cron=0+0+*+*+*`; the scheduled handler runs without throwing
-- With `RESEND_API_KEY`/`RESEND_TEST_RECIPIENT` present in `.dev.vars`, the local run above results in a real email arriving in the configured recipient's inbox
-- The received email's chrome (logo mark, `InTouch` wordmark, date, footer disclaimer) visually matches the design bundle's header/footer treatment
+- User runs `npm run render:email-preview` and opens `email-preview.html` in a browser
+- The rendered chrome (logo mark, `InTouch` wordmark, date, footer disclaimer) visually matches the design bundle's header/footer treatment
 
 ---
 
@@ -207,7 +218,7 @@ Set the real production secrets (human step), get a fast real production firing 
 
 ### Manual Testing Steps:
 
-1. Locally: `wrangler dev --test-scheduled`, curl `/__scheduled?cron=0+0+*+*+*`, confirm no throw and (with secrets present) a local test email arrives.
+1. Locally: `npm run render:email-preview`, open `email-preview.html` in a browser, confirm the chrome matches the design bundle (`--test-scheduled` cannot exercise the actual scheduled→Resend path in this project — see Critical Implementation Details).
 2. Deploy the Worker code (`npm run preview:upload` or `npm run deploy`) and set both production secrets.
 3. Temporarily set `triggers.crons` to a tight interval, apply with `wrangler triggers deploy`, and watch `wrangler tail` plus the dashboard's `Trigger Events` for the next firing.
 4. Confirm the email arrives in the real inbox and its chrome matches the design bundle.
@@ -240,28 +251,27 @@ Not applicable — no Supabase schema changes in this foundation, and the schedu
 
 #### Automated
 
-- [x] 1.1 Type check passes: `npx astro check`
-- [x] 1.2 Build succeeds locally with both vars present in `.dev.vars`: `npm run build`
+- [x] 1.1 Type check passes: `npx astro check` — c7df7e9
+- [x] 1.2 Build succeeds locally with both vars present in `.dev.vars`: `npm run build` — c7df7e9
 
 #### Manual
 
-- [x] 1.3 User has added `RESEND_TEST_RECIPIENT` (their own address) to local `.dev.vars`
-- [x] 1.4 User has added `RESEND_API_KEY` and `RESEND_TEST_RECIPIENT` to the GitHub repo's Actions secrets
-- [x] 1.5 User confirms `npm run dev` boots without a new config-related error
+- [x] 1.3 User has added `RESEND_TEST_RECIPIENT` (their own address) to local `.dev.vars` — c7df7e9
+- [x] 1.4 User has added `RESEND_API_KEY` and `RESEND_TEST_RECIPIENT` to the GitHub repo's Actions secrets — c7df7e9
+- [x] 1.5 User confirms `npm run dev` boots without a new config-related error — c7df7e9
 
 ### Phase 2: Scheduled send mechanism
 
 #### Automated
 
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Build succeeds: `npm run build`
-- [ ] 2.3 Lint passes: `npm run lint`
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Build succeeds: `npm run build`
+- [x] 2.3 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.4 User runs `wrangler dev --test-scheduled` locally and curls `/__scheduled?cron=0+0+*+*+*`; the scheduled handler runs without throwing
-- [ ] 2.5 With secrets present in `.dev.vars`, the local run results in a real email arriving in the configured recipient's inbox
-- [ ] 2.6 The received email's chrome visually matches the design bundle's header/footer treatment
+- [x] 2.4 User runs `npm run render:email-preview` and opens `email-preview.html` in a browser
+- [x] 2.5 The rendered chrome visually matches the design bundle's header/footer treatment
 
 ### Phase 3: Production secret + verification
 
