@@ -722,19 +722,19 @@ orphaned rows. `S-05` should confirm that is still the behaviour it wants when i
 - [x] 3.7 Reloading or navigating away mid-refresh still ends with the new ranking visible — 612a9bb
 - [x] 3.8 No-profile state renders and links to `/profile` — 612a9bb
 - [x] 3.9 No-people state renders instead of an error — 612a9bb
-- [ ] 3.10 Failure states correct both with and without a stored ranking
+- [x] 3.10 Failure states correct both with and without a stored ranking — 612a9bb
 - [x] 3.11 Mobile viewport holds, bottom nav does not overlap the last card — 612a9bb
 
 ### Phase 4: Production verification against real limits
 
 #### Automated
 
-- [x] 4.1 Linting passes: `npm run lint`
-- [x] 4.2 A preview version uploads: `npm run preview:upload`
-- [x] 4.3 `npm run verify:ranking -- <preview-url>` exits zero
+- [x] 4.1 Linting passes: `npm run lint` — 20a4774
+- [x] 4.2 A preview version uploads: `npm run preview:upload` — 20a4774
+- [x] 4.3 `npm run verify:ranking -- <preview-url>` exits zero — 20a4774
 
 #### Manual
 
-- [x] 4.4 `wrangler secret list` confirms `OPENAI_API_KEY` is set in production
-- [x] 4.5 Observed tokens, latency and subrequest headroom recorded in the change folder
-- [x] 4.6 Deployed `/dashboard` used by hand end to end and behaves as it did locally
+- [x] 4.4 `wrangler secret list` confirms `OPENAI_API_KEY` is set in production — 20a4774
+- [x] 4.5 Observed tokens, latency and subrequest headroom recorded in the change folder — 20a4774
+- [x] 4.6 Deployed `/dashboard` used by hand end to end and behaves as it did locally — 20a4774
