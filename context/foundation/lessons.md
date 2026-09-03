@@ -79,6 +79,13 @@
 - **Rule**: Treat a silent `wrangler tail` as an unsynced-settings symptom first, not as missing traffic. Check whether any `versions deploy` has run since `observability` was added; if not, that is the cause. Corollary for planning: a verification step that depends on reading `wrangler tail` cannot be satisfied by a `versions upload` preview alone — either budget a real deploy, or make the assertion self-evidencing (`F-02`'s script proved non-blocking from its own timing: response at 241ms, first poll still `pending`, job settled at 4599ms).
 - **Applies to**: plan, plan-review, implement
 
+## Resend's onboarding@resend.dev sender is a placeholder, not final config
+
+- **Context**: `src/worker.ts:24` — any code sending email via Resend before a verified sending domain exists.
+- **Problem**: The `from` address is hardcoded as `InTouch <onboarding@resend.dev>`, Resend's test-only sender restricted to the account owner's own inbox. Correct for `F-04`'s proof-of-delivery scope, but `S-04`'s real reminder sweep will need to send to arbitrary user inboxes, which `onboarding@resend.dev` cannot do.
+- **Rule**: Before `S-04` ships, verify a real sending domain in Resend and move `from` to config/env rather than a hardcoded literal.
+- **Applies to**: plan, implement
+
 ## In `.astro`, style link-buttons with `buttonVariants()`, never `<Button asChild>`
 
 - **Context**: Any `.astro` file rendering a link that should look like a button — landing CTAs, auth-screen actions, empty-state prompts. Arises in `S-06` (`landing-page`); `S-07` and `S-08` both add auth screens with link-buttons and will hit it.

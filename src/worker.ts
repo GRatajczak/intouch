@@ -10,7 +10,7 @@ export default {
   async scheduled(controller, _env, _ctx) {
     const resend = createResendClient();
     if (!resend || !RESEND_TEST_RECIPIENT) {
-      console.error("resend: skipped — RESEND_API_KEY or RESEND_TEST_RECIPIENT not configured");
+      console.warn("resend: skipped — RESEND_API_KEY or RESEND_TEST_RECIPIENT not configured");
       return;
     }
 
@@ -19,20 +19,23 @@ export default {
       bodyHtml: `<p>To jest testowa wiadomość potwierdzająca, że Worker InTouch potrafi wysłać e-mail z zaplanowanego triggera.</p><p style="color: #A39A90; font-size: 13px;">Uruchomienie: ${controller.cron} · ${new Date(controller.scheduledTime).toISOString()}</p>`,
     });
 
+    let result: Awaited<ReturnType<typeof resend.emails.send>>;
     try {
-      const { data, error } = await resend.emails.send({
+      result = await resend.emails.send({
         from: "InTouch <onboarding@resend.dev>",
         to: [RESEND_TEST_RECIPIENT],
         subject: PROOF_SUBJECT,
         html,
       });
-      if (error) {
-        console.error("resend: failed", error);
-        return;
-      }
-      console.log("resend: sent", data.id);
     } catch (err) {
       console.error("resend: failed", err);
+      throw err;
     }
+
+    if (result.error) {
+      console.error("resend: failed", result.error);
+      throw new Error(result.error.message);
+    }
+    console.log("resend: sent", result.data.id);
   },
 } satisfies ExportedHandler<Env>;

@@ -243,6 +243,10 @@ Not applicable — no Supabase schema changes in this foundation, and the schedu
 - Non-versioned `wrangler.jsonc` settings gotcha: `context/foundation/lessons.md` ("Cloudflare non-versioned settings sync only on `versions deploy`")
 - Account-wide Cron Trigger budget: `context/foundation/infrastructure.md`
 
+## Addenda
+
+- **CI env fix for `astro sync` (out-of-band, commit `8befb3b`)**: Phase 1's contract only added `RESEND_API_KEY`/`RESEND_TEST_RECIPIENT` to the `npm run build` step's `env:` block in `.github/workflows/{ci,deploy}.yml`. Live production debugging in Phase 3 surfaced a pre-existing, unrelated gap: the `npx astro sync` step in both workflows had no `env:` block at all, even though `astro sync` also validates `env.schema` and therefore needs the same secrets — it was failing with `SUPABASE_URL is missing`. Fixed by mirroring the same `env:` block onto the `astro sync` step in both files (commit `8befb3b028076ade10d976bdb9603608c5e98495`). Recorded here since it wasn't part of this plan's original scope.
+
 ## Progress
 
 > Convention: `- [ ]` pending, `- [x]` done. Append ` — <commit sha>` when a step lands. Do not rename step titles. See `references/progress-format.md`.
