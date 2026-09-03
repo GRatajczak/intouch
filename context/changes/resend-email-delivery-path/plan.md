@@ -264,26 +264,26 @@ Not applicable — no Supabase schema changes in this foundation, and the schedu
 
 #### Automated
 
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Build succeeds: `npm run build`
-- [x] 2.3 Lint passes: `npm run lint`
+- [x] 2.1 Type check passes: `npx astro check` — d634d34
+- [x] 2.2 Build succeeds: `npm run build` — d634d34
+- [x] 2.3 Lint passes: `npm run lint` — d634d34
 
 #### Manual
 
-- [x] 2.4 User runs `npm run render:email-preview` and opens `email-preview.html` in a browser
-- [x] 2.5 The rendered chrome visually matches the design bundle's header/footer treatment
+- [x] 2.4 User runs `npm run render:email-preview` and opens `email-preview.html` in a browser — d634d34
+- [x] 2.5 The rendered chrome visually matches the design bundle's header/footer treatment — d634d34
 
 ### Phase 3: Production secret + verification
 
 #### Automated
 
-- [ ] 3.1 Type check passes: `npx astro check`
-- [ ] 3.2 Build succeeds: `npm run build`
+- [x] 3.1 Type check passes: `npx astro check`
+- [x] 3.2 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 3.3 `wrangler secret list` shows both `RESEND_API_KEY` and `RESEND_TEST_RECIPIENT` present in production
-- [ ] 3.4 Dashboard's `Trigger Events` shows a successful invocation during the temporary tight-interval window
-- [ ] 3.5 `wrangler tail` shows the Resend call completing with a logged success line and no uncaught exceptions
-- [ ] 3.6 The configured recipient's real inbox receives the email
-- [ ] 3.7 `wrangler.jsonc` restored to the daily schedule and re-applied via `wrangler triggers deploy`; dashboard confirms the final schedule is `0 0 * * *`
+- [x] 3.3 `wrangler secret list` shows both `RESEND_API_KEY` and `RESEND_TEST_RECIPIENT` present in production
+- [x] 3.4 Dashboard's `Trigger Events` shows a successful invocation during the temporary tight-interval window
+- [x] 3.5 `wrangler tail` shows the Resend call completing with a logged success line and no uncaught exceptions
+- [x] 3.6 The configured recipient's real inbox receives the email
+- [x] 3.7 `wrangler.jsonc` restored to the daily schedule and re-applied via `wrangler triggers deploy`; dashboard confirms the final schedule is `0 0 * * *`
