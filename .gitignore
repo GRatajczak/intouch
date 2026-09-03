@@ -4,6 +4,9 @@ dist/
 # local scratch output
 email-preview.html
 
+# ad hoc manual-verification helpers -- hold real local credentials
+scripts/manual-verify-*.sh
+
 # generated types
 .astro/
 

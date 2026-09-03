@@ -34,6 +34,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_events: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          occurred_at: string
+          outcome: string
+          owner_id: string
+          person_id: string
+          ranking_entry_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          occurred_at?: string
+          outcome: string
+          owner_id: string
+          person_id: string
+          ranking_entry_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          occurred_at?: string
+          outcome?: string
+          owner_id?: string
+          person_id?: string
+          ranking_entry_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_events_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_events_ranking_entry_id_fkey"
+            columns: ["ranking_entry_id"]
+            isOneToOne: false
+            referencedRelation: "ranking_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       people: {
         Row: {
           created_at: string

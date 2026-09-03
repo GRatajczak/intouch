@@ -215,6 +215,83 @@ async function main() {
       .from("profiles")
       .select("owner_id");
     assert(!anonProfileSelectErr && anonProfileSelect.length === 0, "unauthenticated client sees no profile rows");
+
+    console.log("Seeding one contact_events row per user...");
+    const contactEventPayloadA = {
+      owner_id: userAId,
+      person_id: rowA.id,
+      outcome: "happened",
+      note: "Seeded by verify-rls",
+    };
+    const contactEventPayloadB = {
+      owner_id: userBId,
+      person_id: rowB.id,
+      outcome: "happened",
+      note: "Seeded by verify-rls",
+    };
+    const { data: insertedEventA, error: insertEventAErr } = await clientA
+      .from("contact_events")
+      .insert(contactEventPayloadA)
+      .select();
+    const eventRowA = insertedEventA?.[0];
+    assert(!insertEventAErr && !!eventRowA, "user A can insert own contact_events row");
+
+    const { data: insertedEventB, error: insertEventBErr } = await clientB
+      .from("contact_events")
+      .insert(contactEventPayloadB)
+      .select();
+    const eventRowB = insertedEventB?.[0];
+    assert(!insertEventBErr && !!eventRowB, "user B can insert own contact_events row");
+
+    if (!eventRowA || !eventRowB) {
+      throw new Error("setup failed: contact_events rows were not created, aborting isolation assertions");
+    }
+
+    console.log("Checking contact_events isolation...");
+
+    const { data: ownEventSelectA, error: ownEventSelectAErr } = await clientA
+      .from("contact_events")
+      .select("id")
+      .eq("id", eventRowA.id);
+    assert(!ownEventSelectAErr && ownEventSelectA.length === 1, "user A sees own contact_events row via select");
+
+    const { data: crossEventSelectA, error: crossEventSelectAErr } = await clientA
+      .from("contact_events")
+      .select("id")
+      .eq("id", eventRowB.id);
+    assert(!crossEventSelectAErr && crossEventSelectA.length === 0, "user A cannot select user B's contact_events row");
+
+    const { data: crossEventUpdateA, error: crossEventUpdateAErr } = await clientA
+      .from("contact_events")
+      .update({ note: "tampered" })
+      .eq("id", eventRowB.id)
+      .select();
+    assert(
+      !crossEventUpdateAErr && crossEventUpdateA.length === 0,
+      "user A's update of user B's contact_events row affects zero rows",
+    );
+
+    const { data: crossEventDeleteA, error: crossEventDeleteAErr } = await clientA
+      .from("contact_events")
+      .delete()
+      .eq("id", eventRowB.id)
+      .select();
+    assert(
+      !crossEventDeleteAErr && crossEventDeleteA.length === 0,
+      "user A's delete of user B's contact_events row affects zero rows",
+    );
+
+    const { data: stillThereEventB, error: stillThereEventBErr } = await clientB
+      .from("contact_events")
+      .select("id")
+      .eq("id", eventRowB.id);
+    assert(
+      !stillThereEventBErr && stillThereEventB.length === 1,
+      "user B's contact_events row survives user A's cross-delete attempt",
+    );
+
+    const { data: anonEventSelect, error: anonEventSelectErr } = await anonClient.from("contact_events").select("id");
+    assert(!anonEventSelectErr && anonEventSelect.length === 0, "unauthenticated client sees no contact_events rows");
   } finally {
     console.log("Cleaning up throwaway users (cascade-deletes their people rows)...");
     if (userAId) await admin.auth.admin.deleteUser(userAId);
