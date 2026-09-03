@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/db/database.types";
 import { createOpenAIClient } from "@/lib/openai";
 import { writeJob } from "@/lib/ai-jobs";
+import { loadContactFacts } from "@/lib/contact-history/facts";
 import { buildRankingPrompt } from "@/lib/ranking/prompt";
 import { persistRanking, type PersistRankingEntry } from "@/lib/ranking/store";
 import { rankingOutputSchema, type RankingOutputEntry, type TimeWindow } from "@/lib/validation/ranking";
@@ -84,9 +85,14 @@ export async function runRanking(ownerId: string, supabase: SupabaseClient<Datab
       throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    const [{ data: profile }, { data: people }] = await Promise.all([
+    const [{ data: profile }, { data: people }, facts] = await Promise.all([
       supabase.from("profiles").select("*").eq("owner_id", ownerId).maybeSingle(),
       supabase.from("people").select("*").eq("owner_id", ownerId),
+      // Never throws on its own -- a query failure folds to an empty map via
+      // the same `data ?? []` fallback loadContactFacts already applies, so
+      // a facts-load problem degrades to today's history-blind prompt rather
+      // than failing the whole ranking.
+      loadContactFacts(supabase, ownerId),
     ]);
 
     if (!profile) {
@@ -96,7 +102,7 @@ export async function runRanking(ownerId: string, supabase: SupabaseClient<Datab
       throw new Error("No people found for this account");
     }
 
-    const { messages, peopleIncluded } = buildRankingPrompt(profile, people);
+    const { messages, peopleIncluded } = buildRankingPrompt(profile, people, facts);
 
     const response = await openai.responses.parse({
       model: RANKING_MODEL,

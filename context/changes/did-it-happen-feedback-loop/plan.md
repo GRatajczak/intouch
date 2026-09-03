@@ -723,36 +723,36 @@ table author sees a decision rather than an inherited default (`lessons.md`).
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly against a local Supabase: `supabase db reset`
-- [x] 1.2 Generated types include `contact_events`: `npm run db:types` produces no diff on a second run
-- [x] 1.3 RLS isolation proof passes for the new table: `npm run verify:rls`
-- [x] 1.4 Type checking passes: `npx astro check`
-- [x] 1.5 Linting passes: `npm run lint`
-- [x] 1.6 Build passes: `npm run build`
+- [x] 1.1 Migration applies cleanly against a local Supabase: `supabase db reset` — ec18164
+- [x] 1.2 Generated types include `contact_events`: `npm run db:types` produces no diff on a second run — ec18164
+- [x] 1.3 RLS isolation proof passes for the new table: `npm run verify:rls` — ec18164
+- [x] 1.4 Type checking passes: `npx astro check` — ec18164
+- [x] 1.5 Linting passes: `npm run lint` — ec18164
+- [x] 1.6 Build passes: `npm run build` — ec18164
 
 #### Manual
 
-- [x] 1.7 A `POST /api/contact-events` from a signed-in browser session returns `201` with the row and the facts object
-- [x] 1.8 The same POST with another user's `personId` fails rather than writing a row
-- [x] 1.9 A `PATCH /api/contact-events/[id]` attaches a note to an already-created event and returns updated facts
-- [x] 1.10 The same PATCH against another account's event id returns `404`
-- [x] 1.11 Deleting a person removes their contact events (cascade behaves as decided)
+- [x] 1.7 A `POST /api/contact-events` from a signed-in browser session returns `201` with the row and the facts object — ec18164
+- [x] 1.8 The same POST with another user's `personId` fails rather than writing a row — ec18164
+- [x] 1.9 A `PATCH /api/contact-events/[id]` attaches a note to an already-created event and returns updated facts — ec18164
+- [x] 1.10 The same PATCH against another account's event id returns `404` — ec18164
+- [x] 1.11 Deleting a person removes their contact events (cascade behaves as decided) — ec18164
 
 ### Phase 2: History reaches the ranking
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npx astro check`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Build passes: `npm run build`
-- [ ] 2.4 Existing ranking path still passes end-to-end against a deployed preview: `npm run verify:ranking -- <preview-url>`
+- [x] 2.1 Type checking passes: `npx astro check`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Build passes: `npm run build`
+- [x] 2.4 Existing ranking path still passes end-to-end against a deployed preview: `npm run verify:ranking -- <preview-url>`
 
 #### Manual
 
-- [ ] 2.5 With events recorded for a person, a forced recompute produces a `Dlaczego teraz` for that person that references the recorded history
-- [ ] 2.6 A person with no recorded events gets a reason that makes no claim about past contact
-- [ ] 2.7 A person whose last attempt failed has that attempt cited in their `Dlaczego teraz`, named as a reason to reach out sooner
-- [ ] 2.8 A run for an account with zero contact events produces the same quality of output as before this phase
+- [x] 2.5 With events recorded for a person, a forced recompute produces a `Dlaczego teraz` for that person that references the recorded history
+- [x] 2.6 A person with no recorded events gets a reason that makes no claim about past contact
+- [x] 2.7 A person whose last attempt failed has that attempt cited in their `Dlaczego teraz`, named as a reason to reach out sooner
+- [x] 2.8 A run for an account with zero contact events produces the same quality of output as before this phase
 
 ### Phase 3: The marker on the hierarchy card
 
