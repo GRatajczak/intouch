@@ -6,11 +6,10 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "preview_urls": true,
-  // F-04: TEMPORARY verification interval — restore to "0 0 * * *" after a
-  // real firing is observed. Non-versioned — apply with `wrangler triggers
-  // deploy`, not `versions upload` alone.
+  // F-04: daily reminder-delivery proof send. Non-versioned — apply with
+  // `wrangler triggers deploy`, not `versions upload` alone.
   "triggers": {
-    "crons": ["*/5 * * * *"],
+    "crons": ["0 0 * * *"],
   },
   "assets": {
     "binding": "ASSETS",
