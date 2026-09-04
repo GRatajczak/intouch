@@ -3,7 +3,7 @@ project: "InTouch"
 version: 2
 status: draft
 created: 2026-08-15
-updated: 2026-09-02
+updated: 2026-09-04
 prd_version: 2
 main_goal: speed
 top_blocker: time
@@ -44,17 +44,18 @@ successfully done").
 | F-01 | `per-user-data-isolation`    | (foundation) migrations + default-deny RLS + a proof of isolation | —             | NFR-privacy, Access Control    | done        |
 | F-02 | `openai-ranking-call-path`   | (foundation) the Worker can call OpenAI without blocking the user | —             | FR-007, NFR-non-blocking       | done        |
 | F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | done                                        |
-| F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | ready    |
+| F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | done |
 | F-05 | `design-alignment-pass`      | (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design | F-03, S-01 | NFR-browser (mobile usability) | done      |
 | S-01 | `profile-and-first-people`   | fill a self-profile and add people with a weight, and see them    | F-01, F-03    | FR-001, FR-002, FR-003, FR-004 | done      |
 | S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02, S-09 | US-01, FR-007               | done        |
-| S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | ready    |
+| S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | done |
 | S-04 | `decay-driven-reminders`     | be reminded, unprompted, about relationships going quiet          | S-03, F-04    | FR-008, NFR-once-per-day       | blocked  |
-| S-05 | `person-lifecycle-and-erasure`| edit, deactivate and permanently delete a person                  | S-01          | FR-005, NFR-privacy            | ready    |
+| S-05 | `person-lifecycle-and-erasure`| edit, deactivate and permanently delete a person                  | S-01          | FR-005, NFR-privacy            | planning    |
 | S-06 | `landing-page`                | see a real marketing page at `/` explaining what InTouch is, before signing in | F-03          | Access Control ("unauthenticated visitor") | done |
 | S-07 | `account-and-profile-settings` | edit their own profile after first fill and manage their account from `/settings`       | S-01, F-05    | FR-001, FR-002, FR-008 (address), Access Control | proposed |
 | S-08 | `password-recovery`           | get back into their account after forgetting the password         | F-03          | FR-001                         | proposed |
 | S-09 | `self-profile-rhythm-fields`  | tell the app their own contact rhythm (time budget, channels, slots) so suggestions land in it | S-01          | FR-002, FR-007                 | done |
+| S-10 | `add-person-context-fields`   | add a person through a form inside the app shell, with richer per-person context (who they are, freeform tags, roughly when last in touch) | S-01, S-03, F-05 | FR-003, Open Q2         | done |
 
 ## Streams
 
@@ -142,7 +143,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - Sending identity — a domain the user owns (needs DNS records, and verification has an external lead time nobody can compress) or Resend's `onboarding@resend.dev` test sender (zero setup, but it can only deliver to the account owner's own address). For an MVP whose only user is the author, the test sender may genuinely be enough; for anyone else it is not. Owner: user, during this foundation's plan. Block: no — but it is the item worth starting first, because it is the only one that waits on DNS rather than on code.
   - Whether the scheduled handler sends directly or enqueues, given that Cloudflare's free plan caps Cron Triggers at **5 per account** (not per Worker) with a 1-minute minimum interval — already recorded as a risk in `context/foundation/infrastructure.md`. Owner: resolved by this foundation's work. Block: no.
 - **Risk:** Lifted out of `S-04` for the same reason `F-02` was lifted out of `S-02`: an unproven outbound call from an edge runtime is exactly the kind of thing that invalidates a slice's design rather than just its plan, and here it is compounded by a dependency that is not code at all. Domain verification is DNS propagation plus Resend's checks — if that is discovered inside `S-04`, the slice stalls on something no amount of implementation effort moves. Sequencing it as its own foundation means it can run **now**, in parallel with everything else, while the cadence decision that still blocks `S-04` is pending. Scope is capped at one proven send on one schedule plus the secret in all three places — no reminder logic, no decay rules, no email template, no ranking. Note also that a scheduled handler is the first code in this repo that runs with no user in scope, so `F-01`'s RLS assumption ("the row's owner is the caller") does not hold for it; how the sweep reads other users' rows safely is `S-04`'s problem, but `F-04` must not accidentally establish a pattern that bypasses RLS.
-- **Status:** ready
+- **Status:** done — shipped `c7df7e9`…`d34bfbf`
 
 ### F-05: App shell navigation and catalog visual alignment
 
@@ -195,7 +196,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** This is the north star, and its risk is behavioural rather than technical: the PRD already flags that users will not bother marking did-it-happen unless the marker is frictionless, and an empty loop leaves the hierarchy permanently stale. Note this slice deliberately lands *before* reminders (`S-04`) — the confirmation can be prompted inside the app from the hierarchy view, which means the loop closes without waiting on a delivery channel that is still undecided.
-- **Status:** ready
+- **Status:** done — shipped `ec18164`…`fde184b`
 
 ### S-04: Decay-driven reminders
 
@@ -222,7 +223,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Carries the second half of the privacy NFR, which is binary — partial deletion is a failure, not a smaller success. The deactivate-before-delete rule exists because deleting a person otherwise destroys the contact history feeding the ranking, so the two paths must not be collapsed into one "remove" action for speed. Fully parallel with the Stream A chain: it touches the same tables but none of the ranking logic, which under `top_blocker: time` makes it the natural candidate for a separate agent run.
-- **Status:** ready
+- **Status:** planning
 
 ### S-06: Public landing page
 
@@ -286,6 +287,22 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Low, and deliberately so: the columns are nullable/defaulted and the fields are optional, so nothing that exists today breaks and no user is forced back through a form they already filled. The risk this slice removes is `S-02` being designed around a self-profile that cannot answer *when* or *how* — a shape that is cheap to fix now and expensive once a prompt, a ranking view and a reminder template are all built on it. Note the design's own onboarding (`InTouch.dc.html:87-135`) frames these as step 2 of a 3-step wizard; the wizard is explicitly **not** in scope here — the fields land on the existing single-card `/profile`. Also out of scope: the design's `Push` channel (PRD v2 FR-008 is email-only) and every field on the *person* form, which is the still-open half of Open Question 2.
 - **Status:** done
 
+### S-10: Add-person form context fields
+
+- **Outcome:** User adds a person through `/people/new` rendered inside the same persistent app shell as every other authenticated page (not a bare centered card), and the form captures the richer per-person context the design bundle specifies: a short "who are they to you" line, a handful of freeform context tags, and optionally roughly when they last were in touch — closing the still-open per-person half of FR-003.
+- **Change ID:** `add-person-context-fields`
+- **PRD refs:** FR-003 (its still-open field-set half — the design bundle's `Kim jest dla Ciebie?`, context-tag chips, and `Kiedy ostatnio rozmawialiście?` bucket have no shipped counterpart), Open Roadmap Question 2 (per-person half)
+- **Unlocks:** — (leaf outcome; no downstream slice currently depends on these specific fields). It does give `S-02`'s ranking prompt more differentiating context per person than the single `Opis` textarea offers today, and gives `S-03`'s `contact_events` table a second write path beyond the did-it-happen marker, if the last-contact bucket is wired to seed one.
+- **Prerequisites:** S-01 (the person + form this amends), F-05 (the app shell `/people/new` currently bypasses), S-03 (`contact_events`, if the last-contact bucket seeds a row — see Unknowns)
+- **Parallel with:** S-04, S-05, S-07, S-08 — touches the person-creation form and, optionally, `contact_events`; not the ranking, reminders, or account settings.
+- **Blockers:** —
+- **Unknowns:**
+  - Does `Kim jest dla Ciebie?` replace, split, or supplement the existing single `description` textarea `S-01` shipped? Owner: user, during this slice's plan.
+  - Does `Kiedy ostatnio rozmawialiście?` write a real `contact_events` row (and with what `occurred_at` per bucket), or stay purely informational with no schema link? Owner: user, during this slice's plan. Block: no — either answer is legitimate; it changes the migration's shape, not whether the slice can be built.
+  - Are the context tags a bounded `text[]` column on `people`, or their own table? Where do they surface afterward — the ranking prompt, the catalog card, the history sheet — and is there a cap? Owner: user, during this slice's plan.
+- **Risk:** Low technical risk, contained to one form and, depending on the Unknowns above, one additive migration. The real risk is scope bleed from the same mock section this slice draws from: the mock's `Kategoria` selector is an FR-006 concern that stays parked (organizing into tabs is not this slice's job — `relationship_type`'s fixed enum already covers the categorization half), and the mock's weight scale reads 1–5 while `FR-004`'s own Socrates note already widened the shipped scale to 1–10 deliberately (documented, not a bug) — this slice must not regress it back to match the mock. `S-06`'s retro already flagged this same design file as a draft, not a source of truth, after a near-identical mistake shipped once.
+- **Status:** done — shipped `badbb26`…`60bf49e`; impl-reviewed (0 critical, 3 warnings + 3 observations, findings pending triage — see `context/changes/add-person-context-fields/reviews/impl-review.md`)
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                      | Suggested issue title                                         | Ready for `/10x-plan` | Notes                                                       |
@@ -295,21 +312,23 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | F-03       | `design-system-foundation`     | Design tokens + palette, drop the starter theme                | done                  | Shipped `e3a00ab`…`402cafb`. Linear GRA-16                   |
 | S-01       | `profile-and-first-people`     | Self-profile + add people with description and weight          | done                  | Shipped `4ac61e6`…`a54295b`; impl-reviewed. Linear GRA-7     |
 | S-02       | `ai-contact-hierarchy`         | AI-ranked contact hierarchy with suggested time windows        | done                  | Shipped `c5a73a4`…`0acfa76`; impl-reviewed (0 critical)      |
-| S-03       | `did-it-happen-feedback-loop`  | Did-it-happen confirmation feeding the next ranking            | yes                   | **North star.** S-02 done — unblocked. Next on Stream A      |
+| S-03       | `did-it-happen-feedback-loop`  | Did-it-happen confirmation feeding the next ranking            | done                  | **North star.** Shipped `ec18164`…`fde184b`; impl-reviewed, review findings F1-F2 closed |
 | S-09       | `self-profile-rhythm-fields`   | Self-profile rhythm fields feeding the AI schedule             | done                  | Shipped `adae754`…`a4c7f99`; impl-reviewed. Linear GRA-20 |
-| F-04       | `resend-email-delivery-path`   | Send one real email from the Worker on a schedule via Resend   | yes                   | Parallel with F-01/F-02/F-03; start the sending domain first  |
+| F-04       | `resend-email-delivery-path`   | Send one real email from the Worker on a schedule via Resend   | done                  | Shipped `c7df7e9`…`d34bfbf`; impl-reviewed, production-verified |
 | F-05       | `design-alignment-pass`        | App shell (sidebar/bottom-nav) + catalog grid reskin from the finished design | done | Shipped `ab2fded`…`ff28367`. Linear GRA-18                  |
-| S-04       | `decay-driven-reminders`       | Decay-driven reminders, at most once per day                   | no                    | Needs S-03 and F-04. Blocked: reminder cadence undecided      |
+| S-04       | `decay-driven-reminders`       | Decay-driven reminders, at most once per day                   | no                    | S-03 and F-04 done — unblocked on prerequisites. Still blocked: reminder cadence undecided |
 | S-05       | `person-lifecycle-and-erasure` | Edit, deactivate and irreversibly delete a person              | yes                   | S-01 done — unblocked; runs parallel to the whole Stream A chain |
 | S-06       | `landing-page`                 | Public landing page at `/` from the existing design + copy     | done                  | Shipped `edcfa48`…`a01cb9f`. Linear GRA-19                   |
 | S-07       | `account-and-profile-settings` | Editable profile + account settings on the `/settings` page    | yes                   | S-01 and F-05 done — unblocked. Replaces the stub's placeholder copy |
 | S-08       | `password-recovery`            | Forgot-password reset flow from the signin screen              | yes                   | F-03 done — unblocked. Check the mailer against F-04's sender   |
+| S-10       | `add-person-context-fields`    | Add-person form: shell nav + richer per-person context fields  | done                  | Shipped `badbb26`…`60bf49e`; impl-reviewed (0 critical, 3 warnings pending triage). Linear GRA-21 |
 
 ## Open Roadmap Questions
 
 1. ~~**AI-suggestion explainability**~~
    > **Resolved and closed** by `S-02` (`c5a73a4`…`0acfa76`). The hierarchy shows a full `Dlaczego teraz` plus factor chips for the top 3 entries, and one-line collapsed rows with `Rozwiń` below them. The suggested time window is an enum bucket rendered through a Polish label map — never model-authored prose — so the AI-relevance guardrail is checked against a fixed vocabulary rather than free text.
-2. **Structured-form fields** — the exact fields for the self-profile (FR-002) and the per-person form (FR-003) are not pinned. Owner: user, during design. Block: `S-01`.
+2. ~~**Structured-form fields**~~
+   > **Resolved and closed** by `S-10` (`badbb26`…`60bf49e`). The self-profile half closed earlier (`S-01` + `S-09`); the per-person half (FR-003) is now closed too: `Kim jest dla Ciebie?` landed as a new `relationship_context` column (supplementing, not replacing, `description`), the context-tag chip list as a capped `text[]` column surfaced in both the ranking prompt and `PersonCard`, and `Kiedy ostatnio rozmawialiście?` as its own `last_contact_bucket` enum column — deliberately kept informational and never linked to `contact_events` (see the slice's `change.md` for why). `Kategoria` stayed parked (FR-006), as planned.
 3. **Reminder cadence** — how frequently reminders fire without becoming spam users mute. Bounded by the once-per-day NFR, but the decay-driven trigger logic is unresolved. Owner: user, during design. Block: `S-04`.
 4. **Resend sending identity** — an owned domain (DNS records plus a verification wait nobody can compress) or Resend's `onboarding@resend.dev` test sender (instant, but delivers only to the account owner's own address). Owner: user, during `F-04`'s plan. Block: `F-04` — not hard-blocking (F-04 is `ready`), but it is the longest-lead item on the board, so start it before writing any reminder code. Whatever identity is chosen also serves the auth emails in Open Question 10, so decide it once.
    > Resolved and closed: **reminder delivery channel**. FR-008 reminders are email, sent through Resend (PRD v2). The wiring lives in `F-04`; what remains open is only the sending identity above.
