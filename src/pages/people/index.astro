@@ -74,6 +74,9 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
     const target = event.target as HTMLElement;
     const button = target.closest<HTMLElement>("[data-open-contact-history]");
     if (!button) return;
+    // Each card is now a link to /people/[id] -- stop that navigation before
+    // opening the sheet, since the button sits inside the anchor.
+    event.preventDefault();
     const personId = button.dataset.openContactHistory;
     const personName = button.dataset.personName ?? "";
     if (personId) {

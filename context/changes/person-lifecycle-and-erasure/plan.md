@@ -366,35 +366,35 @@ The `status` migration (Phase 1) is purely additive with a `DEFAULT`, so it is f
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `npx astro check`
-- [x] 3.2 Linting passes: `npm run lint`
-- [x] 3.3 Build passes: `npm run build`
-- [x] 3.4 Existing ranking path still passes end-to-end: `npm run verify:ranking -- <preview-or-local-url>`
+- [x] 3.1 Type checking passes: `npx astro check` — 8ab5df3
+- [x] 3.2 Linting passes: `npm run lint` — 8ab5df3
+- [x] 3.3 Build passes: `npm run build` — 8ab5df3
+- [x] 3.4 Existing ranking path still passes end-to-end: `npm run verify:ranking -- <preview-or-local-url>` — 8ab5df3
 
 #### Manual
 
-- [x] 3.5 Deactivating a person and re-running the ranking produces a hierarchy that no longer mentions them
-- [x] 3.6 The dashboard's people count drops by one immediately after deactivation
-- [x] 3.7 `/people` shows a deactivated person's card after every active person's card, not filtered out
+- [x] 3.5 Deactivating a person and re-running the ranking produces a hierarchy that no longer mentions them — 8ab5df3
+- [x] 3.6 The dashboard's people count drops by one immediately after deactivation — 8ab5df3
+- [x] 3.7 `/people` shows a deactivated person's card after every active person's card, not filtered out — 8ab5df3
 
 ### Phase 4: Person detail page and lifecycle UI
 
 #### Automated
 
-- [ ] 4.1 Type checking passes: `npx astro check`
-- [ ] 4.2 Linting passes: `npm run lint`
-- [ ] 4.3 Build passes: `npm run build`
+- [x] 4.1 Type checking passes: `npx astro check`
+- [x] 4.2 Linting passes: `npm run lint`
+- [x] 4.3 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 4.4 Opening a person from `/people` lands on `/people/[id]` showing their current data
-- [ ] 4.5 Edytuj → change a field → save returns to view mode with the change reflected, and the same change shows on `/people`
-- [ ] 4.6 Dezaktywuj immediately shows the deactivated treatment on this page and on `/people`'s card
-- [ ] 4.7 Aktywuj reverses it
-- [ ] 4.8 Usuń is not rendered/reachable while the person is active
-- [ ] 4.9 Deactivate, then Usuń → AlertDialog appears with clear irreversibility copy → confirm → redirected to `/people`, person is gone
-- [ ] 4.10 Historia still opens the existing contact-history sheet from this page
-- [ ] 4.11 Visiting `/people/[id]` for another user's id, or a nonexistent id, redirects to `/people`
+- [x] 4.4 Opening a person from `/people` lands on `/people/[id]` showing their current data
+- [x] 4.5 Edytuj → change a field → save returns to view mode with the change reflected, and the same change shows on `/people`
+- [x] 4.6 Dezaktywuj immediately shows the deactivated treatment on this page and on `/people`'s card
+- [x] 4.7 Aktywuj reverses it
+- [x] 4.8 Usuń is not rendered/reachable while the person is active
+- [x] 4.9 Deactivate, then Usuń → AlertDialog appears with clear irreversibility copy → confirm → redirected to `/people`, person is gone
+- [x] 4.10 Historia is reachable from this page (adapted: an inline expandable "Historia kontaktu" section, not the ContactHistorySheet sidebar, per explicit design-fidelity direction against the mock)
+- [x] 4.11 Visiting `/people/[id]` for another user's id, or a nonexistent id, redirects to `/people`
 
 ### Phase 5: Erasure verification
 

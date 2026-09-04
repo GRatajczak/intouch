@@ -1,0 +1,42 @@
+---
+import { ArrowLeft } from "lucide-react";
+import AppShell from "@/components/layout/AppShell.astro";
+import { PersonDetailView } from "@/components/people/PersonDetailView";
+import { createClient } from "@/lib/supabase";
+import { loadProfileName } from "@/lib/shell-summary";
+import { loadPersonContactFacts } from "@/lib/contact-history/facts";
+
+const { user } = Astro.locals;
+const { id } = Astro.params;
+
+if (!user || !id) {
+  return Astro.redirect("/people");
+}
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+if (!supabase) {
+  return Astro.redirect("/people");
+}
+
+// Scoped by owner_id -- a foreign or missing id both redirect the same way,
+// same 404-not-403 posture the API routes use.
+const { data: person } = await supabase.from("people").select("*").eq("id", id).eq("owner_id", user.id).maybeSingle();
+
+if (!person) {
+  return Astro.redirect("/people");
+}
+
+const facts = await loadPersonContactFacts(supabase, user.id, person.id);
+const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, user.id);
+---
+
+<AppShell title={person.name} profileName={profileName}>
+  <a
+    href="/people"
+    class="text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1.5 text-sm font-medium"
+  >
+    <ArrowLeft className="size-4" />
+    Wróć do listy
+  </a>
+  <PersonDetailView person={person} facts={facts} client:load />
+</AppShell>

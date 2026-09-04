@@ -69,7 +69,9 @@ export function HierarchyCard({ entry, rank, expanded, onToggleExpanded, facts, 
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           <div className="flex items-center gap-2">
-            <span className="text-foreground text-base font-bold">{person.name}</span>
+            <a href={`/people/${person.id}`} className="text-foreground text-base font-bold hover:underline">
+              {person.name}
+            </a>
             {person.is_collective && (
               <span className="text-text-tertiary inline-flex items-center gap-1 text-xs">
                 <UsersRound className="size-3.5" />
@@ -100,7 +102,7 @@ export function HierarchyCard({ entry, rank, expanded, onToggleExpanded, facts, 
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <WeightIndicator value={person.weight} />
+        <WeightIndicator value={person.weight} relationshipType={relationshipType} />
         {entry.contextNote && (
           <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs">{entry.contextNote}</span>
         )}
