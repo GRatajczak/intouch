@@ -336,24 +336,24 @@ No schema changes. `supabase/config.toml` and `supabase/templates/recovery.html`
 
 #### Automated
 
-- [x] 3.1 Type check passes: `npx astro check`
-- [x] 3.2 Build succeeds: `npm run build`
-- [x] 3.3 `supabase start` picks up `config.toml` changes without error
+- [x] 3.1 Type check passes: `npx astro check` — c0ae14e
+- [x] 3.2 Build succeeds: `npm run build` — c0ae14e
+- [x] 3.3 `supabase start` picks up `config.toml` changes without error — c0ae14e
 
 #### Manual
 
-- [x] 3.4 "Forgot your password?" link appears on `/auth/signin` and navigates correctly
-- [x] 3.5 Local reset email uses the branded template and its link round-trips through `/auth/confirm` to `/auth/reset-password`
+- [x] 3.4 "Forgot your password?" link appears on `/auth/signin` and navigates correctly — c0ae14e
+- [x] 3.5 Local reset email uses the branded template and its link round-trips through `/auth/confirm` to `/auth/reset-password` — c0ae14e
 
 ### Phase 4: Production configuration + verification
 
 #### Automated
 
-- [ ] 4.1 Build succeeds: `npm run build`
+- [x] 4.1 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 4.2 `get-in-touch.pl` verified in Resend
-- [ ] 4.3 Production reset email delivered from `no-reply@get-in-touch.pl` with the branded template
-- [ ] 4.4 End-to-end production reset sets a new password and lands signed in
-- [ ] 4.5 A second production session is signed out after the reset
+- [x] 4.2 `get-in-touch.pl` verified in Resend
+- [x] 4.3 Production reset email delivered from `no-reply@get-in-touch.pl` with the branded template
+- [x] 4.4 End-to-end production reset sets a new password and lands signed in
+- [x] 4.5 A second production session is signed out after the reset
