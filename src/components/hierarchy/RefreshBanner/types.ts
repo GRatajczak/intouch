@@ -7,5 +7,7 @@ export interface RefreshBannerProps {
   peopleConsidered: number | null;
   peopleTotal: number | null;
   hasStoredRanking: boolean;
+  /** At least one contact_events answer was recorded since this ranking was computed. */
+  hasPendingAnswers: boolean;
   onRefresh: () => void;
 }

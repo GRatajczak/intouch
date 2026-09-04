@@ -1,8 +1,10 @@
-import { ChevronDown, ChevronUp, UsersRound } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, UsersRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RELATIONSHIP_TYPE_LABELS, type RelationshipType } from "@/lib/validation/person";
 import { TIME_WINDOW_LABELS, type TimeWindow } from "@/lib/validation/ranking";
 import { WeightIndicator } from "@/components/people/WeightIndicator";
+import { ContactChips } from "@/components/hierarchy/ContactChips";
+import { ContactMarker } from "@/components/hierarchy/ContactMarker";
 import type { HierarchyCardProps } from "./types";
 
 // Same urgency tokens the landing page's preview card already promises
@@ -15,7 +17,7 @@ const TIME_WINDOW_TONE: Record<TimeWindow, { badge: string; label: string; borde
   no_rush: { badge: "bg-muted text-muted-foreground", label: "text-muted-foreground", border: "border-border" },
 };
 
-export function HierarchyCard({ entry, rank, expanded, onToggleExpanded }: HierarchyCardProps) {
+export function HierarchyCard({ entry, rank, expanded, onToggleExpanded, facts, onMarked }: HierarchyCardProps) {
   const { person } = entry;
   const relationshipType = person.relationship_type as RelationshipType;
   const tone = TIME_WINDOW_TONE[entry.timeWindow];
@@ -39,6 +41,11 @@ export function HierarchyCard({ entry, rank, expanded, onToggleExpanded }: Hiera
           {rank}
         </div>
         <div className="text-foreground min-w-0 flex-1 truncate text-[15px] font-semibold">{person.name}</div>
+        {facts && (
+          <span className="text-success flex-shrink-0" aria-label="Potwierdzono kontakt" title="Potwierdzono kontakt">
+            <Check className="size-3.5" />
+          </span>
+        )}
         <div className={cn("text-xs whitespace-nowrap", tone.label)}>{timeWindowLabel}</div>
         <span className="text-muted-foreground inline-flex items-center gap-0.5 text-xs font-medium whitespace-nowrap">
           Rozwiń
@@ -99,7 +106,17 @@ export function HierarchyCard({ entry, rank, expanded, onToggleExpanded }: Hiera
         {entry.rhythmNote && (
           <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs">{entry.rhythmNote}</span>
         )}
+        <ContactChips facts={facts} />
       </div>
+
+      <ContactMarker
+        personId={person.id}
+        rankingEntryId={entry.id}
+        facts={facts}
+        onMarked={(nextFacts) => {
+          onMarked(person.id, nextFacts);
+        }}
+      />
     </div>
   );
 }

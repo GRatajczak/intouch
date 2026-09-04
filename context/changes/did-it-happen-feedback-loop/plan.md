@@ -742,35 +742,35 @@ table author sees a decision rather than an inherited default (`lessons.md`).
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npx astro check`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Build passes: `npm run build`
-- [x] 2.4 Existing ranking path still passes end-to-end against a deployed preview: `npm run verify:ranking -- <preview-url>`
+- [x] 2.1 Type checking passes: `npx astro check` — f682995
+- [x] 2.2 Linting passes: `npm run lint` — f682995
+- [x] 2.3 Build passes: `npm run build` — f682995
+- [x] 2.4 Existing ranking path still passes end-to-end against a deployed preview: `npm run verify:ranking -- <preview-url>` — f682995
 
 #### Manual
 
-- [x] 2.5 With events recorded for a person, a forced recompute produces a `Dlaczego teraz` for that person that references the recorded history
-- [x] 2.6 A person with no recorded events gets a reason that makes no claim about past contact
-- [x] 2.7 A person whose last attempt failed has that attempt cited in their `Dlaczego teraz`, named as a reason to reach out sooner
-- [x] 2.8 A run for an account with zero contact events produces the same quality of output as before this phase
+- [x] 2.5 With events recorded for a person, a forced recompute produces a `Dlaczego teraz` for that person that references the recorded history — f682995
+- [x] 2.6 A person with no recorded events gets a reason that makes no claim about past contact — f682995
+- [x] 2.7 A person whose last attempt failed has that attempt cited in their `Dlaczego teraz`, named as a reason to reach out sooner — f682995
+- [x] 2.8 A run for an account with zero contact events produces the same quality of output as before this phase — f682995
 
 ### Phase 3: The marker on the hierarchy card
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npx astro check`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Build passes: `npm run build`
+- [x] 3.1 Type checking passes: `npx astro check`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 3.4 Tapping `Tak, rozmawialiśmy` confirms the card in place and the `Ostatni kontakt` chip appears immediately
-- [ ] 3.5 The optional note can be added after answering, and can be skipped entirely without blocking the answer
-- [ ] 3.6 Tapping `Jeszcze nie` records a failed attempt and renders the `Poprzednia próba` chip
-- [ ] 3.7 The `RefreshBanner` line about the next recompute appears after a mark and `Przelicz teraz` still works
-- [ ] 3.8 The list does **not** reorder, and the browser network tab shows a mark issuing exactly one request — to `/api/contact-events` — with no `POST /api/rankings` following it
-- [ ] 3.9 The collapsed row shows an answered person as answered, and expanding still works
-- [ ] 3.10 Buttons and chips render correctly on a narrow mobile viewport as well as desktop
+- [x] 3.4 Tapping `Tak, rozmawialiśmy` confirms the card in place and the `Ostatni kontakt` chip appears immediately
+- [x] 3.5 The optional note can be added after answering, and can be skipped entirely without blocking the answer
+- [x] 3.6 Tapping `Jeszcze nie` records a failed attempt and renders the `Poprzednia próba` chip
+- [x] 3.7 The `RefreshBanner` line about the next recompute appears after a mark and `Przelicz teraz` still works
+- [x] 3.8 The list does **not** reorder, and the browser network tab shows a mark issuing exactly one request — to `/api/contact-events` — with no `POST /api/rankings` following it
+- [x] 3.9 The collapsed row shows an answered person as answered, and expanding still works
+- [x] 3.10 Buttons and chips render correctly on a narrow mobile viewport as well as desktop
 
 ### Phase 4: History sheet and the catalog line
 

@@ -19,6 +19,7 @@ export function RefreshBanner({
   peopleConsidered,
   peopleTotal,
   hasStoredRanking,
+  hasPendingAnswers,
   onRefresh,
 }: RefreshBannerProps) {
   // Nothing has ever been computed and the one attempt so far failed -- this
@@ -66,6 +67,11 @@ export function RefreshBanner({
                 {peopleConsidered === 1 ? "osoby" : "osób"}
                 {isTruncated && ` (z ${String(peopleTotal)} łącznie)`}
               </div>
+              {hasPendingAnswers && (
+                <div className="text-muted-foreground text-xs">
+                  Twoje odpowiedzi trafią do kolejności przy następnym przeliczeniu.
+                </div>
+              )}
             </>
           )}
         </div>

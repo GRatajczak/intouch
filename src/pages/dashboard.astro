@@ -5,6 +5,7 @@ import { HierarchyEmptyState } from "@/components/hierarchy/HierarchyEmptyState"
 import { createClient } from "@/lib/supabase";
 import { loadProfileName } from "@/lib/shell-summary";
 import { loadLatestRanking, isStale } from "@/lib/ranking/store";
+import { loadContactFacts, type ContactFacts } from "@/lib/contact-history/facts";
 
 const { user } = Astro.locals;
 
@@ -13,19 +14,32 @@ const supabase = createClient(Astro.request.headers, Astro.cookies);
 let hasProfile = false;
 let peopleCount = 0;
 let ranking = null;
+let facts: Record<string, ContactFacts> = {};
+let hasPendingAnswers = false;
 
 if (supabase && user) {
   // No-profile is reachable: middleware.ts gates only /people on profile
   // existence, so a signed-up user who skipped /profile still lands here.
-  const [{ data: profile }, { count }] = await Promise.all([
+  const [{ data: profile }, { count }, factsMap] = await Promise.all([
     supabase.from("profiles").select("owner_id").eq("owner_id", user.id).maybeSingle(),
     supabase.from("people").select("*", { count: "exact", head: true }).eq("owner_id", user.id),
+    loadContactFacts(supabase, user.id),
   ]);
   hasProfile = !!profile;
   peopleCount = count ?? 0;
+  facts = Object.fromEntries(factsMap);
 
   if (hasProfile && peopleCount > 0) {
     ranking = await loadLatestRanking(supabase, user.id);
+
+    if (ranking) {
+      const { count: pendingCount } = await supabase
+        .from("contact_events")
+        .select("id", { count: "exact", head: true })
+        .eq("owner_id", user.id)
+        .gt("created_at", ranking.createdAt);
+      hasPendingAnswers = (pendingCount ?? 0) > 0;
+    }
   }
 }
 
@@ -45,7 +59,13 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
     ) : peopleCount === 0 ? (
       <HierarchyEmptyState variant="no-people" />
     ) : (
-      <HierarchyView initialRanking={ranking} staleOnLoad={staleOnLoad} client:load />
+      <HierarchyView
+        initialRanking={ranking}
+        staleOnLoad={staleOnLoad}
+        initialFacts={facts}
+        hasPendingAnswers={hasPendingAnswers}
+        client:load
+      />
     )
   }
 </AppShell>

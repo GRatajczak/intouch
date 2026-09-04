@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { RefreshBanner } from "@/components/hierarchy/RefreshBanner";
 import { HierarchyCard } from "@/components/hierarchy/HierarchyCard";
 import type { RankingViewModel } from "@/lib/ranking/store";
+import type { ContactFacts } from "@/lib/contact-history/facts";
 import type { HierarchyViewProps } from "./types";
 
 // KV is eventually consistent (scripts/verify-openai-call.ts documents up to
@@ -46,12 +47,28 @@ function pluralizeCalmTail(count: number): string {
  * the existing ranking throughout -- never a skeleton over one that already
  * exists. Only a first-ever run with nothing stored shows a loading state.
  */
-export function HierarchyView({ initialRanking, staleOnLoad }: HierarchyViewProps) {
+export function HierarchyView({ initialRanking, staleOnLoad, initialFacts, hasPendingAnswers }: HierarchyViewProps) {
   const [ranking, setRanking] = useState<RankingViewModel | null>(initialRanking);
   const [status, setStatus] = useState<Status>(initialRanking && !staleOnLoad ? "fresh" : "refreshing");
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() =>
     initialRanking ? topThreeIds(initialRanking) : new Set<string>(),
   );
+  const [facts, setFacts] = useState<Record<string, ContactFacts>>(initialFacts);
+  const [pendingAnswers, setPendingAnswers] = useState(hasPendingAnswers);
+
+  // A mark's answer lands in the next recompute, never the current one --
+  // this handler is the only immediate evidence the loop worked (plan.md's
+  // "Critical Implementation Details"). Order is never recomputed locally.
+  const handleMarked = useCallback((personId: string, personFacts: ContactFacts | null) => {
+    setFacts((prev) => {
+      if (!personFacts) {
+        const { [personId]: _omit, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [personId]: personFacts };
+    });
+    setPendingAnswers(true);
+  }, []);
 
   const mountedRef = useRef(true);
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -89,6 +106,10 @@ export function HierarchyView({ initialRanking, staleOnLoad }: HierarchyViewProp
               setExpandedIds(topThreeIds(body.ranking));
             }
             setStatus("fresh");
+            // The ranking that just landed already incorporates every answer
+            // recorded up to this point -- leaving the flag set would keep
+            // the banner promising an update that already happened.
+            setPendingAnswers(false);
             return;
           }
           if (body.status === "failed") {
@@ -188,6 +209,7 @@ export function HierarchyView({ initialRanking, staleOnLoad }: HierarchyViewProp
         peopleConsidered={null}
         peopleTotal={null}
         hasStoredRanking={false}
+        hasPendingAnswers={false}
         onRefresh={handleManualRefresh}
       />
     );
@@ -207,6 +229,7 @@ export function HierarchyView({ initialRanking, staleOnLoad }: HierarchyViewProp
         peopleConsidered={ranking.peopleConsidered}
         peopleTotal={ranking.peopleTotal}
         hasStoredRanking
+        hasPendingAnswers={pendingAnswers}
         onRefresh={handleManualRefresh}
       />
 
@@ -218,6 +241,8 @@ export function HierarchyView({ initialRanking, staleOnLoad }: HierarchyViewProp
             rank={index + 1}
             expanded={expandedIds.has(entry.person.id)}
             onToggleExpanded={toggleExpanded}
+            facts={facts[entry.person.id] ?? null}
+            onMarked={handleMarked}
           />
         ))}
       </div>
