@@ -17,6 +17,7 @@
     "verify:rls": "tsx scripts/verify-rls.ts",
     "verify:ai-call": "tsx scripts/verify-openai-call.ts",
     "verify:ranking": "tsx scripts/verify-ranking.ts",
+    "verify:feedback-loop": "tsx scripts/verify-feedback-loop.ts",
     "render:email-preview": "tsx scripts/render-email-preview.ts"
   },
   "dependencies": {

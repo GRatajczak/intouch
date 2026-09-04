@@ -776,31 +776,31 @@ table author sees a decision rather than an inherited default (`lessons.md`).
 
 #### Automated
 
-- [x] 4.1 Type checking passes: `npx astro check`
-- [x] 4.2 Linting passes: `npm run lint`
-- [x] 4.3 Build passes: `npm run build`
-- [x] 4.4 `npm run verify:rls` still passes after the mutate endpoints exist
+- [x] 4.1 Type checking passes: `npx astro check` — 8822bc6
+- [x] 4.2 Linting passes: `npm run lint` — 8822bc6
+- [x] 4.3 Build passes: `npm run build` — 8822bc6
+- [x] 4.4 `npm run verify:rls` still passes after the mutate endpoints exist — 8822bc6
 
 #### Manual
 
-- [x] 4.5 The sheet opens from a hierarchy card and from a PersonCard, listing the same events
-- [x] 4.6 Editing an event's outcome or note persists and the chips update without a page reload
-- [x] 4.7 Deleting an event removes it and the chips update accordingly
-- [x] 4.8 Another account's event id returns 404 from `PATCH` and `DELETE`
-- [x] 4.9 `/people` shows a correct last-contact line, and people with no history show none
-- [x] 4.10 The catalog grid still renders correctly on mobile, its first paint is not blank, and it ships no per-card island
+- [x] 4.5 The sheet opens from a hierarchy card and from a PersonCard, listing the same events — 8822bc6
+- [x] 4.6 Editing an event's outcome or note persists and the chips update without a page reload — 8822bc6
+- [x] 4.7 Deleting an event removes it and the chips update accordingly — 8822bc6
+- [x] 4.8 Another account's event id returns 404 from `PATCH` and `DELETE` — 8822bc6
+- [x] 4.9 `/people` shows a correct last-contact line, and people with no history show none — 8822bc6
+- [x] 4.10 The catalog grid still renders correctly on mobile, its first paint is not blank, and it ships no per-card island — 8822bc6
 
 ### Phase 5: Production verification
 
 #### Automated
 
-- [ ] 5.1 Deployed preview builds and uploads: `npm run preview:upload`
-- [ ] 5.2 Full loop passes against the deployed URL: `npm run verify:feedback-loop -- <preview-url>`
-- [ ] 5.3 Ranking path still passes: `npm run verify:ranking -- <preview-url>`
-- [ ] 5.4 Linting passes: `npm run lint`
+- [x] 5.1 Deployed preview builds and uploads: `npm run preview:upload`
+- [x] 5.2 Full loop passes against the deployed URL: `npm run verify:feedback-loop -- <preview-url>`
+- [x] 5.3 Ranking path still passes: `npm run verify:ranking -- <preview-url>`
+- [x] 5.4 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 5.5 `wrangler tail` shows no error-level `[ranking]` output during the verified run (noting `lessons.md`: non-versioned settings sync only on `versions deploy`, so budget a real deploy if tail is silent)
-- [ ] 5.6 The production-verification record is written and its numbers match the run
+- [x] 5.5 `wrangler tail` shows no error-level `[ranking]` output during the verified run (noting `lessons.md`: non-versioned settings sync only on `versions deploy`, so budget a real deploy if tail is silent)
+- [x] 5.6 The production-verification record is written and its numbers match the run
 - [ ] 5.7 Roadmap `S-03` and its Linear issue are moved to reflect the shipped state
