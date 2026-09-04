@@ -4,7 +4,7 @@
 
 - `wrangler pages deploy` jest zakazane w tym repo — użyj `npm run deploy` (= `astro build && wrangler deploy`) albo `npm run preview:upload` (= `astro build && wrangler versions upload`) dla wersji bez ruchu produkcyjnego.
 - Dostęp do zmiennych środowiskowych wyłącznie przez `astro:env/server` (patrz `src/lib/supabase.ts`). Nigdy `Astro.locals.runtime` (nie istnieje w v13) ani `process.env`.
-- `wrangler.jsonc` → `"name": "intouch"` determinuje subdomenę `*.workers.dev`; produkcyjny URL to `https://intouch.g-ratajczak97.workers.dev`.
+- `wrangler.jsonc` → `"name": "intouch"` determinuje subdomenę `*.workers.dev`; produkcyjny URL to `https://get-in-touch.pl` (custom domain). Subdomena `https://intouch.g-ratajczak97.workers.dev` wciąż odpowiada — kanoniczna domena jest ustawiona jednym miejscem, `site` w `astro.config.mjs`, z którego layout wylicza `rel=canonical`, `og:url` i sitemapę. Nie wpisuj domeny na sztywno nigdzie indziej.
 
 ## Rollback
 

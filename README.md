@@ -93,7 +93,7 @@ Projekt deployuje sie jako **Cloudflare Worker** (nie Cloudflare Pages).
 
 - Produkcja: `npm run deploy`
 - Preview wersji: `npm run preview:upload`
-- Produkcyjny URL: `https://intouch.g-ratajczak97.workers.dev`
+- Produkcyjny URL: `https://get-in-touch.pl` (custom domain; `https://intouch.g-ratajczak97.workers.dev` nadal odpowiada, ale `rel=canonical` i `site` w `astro.config.mjs` wskazują na domenę)
 
 Do produkcji ustaw sekrety Workera:
 

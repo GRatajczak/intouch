@@ -8,9 +8,18 @@ import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://intouch.g-ratajczak97.workers.dev",
+  site: "https://get-in-touch.pl",
   output: "server",
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    // Every route in this app is either auth-gated (/dashboard, /people, /profile,
+    // /settings) or transactional (/auth/*), so the sitemap would otherwise ship
+    // a dozen URLs that resolve to a redirect for anyone Google sends there. The
+    // landing page is the only indexable surface.
+    sitemap({
+      filter: (page) => new URL(page).pathname === "/",
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

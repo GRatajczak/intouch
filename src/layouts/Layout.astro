@@ -15,7 +15,10 @@ interface Props {
 
 const { title = "InTouch", description, ogImage } = Astro.props;
 
-// `site` in astro.config.mjs makes this absolute, which og:url requires.
+// `site` in astro.config.mjs (https://get-in-touch.pl) makes this absolute and
+// pins it to the public domain, which `rel=canonical` and `og:url` both require.
+// It also keeps the *.workers.dev origin from being indexed as a duplicate:
+// pages served from there still point search engines at the real domain.
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 const ogImageUrl = ogImage ? new URL(ogImage, Astro.site ?? Astro.url).href : undefined;
 ---
@@ -34,6 +37,7 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.site ?? Astro.url).href : un
       rel="stylesheet"
     />
     <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl} />
     {description && <meta name="description" content={description} />}
     {
       /* Social card tags ride along with `description`: a page that opts into one
@@ -45,6 +49,8 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.site ?? Astro.url).href : un
           <meta property="og:description" content={description} />
           <meta property="og:type" content="website" />
           <meta property="og:url" content={canonicalUrl} />
+          <meta property="og:site_name" content="InTouch" />
+          <meta property="og:locale" content="pl_PL" />
           {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
           <meta name="twitter:card" content={ogImageUrl ? "summary_large_image" : "summary"} />
         </>

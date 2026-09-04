@@ -1,0 +1,12 @@
+# Only the landing page is public; everything below is auth-gated or
+# transactional, so crawling it just burns budget on redirects.
+User-agent: *
+Allow: /$
+Disallow: /api/
+Disallow: /auth/
+Disallow: /dashboard
+Disallow: /people
+Disallow: /profile
+Disallow: /settings
+
+Sitemap: https://get-in-touch.pl/sitemap-index.xml
