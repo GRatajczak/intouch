@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RefreshBanner } from "@/components/hierarchy/RefreshBanner";
 import { HierarchyCard } from "@/components/hierarchy/HierarchyCard";
+import {
+  CONTACT_FACTS_UPDATED_EVENT,
+  type ContactFactsUpdatedDetail,
+} from "@/components/contact-history/ContactHistorySheet/openContactHistory";
 import type { RankingViewModel } from "@/lib/ranking/store";
 import type { ContactFacts } from "@/lib/contact-history/facts";
 import type { HierarchyViewProps } from "./types";
@@ -59,7 +63,7 @@ export function HierarchyView({ initialRanking, staleOnLoad, initialFacts, hasPe
   // A mark's answer lands in the next recompute, never the current one --
   // this handler is the only immediate evidence the loop worked (plan.md's
   // "Critical Implementation Details"). Order is never recomputed locally.
-  const handleMarked = useCallback((personId: string, personFacts: ContactFacts | null) => {
+  const applyFactsUpdate = useCallback((personId: string, personFacts: ContactFacts | null) => {
     setFacts((prev) => {
       if (!personFacts) {
         const { [personId]: _omit, ...rest } = prev;
@@ -69,6 +73,20 @@ export function HierarchyView({ initialRanking, staleOnLoad, initialFacts, hasPe
     });
     setPendingAnswers(true);
   }, []);
+
+  // The history sheet (Phase 4) is a separate island -- an edit or delete
+  // made there reaches this one only via this broadcast, mirroring how
+  // Toaster listens for its own window event.
+  useEffect(() => {
+    function handleFactsUpdated(event: Event) {
+      const { personId, facts: updatedFacts } = (event as CustomEvent<ContactFactsUpdatedDetail>).detail;
+      applyFactsUpdate(personId, updatedFacts);
+    }
+    window.addEventListener(CONTACT_FACTS_UPDATED_EVENT, handleFactsUpdated);
+    return () => {
+      window.removeEventListener(CONTACT_FACTS_UPDATED_EVENT, handleFactsUpdated);
+    };
+  }, [applyFactsUpdate]);
 
   const mountedRef = useRef(true);
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -242,7 +260,7 @@ export function HierarchyView({ initialRanking, staleOnLoad, initialFacts, hasPe
             expanded={expandedIds.has(entry.person.id)}
             onToggleExpanded={toggleExpanded}
             facts={facts[entry.person.id] ?? null}
-            onMarked={handleMarked}
+            onMarked={applyFactsUpdate}
           />
         ))}
       </div>

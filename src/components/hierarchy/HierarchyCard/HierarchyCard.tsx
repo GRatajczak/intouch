@@ -5,6 +5,7 @@ import { TIME_WINDOW_LABELS, type TimeWindow } from "@/lib/validation/ranking";
 import { WeightIndicator } from "@/components/people/WeightIndicator";
 import { ContactChips } from "@/components/hierarchy/ContactChips";
 import { ContactMarker } from "@/components/hierarchy/ContactMarker";
+import { openContactHistory } from "@/components/contact-history/ContactHistorySheet/openContactHistory";
 import type { HierarchyCardProps } from "./types";
 
 // Same urgency tokens the landing page's preview card already promises
@@ -107,6 +108,15 @@ export function HierarchyCard({ entry, rank, expanded, onToggleExpanded, facts, 
           <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs">{entry.rhythmNote}</span>
         )}
         <ContactChips facts={facts} />
+        <button
+          type="button"
+          onClick={() => {
+            openContactHistory(person.id, person.name);
+          }}
+          className="text-muted-foreground hover:text-foreground text-xs font-medium underline-offset-2 hover:underline"
+        >
+          Historia
+        </button>
       </div>
 
       <ContactMarker

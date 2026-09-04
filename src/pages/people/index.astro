@@ -1,25 +1,32 @@
 ---
 import AppShell from "@/components/layout/AppShell.astro";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/people/EmptyState";
 import { PersonCard } from "@/components/people/PersonCard";
 import { createClient } from "@/lib/supabase";
 import { loadProfileName } from "@/lib/shell-summary";
+import { loadContactFacts, type ContactFacts } from "@/lib/contact-history/facts";
+import { Plus } from "lucide-react";
 
 const { user } = Astro.locals;
 
 let people: Awaited<ReturnType<typeof fetchPeople>> = [];
+let facts: Record<string, ContactFacts> = {};
 
 async function fetchPeople() {
   if (!user) return [];
   const supabase = createClient(Astro.request.headers, Astro.cookies);
   if (!supabase) return [];
-  const { data } = await supabase
-    .from("people")
-    .select("*")
-    .eq("owner_id", user.id)
-    .order("weight", { ascending: false })
-    .order("created_at", { ascending: true });
+  const [{ data }, factsMap] = await Promise.all([
+    supabase
+      .from("people")
+      .select("*")
+      .eq("owner_id", user.id)
+      .order("weight", { ascending: false })
+      .order("created_at", { ascending: true }),
+    loadContactFacts(supabase, user.id),
+  ]);
+  facts = Object.fromEntries(factsMap);
   return data ?? [];
 }
 
@@ -35,9 +42,10 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
     <h1 class="font-display text-display-sm text-foreground">Twoi bliscy</h1>
     {
       people.length > 0 && (
-        <Button asChild>
-          <a href="/people/new">Dodaj osobę</a>
-        </Button>
+        <a href="/people/new" class:list={[buttonVariants()]}>
+          <Plus className="size-4" />
+          Dodaj osobę
+        </a>
       )
     }
   </div>
@@ -48,9 +56,27 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
     ) : (
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {people.map((person) => (
-          <PersonCard person={person} />
+          <PersonCard person={person} facts={facts[person.id] ?? null} />
         ))}
       </div>
     )
   }
 </AppShell>
+
+<script>
+  // Delegated so the grid stays server-rendered static HTML with zero React
+  // islands -- PersonCard's "Historia" button carries data attributes only,
+  // no onClick, since it never hydrates (plan.md Phase 4 §5).
+  import { openContactHistory } from "@/components/contact-history/ContactHistorySheet/openContactHistory";
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    const button = target.closest<HTMLElement>("[data-open-contact-history]");
+    if (!button) return;
+    const personId = button.dataset.openContactHistory;
+    const personName = button.dataset.personName ?? "";
+    if (personId) {
+      openContactHistory(personId, personName);
+    }
+  });
+</script>

@@ -65,3 +65,33 @@ export const POST: APIRoute = async (context) => {
 
   return json({ event: inserted, facts }, 201);
 };
+
+export const GET: APIRoute = async (context) => {
+  if (!context.locals.user) {
+    return json({ error: "Unauthorized" }, 401);
+  }
+  const ownerId = context.locals.user.id;
+
+  const personId = context.url.searchParams.get("personId");
+  if (!personId) {
+    return json({ error: "Brak parametru personId" }, 400);
+  }
+
+  const supabase = createClient(context.request.headers, context.cookies);
+  if (!supabase) {
+    return json({ error: "Service unavailable" }, 503);
+  }
+
+  const { data: events, error } = await supabase
+    .from("contact_events")
+    .select("*")
+    .eq("owner_id", ownerId)
+    .eq("person_id", personId)
+    .order("occurred_at", { ascending: false });
+
+  if (error) {
+    return json({ error: error.message }, 500);
+  }
+
+  return json({ events }, 200);
+};

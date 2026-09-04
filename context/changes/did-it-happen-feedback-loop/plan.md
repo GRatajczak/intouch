@@ -758,37 +758,37 @@ table author sees a decision rather than an inherited default (`lessons.md`).
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `npx astro check`
-- [x] 3.2 Linting passes: `npm run lint`
-- [x] 3.3 Build passes: `npm run build`
+- [x] 3.1 Type checking passes: `npx astro check` — 7b49f7d
+- [x] 3.2 Linting passes: `npm run lint` — 7b49f7d
+- [x] 3.3 Build passes: `npm run build` — 7b49f7d
 
 #### Manual
 
-- [x] 3.4 Tapping `Tak, rozmawialiśmy` confirms the card in place and the `Ostatni kontakt` chip appears immediately
-- [x] 3.5 The optional note can be added after answering, and can be skipped entirely without blocking the answer
-- [x] 3.6 Tapping `Jeszcze nie` records a failed attempt and renders the `Poprzednia próba` chip
-- [x] 3.7 The `RefreshBanner` line about the next recompute appears after a mark and `Przelicz teraz` still works
-- [x] 3.8 The list does **not** reorder, and the browser network tab shows a mark issuing exactly one request — to `/api/contact-events` — with no `POST /api/rankings` following it
-- [x] 3.9 The collapsed row shows an answered person as answered, and expanding still works
-- [x] 3.10 Buttons and chips render correctly on a narrow mobile viewport as well as desktop
+- [x] 3.4 Tapping `Tak, rozmawialiśmy` confirms the card in place and the `Ostatni kontakt` chip appears immediately — 7b49f7d
+- [x] 3.5 The optional note can be added after answering, and can be skipped entirely without blocking the answer — 7b49f7d
+- [x] 3.6 Tapping `Jeszcze nie` records a failed attempt and renders the `Poprzednia próba` chip — 7b49f7d
+- [x] 3.7 The `RefreshBanner` line about the next recompute appears after a mark and `Przelicz teraz` still works — 7b49f7d
+- [x] 3.8 The list does **not** reorder, and the browser network tab shows a mark issuing exactly one request — to `/api/contact-events` — with no `POST /api/rankings` following it — 7b49f7d
+- [x] 3.9 The collapsed row shows an answered person as answered, and expanding still works — 7b49f7d
+- [x] 3.10 Buttons and chips render correctly on a narrow mobile viewport as well as desktop — 7b49f7d
 
 ### Phase 4: History sheet and the catalog line
 
 #### Automated
 
-- [ ] 4.1 Type checking passes: `npx astro check`
-- [ ] 4.2 Linting passes: `npm run lint`
-- [ ] 4.3 Build passes: `npm run build`
-- [ ] 4.4 `npm run verify:rls` still passes after the mutate endpoints exist
+- [x] 4.1 Type checking passes: `npx astro check`
+- [x] 4.2 Linting passes: `npm run lint`
+- [x] 4.3 Build passes: `npm run build`
+- [x] 4.4 `npm run verify:rls` still passes after the mutate endpoints exist
 
 #### Manual
 
-- [ ] 4.5 The sheet opens from a hierarchy card and from a PersonCard, listing the same events
-- [ ] 4.6 Editing an event's outcome or note persists and the chips update without a page reload
-- [ ] 4.7 Deleting an event removes it and the chips update accordingly
-- [ ] 4.8 Another account's event id returns 404 from `PATCH` and `DELETE`
-- [ ] 4.9 `/people` shows a correct last-contact line, and people with no history show none
-- [ ] 4.10 The catalog grid still renders correctly on mobile, its first paint is not blank, and it ships no per-card island
+- [x] 4.5 The sheet opens from a hierarchy card and from a PersonCard, listing the same events
+- [x] 4.6 Editing an event's outcome or note persists and the chips update without a page reload
+- [x] 4.7 Deleting an event removes it and the chips update accordingly
+- [x] 4.8 Another account's event id returns 404 from `PATCH` and `DELETE`
+- [x] 4.9 `/people` shows a correct last-contact line, and people with no history show none
+- [x] 4.10 The catalog grid still renders correctly on mobile, its first paint is not blank, and it ships no per-card island
 
 ### Phase 5: Production verification
 

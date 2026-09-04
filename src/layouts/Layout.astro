@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Banner from "@/components/Banner.astro";
 import { Toaster } from "@/components/layout/Toaster";
+import { ContactHistorySheet } from "@/components/contact-history/ContactHistorySheet";
 import { missingConfigs } from "@/lib/config-status";
 
 interface Props {
@@ -68,6 +69,7 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.site ?? Astro.url).href : un
       ))
     }
     <Toaster client:load />
+    <ContactHistorySheet client:load />
     <slot />
   </body>
 </html>

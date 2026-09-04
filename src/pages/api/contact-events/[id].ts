@@ -69,3 +69,39 @@ export const PATCH: APIRoute = async (context) => {
 
   return json({ event: updated, facts }, 200);
 };
+
+export const DELETE: APIRoute = async (context) => {
+  if (!context.locals.user) {
+    return json({ error: "Unauthorized" }, 401);
+  }
+  const ownerId = context.locals.user.id;
+  const eventId = context.params.id;
+  if (!eventId) {
+    return json({ error: "Brak identyfikatora zdarzenia" }, 400);
+  }
+
+  const supabase = createClient(context.request.headers, context.cookies);
+  if (!supabase) {
+    return json({ error: "Service unavailable" }, 503);
+  }
+
+  // Scoped by owner_id in addition to RLS -- same 404-not-403 posture as PATCH.
+  const { data: deleted, error: deleteError } = await supabase
+    .from("contact_events")
+    .delete()
+    .eq("id", eventId)
+    .eq("owner_id", ownerId)
+    .select()
+    .maybeSingle();
+
+  if (deleteError) {
+    return json({ error: deleteError.message }, 500);
+  }
+  if (!deleted) {
+    return json({ error: "Nie znaleziono zdarzenia" }, 404);
+  }
+
+  const facts = await loadPersonContactFacts(supabase, ownerId, deleted.person_id);
+
+  return json({ facts }, 200);
+};
