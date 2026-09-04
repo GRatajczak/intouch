@@ -390,3 +390,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-06: see a real marketing page at `/` explaining what InTouch is, before signing in** — Archived 2026-09-04 → `context/archive/2026-09-01-landing-page/`. Lesson: —.
 - **S-03: confirm whether a contact happened and see the ranking react** — Archived 2026-09-04 → `context/archive/2026-09-02-did-it-happen-feedback-loop/`. Lesson: —.
 - **S-07: edit their own profile after first fill and manage their account from `/settings`** — Archived 2026-09-04 → `context/archive/2026-09-04-account-and-profile-settings/`. Lesson: —.
+- **S-10: add a person through a form inside the app shell, with richer per-person context (who they are, freeform tags, roughly when last in touch)** — Archived 2026-09-04 → `context/archive/2026-09-04-add-person-context-fields/`. Lesson: —.
