@@ -90,7 +90,17 @@ export function PersonEditForm({ person, onSaved, onCancel }: PersonEditFormProp
     });
     if (result.success) {
       setErrors({});
-      return result.data;
+      // This is a full-form edit (every field always present), so an empty
+      // optional field means "clear it," not "not entered" -- send `null`,
+      // not `undefined`, since JSON.stringify drops undefined keys and the
+      // route would then leave the old value in place (personUpdateSchema
+      // accepts null for these three fields precisely for this case).
+      return {
+        ...result.data,
+        relationshipContext: result.data.relationshipContext ?? null,
+        contextTags: result.data.contextTags ?? null,
+        lastContactBucket: result.data.lastContactBucket ?? null,
+      };
     }
     const next: Record<string, string> = {};
     for (const issue of result.error.issues) {

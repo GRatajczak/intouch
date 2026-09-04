@@ -381,20 +381,20 @@ The `status` migration (Phase 1) is purely additive with a `DEFAULT`, so it is f
 
 #### Automated
 
-- [x] 4.1 Type checking passes: `npx astro check`
-- [x] 4.2 Linting passes: `npm run lint`
-- [x] 4.3 Build passes: `npm run build`
+- [x] 4.1 Type checking passes: `npx astro check` — 9e55630
+- [x] 4.2 Linting passes: `npm run lint` — 9e55630
+- [x] 4.3 Build passes: `npm run build` — 9e55630
 
 #### Manual
 
-- [x] 4.4 Opening a person from `/people` lands on `/people/[id]` showing their current data
-- [x] 4.5 Edytuj → change a field → save returns to view mode with the change reflected, and the same change shows on `/people`
-- [x] 4.6 Dezaktywuj immediately shows the deactivated treatment on this page and on `/people`'s card
-- [x] 4.7 Aktywuj reverses it
-- [x] 4.8 Usuń is not rendered/reachable while the person is active
-- [x] 4.9 Deactivate, then Usuń → AlertDialog appears with clear irreversibility copy → confirm → redirected to `/people`, person is gone
-- [x] 4.10 Historia is reachable from this page (adapted: an inline expandable "Historia kontaktu" section, not the ContactHistorySheet sidebar, per explicit design-fidelity direction against the mock)
-- [x] 4.11 Visiting `/people/[id]` for another user's id, or a nonexistent id, redirects to `/people`
+- [x] 4.4 Opening a person from `/people` lands on `/people/[id]` showing their current data — 9e55630
+- [x] 4.5 Edytuj → change a field → save returns to view mode with the change reflected, and the same change shows on `/people` — 9e55630
+- [x] 4.6 Dezaktywuj immediately shows the deactivated treatment on this page and on `/people`'s card — 9e55630
+- [x] 4.7 Aktywuj reverses it — 9e55630
+- [x] 4.8 Usuń is not rendered/reachable while the person is active — 9e55630
+- [x] 4.9 Deactivate, then Usuń → AlertDialog appears with clear irreversibility copy → confirm → redirected to `/people`, person is gone — 9e55630
+- [x] 4.10 Historia is reachable from this page (adapted: an inline expandable "Historia kontaktu" section, not the ContactHistorySheet sidebar, per explicit design-fidelity direction against the mock) — 9e55630
+- [x] 4.11 Visiting `/people/[id]` for another user's id, or a nonexistent id, redirects to `/people` — 9e55630
 
 ### Phase 5: Erasure verification
 

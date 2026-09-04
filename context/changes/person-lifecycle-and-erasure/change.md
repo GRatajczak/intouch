@@ -1,7 +1,7 @@
 ---
 change_id: person-lifecycle-and-erasure
 title: Edit, deactivate and irreversibly delete a person
-status: implementing
+status: impl_reviewed
 created: 2026-09-04
 updated: 2026-09-04
 archived_at: null

@@ -66,9 +66,23 @@ export type PersonStatus = (typeof PERSON_STATUSES)[number];
 // makes every `personSchema` field optional so a request only needs to send
 // the keys it's changing; the refine rejects an empty `{}` the same way
 // `updateContactEventSchema` does, since an empty PATCH body is a client bug.
+//
+// The three already-optional fields are re-declared `.nullable()` here on
+// top of `.partial()`'s optionality: "absent" (leave unchanged) and "null"
+// (clear it) must be distinguishable on an update, unlike on create where
+// "not entered" only ever means one thing.
 export const personUpdateSchema = personSchema
   .partial()
-  .extend({ status: z.enum(PERSON_STATUSES, { message: "Nieprawidłowy status" }).optional() })
+  .extend({
+    relationshipContext: z.string().trim().max(100, "Za długie (maks. 100 znaków)").nullable().optional(),
+    contextTags: z
+      .array(z.string().trim().min(1).max(30, "Tag jest za długi (maks. 30 znaków)"))
+      .max(CONTEXT_TAGS_MAX, `Maksymalnie ${String(CONTEXT_TAGS_MAX)} tagów`)
+      .nullable()
+      .optional(),
+    lastContactBucket: z.enum(LAST_CONTACT_BUCKETS, { message: "Wybierz jedną z opcji" }).nullable().optional(),
+    status: z.enum(PERSON_STATUSES, { message: "Nieprawidłowy status" }).optional(),
+  })
   .refine((data) => Object.keys(data).length > 0, { message: "Brak danych do zapisania" });
 
 export type PersonUpdateValues = z.infer<typeof personUpdateSchema>;

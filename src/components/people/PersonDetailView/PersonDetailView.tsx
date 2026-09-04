@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Pencil, ChevronDown, ChevronUp, Trash2, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +9,6 @@ import {
   AlertDialogTitle,
   AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { WeightIndicator } from "@/components/people/WeightIndicator";
@@ -136,26 +135,35 @@ export function PersonDetailView({ person: initialPerson, facts: initialFacts }:
     }
   }
 
-  async function loadHistory() {
-    setHistoryState("loading");
-    try {
-      const res = await fetch(`/api/contact-events?personId=${encodeURIComponent(person.id)}`);
-      const body: EventsResponse = await res.json();
-      if (!res.ok) {
-        throw new Error(body.error ?? "Nie udało się wczytać historii");
+  // Tracks the in-flight load, if any, so a second caller (e.g. submitContact
+  // firing right after toggleHistory) can await the same request instead of
+  // dispatching a concurrent duplicate GET.
+  const historyLoadRef = useRef<Promise<void> | null>(null);
+
+  function loadHistory(): Promise<void> {
+    const promise = (async () => {
+      setHistoryState("loading");
+      try {
+        const res = await fetch(`/api/contact-events?personId=${encodeURIComponent(person.id)}`);
+        const body: EventsResponse = await res.json();
+        if (!res.ok) {
+          throw new Error(body.error ?? "Nie udało się wczytać historii");
+        }
+        setEvents(body.events ?? []);
+        setHistoryState("loaded");
+      } catch (err) {
+        setHistoryError(err instanceof Error ? err.message : "Nie udało się wczytać historii");
+        setHistoryState("error");
       }
-      setEvents(body.events ?? []);
-      setHistoryState("loaded");
-    } catch (err) {
-      setHistoryError(err instanceof Error ? err.message : "Nie udało się wczytać historii");
-      setHistoryState("error");
-    }
+    })();
+    historyLoadRef.current = promise;
+    return promise;
   }
 
   function toggleHistory() {
     const next = !historyOpen;
     setHistoryOpen(next);
-    if (next && historyState === "idle") {
+    if (next && (historyState === "idle" || historyState === "error")) {
       void loadHistory();
     }
   }
@@ -181,7 +189,13 @@ export function PersonDetailView({ person: initialPerson, facts: initialFacts }:
       if (historyState === "loaded") {
         setEvents((prev) => [createdEvent, ...prev]);
       } else {
-        void loadHistory();
+        // A load may already be in flight (e.g. just opened via toggleHistory)
+        // -- wait for it instead of firing a concurrent duplicate GET, then
+        // reload once more since that in-flight request predates this event.
+        if (historyState === "loading" && historyLoadRef.current) {
+          await historyLoadRef.current;
+        }
+        await loadHistory();
       }
     } catch (err) {
       showToast("error", err instanceof Error ? err.message : "Nie udało się zapisać kontaktu");
@@ -326,7 +340,7 @@ export function PersonDetailView({ person: initialPerson, facts: initialFacts }:
             onClick={() => {
               setAddingContact((prev) => !prev);
               setHistoryOpen(true);
-              if (historyState === "idle") {
+              if (historyState === "idle" || historyState === "error") {
                 void loadHistory();
               }
             }}
@@ -439,15 +453,20 @@ export function PersonDetailView({ person: initialPerson, facts: initialFacts }:
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel disabled={deleteBusy}>Anuluj</AlertDialogCancel>
-                <AlertDialogAction
+                {/* A plain Button, not AlertDialogAction -- Action closes the
+                    dialog on click unconditionally (Radix ignores
+                    preventDefault there), which would dismiss the
+                    confirmation even when the delete request fails. */}
+                <Button
+                  type="button"
+                  variant="destructive"
                   disabled={deleteBusy}
-                  onClick={(e) => {
-                    e.preventDefault();
+                  onClick={() => {
                     void handleDelete();
                   }}
                 >
                   Usuń na zawsze
-                </AlertDialogAction>
+                </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

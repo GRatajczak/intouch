@@ -22,11 +22,16 @@ function formatLastContact(iso: string): string {
 
 /**
  * Stays un-hydrated -- no `client:` directive anywhere this renders. The
- * "Historia" affordance is a plain button carrying data attributes; a single
- * delegated click listener in people/index.astro's own <script> dispatches
- * the open event (and preventDefault()s the card's own link navigation), so
- * the catalog grid ships zero React islands. The whole card is a link to
- * `/people/[id]` -- plan.md Phase 4 §5.
+ * card-to-detail-page link is a separate `absolute inset-0 -z-10` overlay
+ * `<a>` sitting behind the card's ordinary static content (which, being
+ * non-positioned, paints above a negative-z-index sibling by default)
+ * rather than the whole card being an `<a>` -- an anchor wrapping a
+ * `<button>` ("Historia") is invalid HTML and was fragile (relied on a
+ * delegated `preventDefault()` plus a z-index hack). This way "Historia" is
+ * a normal, non-nested button; a single delegated click listener in
+ * people/index.astro's own <script> still dispatches its open event, so the
+ * catalog grid ships zero React islands. Card-to-detail-page link --
+ * plan.md Phase 4 §5.
  *
  * Layout follows the design bundle's catalog card
  * (.ai/intouch-design-preparation/project/InTouch.dc.html:435-445): a
@@ -40,10 +45,14 @@ export function PersonCard({ person, facts }: PersonCardProps) {
   const isDeactivated = person.status === "deactivated";
 
   return (
-    <a
-      href={`/people/${person.id}`}
-      className={`border-border bg-card text-card-foreground hover:shadow-card block rounded-[18px] border p-5 transition-shadow ${isDeactivated ? "opacity-75" : ""}`}
+    <div
+      className={`border-border bg-card text-card-foreground hover:shadow-card relative rounded-[18px] border p-5 transition-shadow ${isDeactivated ? "opacity-75" : ""}`}
     >
+      <a
+        href={`/people/${person.id}`}
+        aria-label={`Zobacz profil: ${person.name}`}
+        className="absolute inset-0 -z-10 rounded-[18px]"
+      />
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className={`size-10 rounded-[13px] ${RELATIONSHIP_TYPE_SWATCH[relationshipType]}`} aria-hidden="true" />
         {isDeactivated ? (
@@ -88,11 +97,11 @@ export function PersonCard({ person, facts }: PersonCardProps) {
           type="button"
           data-open-contact-history={person.id}
           data-person-name={person.name}
-          className="text-muted-foreground hover:text-foreground relative z-10 text-xs font-medium underline-offset-2 hover:underline"
+          className="text-muted-foreground hover:text-foreground relative text-xs font-medium underline-offset-2 hover:underline"
         >
           Historia
         </button>
       </div>
-    </a>
+    </div>
   );
 }
