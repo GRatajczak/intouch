@@ -387,3 +387,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-03: (foundation) one token layer the screens actually use, no starter theme** — Archived 2026-09-04 → `context/archive/2026-08-22-design-system-foundation/`. Lesson: —.
 - **F-02: (foundation) the Worker can call OpenAI without blocking the user** — Archived 2026-09-04 → `context/archive/2026-08-26-openai-ranking-call-path/`. Lesson: —.
 - **F-05: (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design** — Archived 2026-09-04 → `context/archive/2026-08-30-design-alignment-pass/`. Lesson: —.
+- **S-06: see a real marketing page at `/` explaining what InTouch is, before signing in** — Archived 2026-09-04 → `context/archive/2026-09-01-landing-page/`. Lesson: —.
