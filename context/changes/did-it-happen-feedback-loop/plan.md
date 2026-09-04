@@ -794,13 +794,13 @@ table author sees a decision rather than an inherited default (`lessons.md`).
 
 #### Automated
 
-- [x] 5.1 Deployed preview builds and uploads: `npm run preview:upload`
-- [x] 5.2 Full loop passes against the deployed URL: `npm run verify:feedback-loop -- <preview-url>`
-- [x] 5.3 Ranking path still passes: `npm run verify:ranking -- <preview-url>`
-- [x] 5.4 Linting passes: `npm run lint`
+- [x] 5.1 Deployed preview builds and uploads: `npm run preview:upload` — fc946b3
+- [x] 5.2 Full loop passes against the deployed URL: `npm run verify:feedback-loop -- <preview-url>` — fc946b3
+- [x] 5.3 Ranking path still passes: `npm run verify:ranking -- <preview-url>` — fc946b3
+- [x] 5.4 Linting passes: `npm run lint` — fc946b3
 
 #### Manual
 
-- [x] 5.5 `wrangler tail` shows no error-level `[ranking]` output during the verified run (noting `lessons.md`: non-versioned settings sync only on `versions deploy`, so budget a real deploy if tail is silent)
-- [x] 5.6 The production-verification record is written and its numbers match the run
+- [x] 5.5 `wrangler tail` shows no error-level `[ranking]` output during the verified run (noting `lessons.md`: non-versioned settings sync only on `versions deploy`, so budget a real deploy if tail is silent) — fc946b3
+- [x] 5.6 The production-verification record is written and its numbers match the run — fc946b3
 - [ ] 5.7 Roadmap `S-03` and its Linear issue are moved to reflect the shipped state
