@@ -20,9 +20,11 @@ export const createContactEventSchema = z.object({
 
 export type CreateContactEventValues = z.infer<typeof createContactEventSchema>;
 
-export const updateContactEventSchema = z.object({
-  outcome: z.enum(CONTACT_EVENT_OUTCOMES, { message: "Wybierz odpowiedź" }).optional(),
-  note: z.string().trim().max(NOTE_MAX_LENGTH, "Notatka jest za długa (maks. 200 znaków)").nullable().optional(),
-});
+export const updateContactEventSchema = z
+  .object({
+    outcome: z.enum(CONTACT_EVENT_OUTCOMES, { message: "Wybierz odpowiedź" }).optional(),
+    note: z.string().trim().max(NOTE_MAX_LENGTH, "Notatka jest za długa (maks. 200 znaków)").nullable().optional(),
+  })
+  .refine((data) => "outcome" in data || "note" in data, { message: "Brak danych do zapisania" });
 
 export type UpdateContactEventValues = z.infer<typeof updateContactEventSchema>;

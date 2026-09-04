@@ -45,6 +45,20 @@ export const POST: APIRoute = async (context) => {
     return json({ error: "Nie znaleziono osoby" }, 404);
   }
 
+  // Same reasoning as person_id above -- rankingEntryId is a second FK the
+  // table's own RLS does not cover, so an unverified id would silently link
+  // this event to another owner's ranking_entries row.
+  if (rankingEntryId) {
+    const { data: rankingEntry } = await supabase
+      .from("ranking_entries")
+      .select("id")
+      .eq("id", rankingEntryId)
+      .maybeSingle();
+    if (!rankingEntry) {
+      return json({ error: "Nie znaleziono wpisu rankingu" }, 404);
+    }
+  }
+
   const { data: inserted, error: insertError } = await supabase
     .from("contact_events")
     .insert({
