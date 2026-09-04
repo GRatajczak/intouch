@@ -356,4 +356,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Done
 
-(Empty on first generation — `/10x-archive` is this section's only writer.)
+- **F-01: (foundation) migrations + default-deny RLS + a proof of isolation** — Archived 2026-09-04 → `context/archive/2026-08-23-per-user-data-isolation/`. Lesson: —.
