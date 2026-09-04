@@ -50,7 +50,7 @@ successfully done").
 | S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02, S-09 | US-01, FR-007               | done        |
 | S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | done |
 | S-04 | `decay-driven-reminders`     | be reminded, unprompted, about relationships going quiet          | S-03, F-04    | FR-008, NFR-once-per-day       | blocked  |
-| S-05 | `person-lifecycle-and-erasure`| edit, deactivate and permanently delete a person                  | S-01          | FR-005, NFR-privacy            | planning    |
+| S-05 | `person-lifecycle-and-erasure`| edit, deactivate and permanently delete a person                  | S-01          | FR-005, NFR-privacy            | in-progress |
 | S-06 | `landing-page`                | see a real marketing page at `/` explaining what InTouch is, before signing in | F-03          | Access Control ("unauthenticated visitor") | done |
 | S-07 | `account-and-profile-settings` | edit their own profile after first fill and manage their account from `/settings`       | S-01, F-05    | FR-001, FR-002, FR-008 (address), Access Control | proposed |
 | S-08 | `password-recovery`           | get back into their account after forgetting the password         | F-03          | FR-001                         | proposed |
@@ -223,7 +223,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Carries the second half of the privacy NFR, which is binary — partial deletion is a failure, not a smaller success. The deactivate-before-delete rule exists because deleting a person otherwise destroys the contact history feeding the ranking, so the two paths must not be collapsed into one "remove" action for speed. Fully parallel with the Stream A chain: it touches the same tables but none of the ranking logic, which under `top_blocker: time` makes it the natural candidate for a separate agent run.
-- **Status:** planning
+- **Status:** in-progress
 
 ### S-06: Public landing page
 
@@ -358,3 +358,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 - **F-01: (foundation) migrations + default-deny RLS + a proof of isolation** — Archived 2026-09-04 → `context/archive/2026-08-23-per-user-data-isolation/`. Lesson: —.
 - **S-01: fill a self-profile and add people with a weight, and see them** — Archived 2026-09-04 → `context/archive/2026-08-29-profile-and-first-people/`. Lesson: —.
+- **S-09: tell the app their own contact rhythm (time budget, channels, slots) so suggestions land in it** — Archived 2026-09-04 → `context/archive/2026-08-31-self-profile-rhythm-fields/`. Lesson: —.

@@ -1,10 +1,10 @@
 ---
 change_id: self-profile-rhythm-fields
 title: Self-profile rhythm fields feeding the AI schedule
-status: impl_reviewed
+status: archived
 created: 2026-08-31
-updated: 2026-09-01
-archived_at: null
+updated: 2026-09-04
+archived_at: 2026-09-04T10:45:52Z
 ---
 
 ## Notes
