@@ -1,10 +1,10 @@
 ---
 change_id: profile-and-first-people
 title: Self-profile and first people
-status: impl_reviewed
+status: archived
 created: 2026-08-29
-updated: 2026-08-30
-archived_at: null
+updated: 2026-09-04
+archived_at: 2026-09-04T10:45:52Z
 ---
 
 ## Notes

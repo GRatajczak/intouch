@@ -357,3 +357,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 ## Done
 
 - **F-01: (foundation) migrations + default-deny RLS + a proof of isolation** — Archived 2026-09-04 → `context/archive/2026-08-23-per-user-data-isolation/`. Lesson: —.
+- **S-01: fill a self-profile and add people with a weight, and see them** — Archived 2026-09-04 → `context/archive/2026-08-29-profile-and-first-people/`. Lesson: —.
