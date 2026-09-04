@@ -472,29 +472,29 @@ consistent with `CLAUDE.md`'s forward-compatible migration rule.
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Build succeeds (astro + TS check): `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — 0bcc170
+- [x] 2.2 Build succeeds (astro + TS check): `npm run build` — 0bcc170
 
 #### Manual
 
-- [x] 2.3 Adding one person with all three new fields filled saves successfully and the values match what was entered
-- [x] 2.4 Adding one person with all three new fields left empty saves successfully (optional path)
-- [x] 2.5 Adding two people in the same submit, each with different tag sets and buckets, saves both rows correctly (multi-row preserved)
-- [x] 2.6 Adding a 6th tag to a row is rejected client-side with a clear error
-- [x] 2.7 Removing a tag chip and re-adding a different one works before submit
+- [x] 2.3 Adding one person with all three new fields filled saves successfully and the values match what was entered — 0bcc170
+- [x] 2.4 Adding one person with all three new fields left empty saves successfully (optional path) — 0bcc170
+- [x] 2.5 Adding two people in the same submit, each with different tag sets and buckets, saves both rows correctly (multi-row preserved) — 0bcc170
+- [x] 2.6 Adding a 6th tag to a row is rejected client-side with a clear error — 0bcc170
+- [x] 2.7 Removing a tag chip and re-adding a different one works before submit — 0bcc170
 
 ### Phase 3: App shell integration for `/people/new`
 
 #### Automated
 
-- [ ] 3.1 Linting passes: `npm run lint`
-- [ ] 3.2 Build succeeds: `npm run build`
+- [x] 3.1 Linting passes: `npm run lint`
+- [x] 3.2 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 3.3 Navigating to `/people/new` shows the sidebar (desktop) / bottom nav (mobile), matching `/people`'s chrome
-- [ ] 3.4 The form still submits and redirects to `/people` on success, and back to `/people/new?error=...` on failure, unchanged from today
-- [ ] 3.5 No layout regression on mobile width (bottom nav doesn't overlap the form's submit row)
+- [x] 3.3 Navigating to `/people/new` shows the sidebar (desktop) / bottom nav (mobile), matching `/people`'s chrome
+- [x] 3.4 The form still submits and redirects to `/people` on success, and back to `/people/new?error=...` on failure, unchanged from today
+- [x] 3.5 No layout regression on mobile width (bottom nav doesn't overlap the form's submit row)
 
 ### Phase 4: Ranking prompt + PersonCard tag chips
 

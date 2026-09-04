@@ -1,15 +1,16 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import AppShell from "@/components/layout/AppShell.astro";
 import PersonForm from "@/components/people/PersonForm";
+import { loadProfileName } from "@/lib/shell-summary";
 
+const { user } = Astro.locals;
 const error = Astro.url.searchParams.get("error");
+const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, user?.id);
 ---
 
-<Layout title="Dodaj osobę">
-  <div class="bg-background flex min-h-screen items-center justify-center p-4 py-8">
-    <div class="border-border bg-card text-card-foreground shadow-card w-full max-w-lg rounded-2xl border p-8">
-      <h1 class="font-display text-display-sm text-foreground mb-6 text-center">Dodaj osoby</h1>
-      <PersonForm serverError={error} client:load />
-    </div>
+<AppShell title="Dodaj osobę" profileName={profileName}>
+  <div class="border-border bg-card text-card-foreground shadow-card mx-auto w-full max-w-lg rounded-2xl border p-8">
+    <h1 class="font-display text-display-sm text-foreground mb-6 text-center">Dodaj osoby</h1>
+    <PersonForm serverError={error} client:load />
   </div>
-</Layout>
+</AppShell>
