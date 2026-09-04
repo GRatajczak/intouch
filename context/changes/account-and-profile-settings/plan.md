@@ -2,7 +2,7 @@
 
 ## Overview
 
-`/settings` (`src/pages/settings.astro`) is a placeholder stub today — a single paragraph saying reminder settings are coming. This plan turns it into a real account-management page: a profile section linking out to the existing `/profile` editor, a password-change form, an account-email display with a full change-email flow, and a "delete my data" danger-zone action. No new tables and no migration — every piece either reuses an existing table/route or is pure Supabase Auth.
+`/settings` (`src/pages/settings.astro`) is a placeholder stub today — a single paragraph saying reminder settings are coming. This plan turns it into a real account-management page: a profile section linking out to the existing `/profile` editor, a password-change form, an account-email display with a full change-email flow, and a "delete my data" danger-zone action. No new tables — every piece either reuses an existing table/route or is pure Supabase Auth. One small additive migration was needed in Phase 4 (see below): `profiles` had never been given a `DELETE` policy or grant, since nothing deleted a profile row before this feature existed.
 
 ## Current State Analysis
 
@@ -223,15 +223,23 @@ A clearly separated, irreversible action that wipes every person, ranking, and p
 
 ### Changes Required:
 
-#### 1. Delete-my-data section component
+#### 1. Migration: profiles DELETE policy and grant
 
-**File**: `src/components/settings/DeleteDataSection.tsx`
+**File**: `supabase/migrations/20260904221004_add_profiles_delete_policy.sql`
+
+**Intent**: `profiles` was created with only `select`/`insert`/`update` policies and grants (`20260830101704_add_profiles_and_people_fields.sql`) — nothing ever deleted a profile row before this feature. Without this, the delete route below fails with a Postgres "permission denied for table profiles" error, discovered during Phase 4 manual verification.
+
+**Contract**: `create policy "profiles_delete_own" on public.profiles for delete to authenticated using ((select auth.uid()) = owner_id);` plus `grant delete on public.profiles to authenticated;` — mirrors `people`/`rankings`/`contact_events`'s existing `_delete_own` shape exactly. Purely additive; no data or existing behavior affected.
+
+#### 2. Delete-my-data section component
+
+**File**: `src/components/settings/DeleteDataSection/DeleteDataSection.tsx`
 
 **Intent**: A visually separated "danger zone" with one destructive button, guarded by the same `AlertDialog` confirmation pattern `PersonDetailView` already established.
 
 **Contract**: Mirrors `PersonDetailView.tsx:425-457` exactly — `AlertDialogTrigger` wraps a `variant="destructive"` `Button`, the dialog explains the action is irreversible and names what's deleted (people, contact history, rankings, profile), and the confirm button is a plain `Button` (not `AlertDialogAction`) calling a `handleDelete` that `fetch`es `POST /api/settings/delete-data`. On success, `window.location.href = "/?notice=" + encodeURIComponent("Twoje dane zostały usunięte")` (the sign-out already happened server-side; there's no page left to toast on).
 
-#### 2. Delete-my-data API route
+#### 3. Delete-my-data API route
 
 **File**: `src/pages/api/settings/delete-data.ts`
 
@@ -243,6 +251,7 @@ A clearly separated, irreversible action that wipes every person, ranking, and p
 
 #### Automated Verification:
 
+- Migration applies cleanly locally: `supabase migration up --local`
 - Type checking passes: `npx astro check`
 - Linting passes: `npm run lint`
 - Build succeeds: `npm run build`
@@ -278,7 +287,7 @@ None — every operation here is a single-row or small-row-count write scoped to
 
 ## Migration Notes
 
-No schema migration in this slice. All three new API routes operate on existing tables (`people`, `rankings`, `profiles`) with their existing RLS policies unchanged.
+One additive migration in Phase 4 (`20260904221004_add_profiles_delete_policy.sql`): adds a `DELETE` RLS policy and grant to `profiles`, mirroring the shape every other owner-scoped table already has. No column or data changes. The other two new API routes (`password.ts`, `email.ts`) operate purely through Supabase Auth, and the delete route's other two tables (`people`, `rankings`) already had `DELETE` policies and grants from earlier slices.
 
 ## References
 
@@ -308,45 +317,46 @@ No schema migration in this slice. All three new API routes operate on existing 
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npx astro check` — cc0ed0e
-- [x] 2.2 Linting passes: `npm run lint` — cc0ed0e
-- [x] 2.3 Build succeeds: `npm run build` — cc0ed0e
+- [x] 2.1 Type checking passes: `npx astro check` — 21da192 (recovered)
+- [x] 2.2 Linting passes: `npm run lint` — 21da192 (recovered)
+- [x] 2.3 Build succeeds: `npm run build` — 21da192 (recovered)
 
 #### Manual
 
-- [x] 2.4 Wrong current password shows the error and nothing changes — cc0ed0e
-- [x] 2.5 Valid change succeeds and signing in with the new password works — cc0ed0e
-- [x] 2.6 A second active session is signed out after the change — cc0ed0e
-- [x] 2.7 Mismatched new/confirm passwords are caught client-side — cc0ed0e
+- [x] 2.4 Wrong current password shows the error and nothing changes — 21da192 (recovered)
+- [x] 2.5 Valid change succeeds and signing in with the new password works — 21da192 (recovered)
+- [x] 2.6 A second active session is signed out after the change — 21da192 (recovered)
+- [x] 2.7 Mismatched new/confirm passwords are caught client-side — 21da192 (recovered)
 
 ### Phase 3: Account email — view and change
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `npx astro check`
-- [x] 3.2 Linting passes: `npm run lint`
-- [x] 3.3 Build succeeds: `npm run build`
-- [x] 3.4 `supabase start` picks up config/template changes without error
+- [x] 3.1 Type checking passes: `npx astro check` — 9df35c0
+- [x] 3.2 Linting passes: `npm run lint` — 9df35c0
+- [x] 3.3 Build succeeds: `npm run build` — 9df35c0
+- [x] 3.4 `supabase start` picks up config/template changes without error — 9df35c0
 
 #### Manual
 
-- [x] 3.5 `/settings` shows the current account email
-- [x] 3.6 Submitting a new email produces two branded Inbucket emails
-- [x] 3.7 Both confirm links round-trip through `/auth/confirm` back to `/settings`
-- [x] 3.8 After both confirmations, the displayed email reflects the change
-- [x] 3.9 Malformed email is caught client-side
+- [x] 3.5 `/settings` shows the current account email — 9df35c0
+- [x] 3.6 Submitting a new email produces two branded Inbucket emails — 9df35c0
+- [x] 3.7 Both confirm links round-trip through `/auth/confirm` back to `/settings` — 9df35c0
+- [x] 3.8 After both confirmations, the displayed email reflects the change — 9df35c0
+- [x] 3.9 Malformed email is caught client-side — 9df35c0
 
 ### Phase 4: Delete my data (danger zone)
 
 #### Automated
 
-- [ ] 4.1 Type checking passes: `npx astro check`
-- [ ] 4.2 Linting passes: `npm run lint`
-- [ ] 4.3 Build succeeds: `npm run build`
+- [x] 4.1 Migration applies cleanly locally: `supabase migration up --local`
+- [x] 4.2 Type checking passes: `npx astro check`
+- [x] 4.3 Linting passes: `npm run lint`
+- [x] 4.4 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 4.4 Confirmation dialog appears; canceling leaves data intact
-- [ ] 4.5 Confirming wipes people/rankings/profile and signs out to `/`
-- [ ] 4.6 Signing back in behaves like a brand-new account
-- [ ] 4.7 A second account's data is unaffected
+- [x] 4.5 Confirmation dialog appears; canceling leaves data intact
+- [x] 4.6 Confirming wipes people/rankings/profile and signs out to `/`
+- [x] 4.7 Signing back in behaves like a brand-new account
+- [x] 4.8 A second account's data is unaffected

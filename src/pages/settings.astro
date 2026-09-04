@@ -1,5 +1,6 @@
 ---
 import AppShell from "@/components/layout/AppShell.astro";
+import DeleteDataSection from "@/components/settings/DeleteDataSection";
 import EmailChangeForm from "@/components/settings/EmailChangeForm";
 import PasswordChangeForm from "@/components/settings/PasswordChangeForm";
 import { buttonVariants } from "@/components/ui/button";
@@ -43,6 +44,13 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
           Wkrótce znajdziesz tu ustawienia przypomnień — jak często i w jakiej formie chcesz dostawać podpowiedzi o
           kontakcie.
         </p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-destructive mb-3 text-sm font-semibold">Strefa zagrożenia</h2>
+      <div class="border-destructive/30 bg-card text-card-foreground shadow-card rounded-2xl border p-8">
+        <DeleteDataSection client:load />
       </div>
     </section>
   </div>
