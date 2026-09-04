@@ -384,3 +384,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-02: see a ranked "who to reconnect with" list with time windows** — Archived 2026-09-04 → `context/archive/2026-09-01-ai-contact-hierarchy/`. Lesson: —.
 - **F-04: (foundation) the Worker can send a real email on a schedule** — Archived 2026-09-04 → `context/archive/2026-09-02-resend-email-delivery-path/`. Lesson: —.
 - **S-08: A user who cannot sign in because they forgot their password can request a reset link from `/auth/signin`, receive it by email, set a new password, and land signed in — without an admin, a support request, or a second account. The signin screen actually offers the route out; today it links only to signup.** — Archived 2026-09-04 → `context/archive/2026-09-04-password-recovery/`. Lesson: —.
+- **F-03: (foundation) one token layer the screens actually use, no starter theme** — Archived 2026-09-04 → `context/archive/2026-08-22-design-system-foundation/`. Lesson: —.
