@@ -57,6 +57,22 @@ export const peopleFormSchema = z.array(personSchema).min(1, "Dodaj przynajmniej
 
 export type PersonFormValues = z.infer<typeof personSchema>;
 
+export const PERSON_STATUSES = ["active", "deactivated"] as const;
+
+export type PersonStatus = (typeof PERSON_STATUSES)[number];
+
+// Partial edit of an existing person, plus a lifecycle status transition --
+// both are "update this person" and share one route (S-05). `.partial()`
+// makes every `personSchema` field optional so a request only needs to send
+// the keys it's changing; the refine rejects an empty `{}` the same way
+// `updateContactEventSchema` does, since an empty PATCH body is a client bug.
+export const personUpdateSchema = personSchema
+  .partial()
+  .extend({ status: z.enum(PERSON_STATUSES, { message: "Nieprawidłowy status" }).optional() })
+  .refine((data) => Object.keys(data).length > 0, { message: "Brak danych do zapisania" });
+
+export type PersonUpdateValues = z.infer<typeof personUpdateSchema>;
+
 function getString(form: FormData, field: string): string {
   const value = form.get(field);
   return typeof value === "string" ? value : "";

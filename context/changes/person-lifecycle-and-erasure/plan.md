@@ -336,31 +336,31 @@ The `status` migration (Phase 1) is purely additive with a `DEFAULT`, so it is f
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly against a local Supabase: `supabase db reset`
-- [x] 1.2 Generated types include `people.status` and produce no diff on a second run: `npm run db:types`
-- [x] 1.3 Type checking passes: `npx astro check`
-- [x] 1.4 Linting passes: `npm run lint`
-- [x] 1.5 Build passes: `npm run build`
+- [x] 1.1 Migration applies cleanly against a local Supabase: `supabase db reset` — a41d192
+- [x] 1.2 Generated types include `people.status` and produce no diff on a second run: `npm run db:types` — a41d192
+- [x] 1.3 Type checking passes: `npx astro check` — a41d192
+- [x] 1.4 Linting passes: `npm run lint` — a41d192
+- [x] 1.5 Build passes: `npm run build` — a41d192
 
 #### Manual
 
-- [x] 1.6 A row inserted without specifying `status` reads back as `'active'`
+- [x] 1.6 A row inserted without specifying `status` reads back as `'active'` — a41d192
 
 ### Phase 2: API routes
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npx astro check`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Build passes: `npm run build`
+- [x] 2.1 Type checking passes: `npx astro check`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.4 `PATCH` with a field change updates the row and returns it
-- [ ] 2.5 `PATCH` with `{ "status": "deactivated" }` then `{ "status": "active" }` round-trips correctly
-- [ ] 2.6 `DELETE` on an `active` person returns `409` and the row still exists
-- [ ] 2.7 `DELETE` on a `deactivated` person returns success and the row is gone
-- [ ] 2.8 `PATCH`/`DELETE` against another user's person id, and against a nonexistent id, both return `404`
+- [x] 2.4 `PATCH` with a field change updates the row and returns it
+- [x] 2.5 `PATCH` with `{ "status": "deactivated" }` then `{ "status": "active" }` round-trips correctly
+- [x] 2.6 `DELETE` on an `active` person returns `409` and the row still exists
+- [x] 2.7 `DELETE` on a `deactivated` person returns success and the row is gone
+- [x] 2.8 `PATCH`/`DELETE` against another user's person id, and against a nonexistent id, both return `404`
 
 ### Phase 3: AI exclusion and counts
 
