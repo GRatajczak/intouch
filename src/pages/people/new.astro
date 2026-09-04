@@ -9,8 +9,7 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
 ---
 
 <AppShell title="Dodaj osobę" profileName={profileName}>
-  <div class="border-border bg-card text-card-foreground shadow-card mx-auto w-full max-w-lg rounded-2xl border p-8">
-    <h1 class="font-display text-display-sm text-foreground mb-6 text-center">Dodaj osoby</h1>
+  <div class="flex h-full min-h-0 flex-col">
     <PersonForm serverError={error} client:load />
   </div>
 </AppShell>

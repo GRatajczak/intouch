@@ -45,3 +45,37 @@ Decisions taken in the planning session (2026-09-04):
 
 Not adopted from the design: any change to `relationship_type`/`Kategoria`,
 any change to the weight scale, and any write path into `contact_events`.
+
+Decisions taken during implementation (2026-09-04):
+
+- **"Osoba czy grupa" converted from `SelectField` to `SegmentedToggle`**
+  (new `src/components/forms/SegmentedToggle/`), matching the design
+  bundle's actual 2-button treatment for that field
+  (`InTouch.dc.html:616-620`) — user-requested mid-Phase-2, out of the
+  plan's original file list but same field, same form.
+- **`TagChipsField` styled to the mock's exact tag measurements**
+  (12px radius, 13px/9px padding, 13px font — `InTouch.dc.html:629-631`)
+  rather than the app's default rounded-full pill scale, since the mock
+  draws context tags as softer rectangles distinct from `ChoiceChips`'
+  fully-pill buckets.
+- **Phase 4's automated check (plan item 4.3, `verify:ranking` extended to
+  assert prompt content) dropped.** `verify-ranking.ts` is HTTP-based
+  against a *deployed* Worker and a hosted Supabase account, purpose-built
+  to prove the non-blocking call path (see `lessons.md`) — extending it to
+  also assert `buildPeopleSection`'s conditional-line logic would mix two
+  unrelated verification concerns and require a real deploy to run at all.
+  No replacement automated check was added; the manual hierarchy-regen
+  spot-check (plan item 4.6) is this phase's only verification that the new
+  context reaches the model.
+- **Add-person form layout redesigned mid-Phase-4, user-requested**: the
+  outer card wrapper on `/people/new` is gone; `PersonForm` now renders each
+  person as a fixed-width column (`w-72`) in a horizontally-scrolling row
+  (`overflow-x-auto`) rather than vertically stacked cards, with "Dodaj
+  kolejną osobę" collapsed to a `+` column at the end of that row. Field
+  spacing inside each column was tightened (`gap-3` instead of the previous
+  `space-y-4`/`space-y-6`, textarea `rows={2}` instead of `3`) so one
+  column's 8 fields fit a typical viewport height without an internal
+  vertical scroll. Not a hard viewport lock (no JS height measurement, no
+  `overflow: hidden` on `AppShell`'s shared `<main>`) — on short viewports
+  or with many fields' error states expanded, some vertical scroll can still
+  occur; the redesign targets the normal case.

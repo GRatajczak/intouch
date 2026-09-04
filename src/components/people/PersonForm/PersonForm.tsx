@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { UserRound, UserPlus, Plus, Trash2, CircleAlert } from "lucide-react";
 import { TextField } from "@/components/forms/TextField";
 import { SelectField } from "@/components/forms/SelectField";
@@ -60,9 +60,71 @@ function createEmptyRow(): PersonRowState {
   };
 }
 
+const DRAFT_STORAGE_KEY = "intouch:add-person-draft";
+
+// A draft is per-viewer convenience, not durable state -- any read/write
+// failure (private browsing, storage disabled, corrupt JSON) is swallowed
+// and simply falls back to no draft, never surfaced to the user.
+function loadDraftRows(): PersonRowState[] | null {
+  try {
+    const raw = window.localStorage.getItem(DRAFT_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) return null;
+    const rows = parsed as PersonRowState[];
+    nextRowId = Math.max(...rows.map((row) => row.id), -1) + 1;
+    return rows;
+  } catch {
+    return null;
+  }
+}
+
+function saveDraftRows(rows: PersonRowState[]) {
+  try {
+    window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(rows));
+  } catch {
+    // ignore -- see loadDraftRows
+  }
+}
+
+function clearDraftRows() {
+  try {
+    window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+  } catch {
+    // ignore -- see loadDraftRows
+  }
+}
+
+// `window` is undefined during Astro's server render pass of this
+// client:load island; the lazy useState initializer below only actually
+// reads localStorage once the same code runs again on the client during
+// hydration. A visitor with a saved draft gets a one-render DOM patch from
+// React's hydration mismatch recovery (dev-only console warning) rather
+// than a visible empty-then-populated flash -- an accepted tradeoff for a
+// fully client-interactive form island with nothing server-critical riding
+// on the exact first-paint markup.
+function getInitialRows(): PersonRowState[] {
+  if (typeof window === "undefined") return [createEmptyRow()];
+  return loadDraftRows() ?? [createEmptyRow()];
+}
+
 export default function PersonForm({ serverError }: PersonFormProps) {
-  const [rows, setRows] = useState<PersonRowState[]>(() => [createEmptyRow()]);
+  const [rows, setRows] = useState<PersonRowState[]>(getInitialRows);
   const [errors, setErrors] = useState<Record<number, Record<string, string> | undefined>>({});
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Persists on every change -- covers both "data in inputs" and "number of
+  // people" (row count is just rows.length), so a refresh or accidental
+  // navigation doesn't lose an in-progress multi-person entry.
+  useEffect(() => {
+    saveDraftRows(rows);
+  }, [rows]);
+
+  // Keeps the "+" add-person column in view: every time the row count
+  // changes (add or remove), snap the horizontal scroller to its new end.
+  useEffect(() => {
+    scrollContainerRef.current?.scrollTo({ left: scrollContainerRef.current.scrollWidth, behavior: "smooth" });
+  }, [rows.length]);
 
   function updateRow(id: number, patch: Partial<PersonRowState>) {
     setRows((prev) => prev.map((row) => (row.id === id ? { ...row, ...patch } : row)));
@@ -116,155 +178,180 @@ export default function PersonForm({ serverError }: PersonFormProps) {
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     if (!validate()) {
       e.preventDefault();
+      return;
     }
+    // This is a native form POST (full-page navigation), not fetch -- there
+    // is no client-side "request succeeded" moment to hook after the
+    // redirect. Clearing here, right as a validated submission is let
+    // through, is the last point this component is still mounted.
+    clearDraftRows();
   }
 
   return (
-    <form method="POST" action="/api/people" className="space-y-6" onSubmit={handleSubmit} noValidate>
-      {rows.map((row, index) => {
-        const rowErrors = errors[row.id] ?? {};
-        return (
-          <div key={row.id} className="border-border space-y-4 border-b pb-6 last:border-b-0 last:pb-0">
-            <div className="flex items-center justify-between">
-              <h2 className="text-muted-foreground text-sm font-medium">Osoba {index + 1}</h2>
-              {rows.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    removeRow(row.id);
-                  }}
-                  className="text-text-tertiary hover:text-destructive inline-flex items-center gap-1 text-xs"
-                >
-                  <Trash2 className="size-3.5" />
-                  Usuń
-                </button>
-              )}
-            </div>
+    <form method="POST" action="/api/people" className="flex h-full flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <div className="flex shrink-0 items-center justify-between gap-3">
+        <h1 className="font-display text-display-sm text-foreground">Dodaj osoby</h1>
+        <div className="flex items-center gap-3">
+          <ServerError message={serverError} />
+          <SubmitButton pendingText="Zapisywanie..." icon={<UserPlus className="size-4" />}>
+            Zapisz osoby
+          </SubmitButton>
+        </div>
+      </div>
 
-            <TextField
-              id={`name-${index}`}
-              label="Imię"
-              value={row.name}
-              onChange={(v) => {
-                updateRow(row.id, { name: v });
-                clearRowError(row.id, "name");
-              }}
-              placeholder="np. Marek"
-              error={rowErrors.name}
-              icon={<UserRound className="size-4" />}
-            />
+      {/* Each person is a fixed-width column so adding one shows up beside the
+          existing ones (overflow-x-auto scrolls right as columns overflow the
+          available width) instead of growing the page downward -- field
+          spacing below is deliberately tighter than the shared components'
+          own defaults so one column's 8 fields fit a typical viewport height
+          without its own vertical scroll. */}
+      <div ref={scrollContainerRef} className="scrollbar-hide flex flex-1 items-start gap-4 overflow-x-auto pb-2">
+        {rows.map((row, index) => {
+          const rowErrors = errors[row.id] ?? {};
+          return (
+            <div
+              key={row.id}
+              className="border-border flex w-80 shrink-0 flex-col gap-3 border-r pr-4 last:border-r-0 last:pr-0"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-muted-foreground text-sm font-medium">Osoba {index + 1}</h2>
+                {rows.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      removeRow(row.id);
+                    }}
+                    className="text-text-tertiary hover:text-destructive inline-flex items-center gap-1 text-xs"
+                  >
+                    <Trash2 className="size-3.5" />
+                    Usuń
+                  </button>
+                )}
+              </div>
 
-            <SelectField
-              id={`relationshipType-${index}`}
-              label="Typ relacji"
-              value={row.relationshipType}
-              onChange={(v) => {
-                updateRow(row.id, { relationshipType: v });
-                clearRowError(row.id, "relationshipType");
-              }}
-              options={RELATIONSHIP_TYPE_OPTIONS}
-              placeholder="Wybierz typ relacji"
-              error={rowErrors.relationshipType}
-            />
-
-            <div>
-              <label htmlFor={`description-${index}`} className="text-muted-foreground mb-1 block text-sm">
-                Opis
-              </label>
-              <textarea
-                id={`description-${index}`}
-                name={`description-${index}`}
-                rows={3}
-                value={row.description}
-                onChange={(e) => {
-                  updateRow(row.id, { description: e.target.value });
-                  clearRowError(row.id, "description");
+              <TextField
+                id={`name-${index}`}
+                label="Imię"
+                value={row.name}
+                onChange={(v) => {
+                  updateRow(row.id, { name: v });
+                  clearRowError(row.id, "name");
                 }}
-                placeholder="np. mieszka w Krakowie, uwielbia wspinaczkę"
-                className={cn(textareaBase, rowErrors.description && "border-destructive focus:ring-destructive")}
+                placeholder="np. Marek"
+                error={rowErrors.name}
+                icon={<UserRound className="size-4" />}
               />
-              {rowErrors.description && (
-                <p className="text-destructive mt-1 flex items-center gap-1 text-xs">
-                  <CircleAlert className="size-3" />
-                  {rowErrors.description}
-                </p>
-              )}
+
+              <SelectField
+                id={`relationshipType-${index}`}
+                label="Typ relacji"
+                value={row.relationshipType}
+                onChange={(v) => {
+                  updateRow(row.id, { relationshipType: v });
+                  clearRowError(row.id, "relationshipType");
+                }}
+                options={RELATIONSHIP_TYPE_OPTIONS}
+                placeholder="Wybierz typ relacji"
+                error={rowErrors.relationshipType}
+              />
+
+              <div>
+                <label htmlFor={`description-${index}`} className="text-muted-foreground mb-1 block text-sm">
+                  Opis
+                </label>
+                <textarea
+                  id={`description-${index}`}
+                  name={`description-${index}`}
+                  rows={2}
+                  value={row.description}
+                  onChange={(e) => {
+                    updateRow(row.id, { description: e.target.value });
+                    clearRowError(row.id, "description");
+                  }}
+                  placeholder="np. mieszka w Krakowie, uwielbia wspinaczkę"
+                  className={cn(textareaBase, rowErrors.description && "border-destructive focus:ring-destructive")}
+                />
+                {rowErrors.description && (
+                  <p className="text-destructive mt-1 flex items-center gap-1 text-xs">
+                    <CircleAlert className="size-3" />
+                    {rowErrors.description}
+                  </p>
+                )}
+              </div>
+
+              <SegmentedToggle
+                id={`isCollective-${index}`}
+                name={`isCollective-${index}`}
+                label="Osoba czy grupa"
+                value={row.isCollective}
+                onChange={(v) => {
+                  updateRow(row.id, { isCollective: v });
+                }}
+                options={COLLECTIVE_OPTIONS}
+              />
+
+              <TextField
+                id={`relationshipContext-${index}`}
+                name={`relationshipContext-${index}`}
+                label="Kim jest dla Ciebie?"
+                value={row.relationshipContext}
+                onChange={(v) => {
+                  updateRow(row.id, { relationshipContext: v });
+                  clearRowError(row.id, "relationshipContext");
+                }}
+                placeholder="np. przyjaciel ze studiów"
+                error={rowErrors.relationshipContext}
+              />
+
+              <TagChipsField
+                id={`contextTags-${index}`}
+                name={`contextTags-${index}`}
+                label="Co go cieszy, co jest u niego ważne?"
+                value={row.contextTags}
+                onChange={(tags) => {
+                  updateRow(row.id, { contextTags: tags });
+                  clearRowError(row.id, "contextTags");
+                }}
+                max={CONTEXT_TAGS_MAX}
+                tagMaxLength={TAG_MAX_LENGTH}
+                error={rowErrors.contextTags}
+              />
+
+              <WeightSelector
+                name={`weight-${index}`}
+                value={row.weight}
+                onChange={(v) => {
+                  updateRow(row.id, { weight: v });
+                  clearRowError(row.id, "weight");
+                }}
+                label="Waga relacji (1–10)"
+                error={rowErrors.weight}
+              />
+
+              <ChoiceChips
+                id={`lastContactBucket-${index}`}
+                name={`lastContactBucket-${index}`}
+                label="Kiedy ostatnio rozmawialiście?"
+                mode="single"
+                options={LAST_CONTACT_BUCKET_OPTIONS}
+                value={row.lastContactBucket ? [row.lastContactBucket] : []}
+                onChange={(selected) => {
+                  updateRow(row.id, { lastContactBucket: selected[0] ?? "" });
+                }}
+              />
             </div>
+          );
+        })}
 
-            <SegmentedToggle
-              id={`isCollective-${index}`}
-              name={`isCollective-${index}`}
-              label="Osoba czy grupa"
-              value={row.isCollective}
-              onChange={(v) => {
-                updateRow(row.id, { isCollective: v });
-              }}
-              options={COLLECTIVE_OPTIONS}
-            />
-
-            <TextField
-              id={`relationshipContext-${index}`}
-              name={`relationshipContext-${index}`}
-              label="Kim jest dla Ciebie?"
-              value={row.relationshipContext}
-              onChange={(v) => {
-                updateRow(row.id, { relationshipContext: v });
-                clearRowError(row.id, "relationshipContext");
-              }}
-              placeholder="np. przyjaciel ze studiów"
-              error={rowErrors.relationshipContext}
-            />
-
-            <TagChipsField
-              id={`contextTags-${index}`}
-              name={`contextTags-${index}`}
-              label="Co go cieszy, co jest u niego ważne?"
-              value={row.contextTags}
-              onChange={(tags) => {
-                updateRow(row.id, { contextTags: tags });
-                clearRowError(row.id, "contextTags");
-              }}
-              max={CONTEXT_TAGS_MAX}
-              tagMaxLength={TAG_MAX_LENGTH}
-              error={rowErrors.contextTags}
-            />
-
-            <WeightSelector
-              name={`weight-${index}`}
-              value={row.weight}
-              onChange={(v) => {
-                updateRow(row.id, { weight: v });
-                clearRowError(row.id, "weight");
-              }}
-              label="Waga relacji (1–10)"
-              error={rowErrors.weight}
-            />
-
-            <ChoiceChips
-              id={`lastContactBucket-${index}`}
-              name={`lastContactBucket-${index}`}
-              label="Kiedy ostatnio rozmawialiście?"
-              mode="single"
-              options={LAST_CONTACT_BUCKET_OPTIONS}
-              value={row.lastContactBucket ? [row.lastContactBucket] : []}
-              onChange={(selected) => {
-                updateRow(row.id, { lastContactBucket: selected[0] ?? "" });
-              }}
-            />
-          </div>
-        );
-      })}
-
-      <Button type="button" variant="outline" className="w-full" onClick={addRow}>
-        <Plus className="size-4" />
-        Dodaj kolejną osobę
-      </Button>
-
-      <ServerError message={serverError} />
-
-      <SubmitButton pendingText="Zapisywanie..." icon={<UserPlus className="size-4" />}>
-        Zapisz osoby
-      </SubmitButton>
+        <Button
+          type="button"
+          variant="outline"
+          className="h-auto min-h-[3rem] w-16 shrink-0 self-stretch"
+          onClick={addRow}
+        >
+          <Plus className="size-4" />
+        </Button>
+      </div>
     </form>
   );
 }

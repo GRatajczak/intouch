@@ -147,3 +147,16 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+
+@layer utilities {
+  /* Keeps the element scrollable (wheel/trackpad/programmatic scrollTo all
+     still work) while hiding the visible scrollbar track/thumb across
+     browsers -- no scrollbar-gutter/plugin dependency needed for this. */
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

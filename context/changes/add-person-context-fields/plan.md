@@ -487,25 +487,25 @@ consistent with `CLAUDE.md`'s forward-compatible migration rule.
 
 #### Automated
 
-- [x] 3.1 Linting passes: `npm run lint`
-- [x] 3.2 Build succeeds: `npm run build`
+- [x] 3.1 Linting passes: `npm run lint` — 9810f30
+- [x] 3.2 Build succeeds: `npm run build` — 9810f30
 
 #### Manual
 
-- [x] 3.3 Navigating to `/people/new` shows the sidebar (desktop) / bottom nav (mobile), matching `/people`'s chrome
-- [x] 3.4 The form still submits and redirects to `/people` on success, and back to `/people/new?error=...` on failure, unchanged from today
-- [x] 3.5 No layout regression on mobile width (bottom nav doesn't overlap the form's submit row)
+- [x] 3.3 Navigating to `/people/new` shows the sidebar (desktop) / bottom nav (mobile), matching `/people`'s chrome — 9810f30
+- [x] 3.4 The form still submits and redirects to `/people` on success, and back to `/people/new?error=...` on failure, unchanged from today — 9810f30
+- [x] 3.5 No layout regression on mobile width (bottom nav doesn't overlap the form's submit row) — 9810f30
 
 ### Phase 4: Ranking prompt + PersonCard tag chips
 
 #### Automated
 
-- [ ] 4.1 Linting passes: `npm run lint`
-- [ ] 4.2 Build succeeds: `npm run build`
-- [ ] 4.3 `tsx scripts/verify-ranking.ts` shows the new context lines present for a person with all three fields set, and absent for one with none
+- [x] 4.1 Linting passes: `npm run lint`
+- [x] 4.2 Build succeeds: `npm run build`
+- [x] 4.3 `tsx scripts/verify-ranking.ts` shows the new context lines present for a person with all three fields set, and absent for one with none — skipped by decision, see change.md
 
 #### Manual
 
-- [ ] 4.4 A person added with tags shows those tags as chips on their card in `/people`
-- [ ] 4.5 A person added without tags shows no chip row and no layout gap
-- [ ] 4.6 Triggering a hierarchy re-generation for a user with a context-rich person produces a ranking explanation that plausibly reflects the new context (spot-check, not exact-match)
+- [x] 4.4 A person added with tags shows those tags as chips on their card in `/people`
+- [x] 4.5 A person added without tags shows no chip row and no layout gap
+- [x] 4.6 Triggering a hierarchy re-generation for a user with a context-rich person produces a ranking explanation that plausibly reflects the new context (spot-check, not exact-match)

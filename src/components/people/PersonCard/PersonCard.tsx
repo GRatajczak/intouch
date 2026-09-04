@@ -49,6 +49,18 @@ export function PersonCard({ person, facts }: PersonCardProps) {
           {RELATIONSHIP_TYPE_LABELS[relationshipType]} · {person.is_collective ? "grupa" : "osoba"}
         </div>
       </div>
+      {person.context_tags.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {person.context_tags.map((tag) => (
+            <span
+              key={tag}
+              className="bg-accent border-accent-foreground/20 text-accent-foreground rounded-[12px] border px-2 py-0.5 text-xs font-semibold"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
       <div className="mt-3 flex items-center justify-between gap-2">
         {facts?.lastHappenedAt ? (
           <span className="text-muted-foreground text-[13px]">

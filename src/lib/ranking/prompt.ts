@@ -1,6 +1,11 @@
 import type { Tables } from "@/db/database.types";
 import type { ContactFacts } from "@/lib/contact-history/facts";
-import { RELATIONSHIP_TYPE_LABELS, type RelationshipType } from "@/lib/validation/person";
+import {
+  RELATIONSHIP_TYPE_LABELS,
+  LAST_CONTACT_BUCKET_LABELS,
+  type RelationshipType,
+  type LastContactBucket,
+} from "@/lib/validation/person";
 import {
   WEEKLY_TIME_BUDGET_LABELS,
   PREFERRED_CHANNEL_LABELS,
@@ -133,6 +138,16 @@ function buildPeopleSection(people: Tables<"people">[], facts: Map<string, Conta
         `  Waga: ${String(person.weight)}/10`,
         `  Opis: ${person.description}`,
       ];
+      if (person.relationship_context) {
+        lines.push(`  Kontekst: ${person.relationship_context}`);
+      }
+      if (person.context_tags.length > 0) {
+        lines.push(`  Tagi: ${person.context_tags.join(", ")}`);
+      }
+      if (person.last_contact_bucket) {
+        const bucket = person.last_contact_bucket as LastContactBucket;
+        lines.push(`  Ostatni kontakt (szacunkowo): ${LAST_CONTACT_BUCKET_LABELS[bucket]}`);
+      }
       const personFacts = facts.get(person.id);
       if (personFacts) {
         lines.push(...buildContactHistoryLines(personFacts));
