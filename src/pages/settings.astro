@@ -1,5 +1,6 @@
 ---
 import AppShell from "@/components/layout/AppShell.astro";
+import { buttonVariants } from "@/components/ui/button";
 import { loadProfileName } from "@/lib/shell-summary";
 
 const { user } = Astro.locals;
@@ -12,10 +13,25 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
     <h1 class="font-display text-display-sm text-foreground">Ustawienia</h1>
   </div>
 
-  <div class="border-border bg-card text-card-foreground shadow-card max-w-xl rounded-2xl border p-8">
-    <p class="text-muted-foreground">
-      Wkrótce znajdziesz tu ustawienia przypomnień — jak często i w jakiej formie chcesz dostawać podpowiedzi o
-      kontakcie.
-    </p>
+  <div class="max-w-xl space-y-8">
+    <section>
+      <h2 class="text-foreground mb-3 text-sm font-semibold">Twój profil</h2>
+      <div class="border-border bg-card text-card-foreground shadow-card rounded-2xl border p-8">
+        <p class="text-muted-foreground mb-4">
+          Imię, data urodzenia, kontekst życiowy i rytm kontaktu — to, z czego korzysta podpowiedź AI.
+        </p>
+        <a href="/profile" class:list={buttonVariants({})}>Edytuj profil</a>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-foreground mb-3 text-sm font-semibold">Przypomnienia</h2>
+      <div class="border-border bg-card text-card-foreground shadow-card rounded-2xl border p-8">
+        <p class="text-muted-foreground">
+          Wkrótce znajdziesz tu ustawienia przypomnień — jak często i w jakiej formie chcesz dostawać podpowiedzi o
+          kontakcie.
+        </p>
+      </div>
+    </section>
   </div>
 </AppShell>
