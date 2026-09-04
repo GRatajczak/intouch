@@ -127,6 +127,7 @@ export function ContactMarker({ personId, rankingEntryId, facts, onMarked }: Con
         <Button
           type="button"
           size="sm"
+          variant="secondary"
           disabled={submitting}
           onClick={() => {
             void mark("happened");
