@@ -1,10 +1,10 @@
 ---
 change_id: password-recovery
 title: Forgot-password reset flow from the signin screen
-status: implemented
+status: archived
 created: 2026-09-04
 updated: 2026-09-04
-archived_at: null
+archived_at: 2026-09-04T19:52:41Z
 ---
 
 ## Notes
