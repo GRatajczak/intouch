@@ -359,3 +359,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-01: (foundation) migrations + default-deny RLS + a proof of isolation** — Archived 2026-09-04 → `context/archive/2026-08-23-per-user-data-isolation/`. Lesson: —.
 - **S-01: fill a self-profile and add people with a weight, and see them** — Archived 2026-09-04 → `context/archive/2026-08-29-profile-and-first-people/`. Lesson: —.
 - **S-09: tell the app their own contact rhythm (time budget, channels, slots) so suggestions land in it** — Archived 2026-09-04 → `context/archive/2026-08-31-self-profile-rhythm-fields/`. Lesson: —.
+- **S-02: see a ranked "who to reconnect with" list with time windows** — Archived 2026-09-04 → `context/archive/2026-09-01-ai-contact-hierarchy/`. Lesson: —.

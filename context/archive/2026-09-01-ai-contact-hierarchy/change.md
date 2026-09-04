@@ -1,10 +1,10 @@
 ---
 change_id: ai-contact-hierarchy
 title: AI-ranked contact hierarchy with suggested time windows
-status: impl_reviewed
+status: archived
 created: 2026-09-01
-updated: 2026-09-02
-archived_at: null
+updated: 2026-09-04
+archived_at: 2026-09-04T10:45:52Z
 ---
 
 ## Notes
