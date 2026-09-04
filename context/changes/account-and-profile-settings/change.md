@@ -1,7 +1,7 @@
 ---
 change_id: account-and-profile-settings
 title: Editable profile + account settings on the /settings page
-status: implementing
+status: implemented
 created: 2026-09-04
 updated: 2026-09-04
 archived_at: null

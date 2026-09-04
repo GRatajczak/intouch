@@ -349,14 +349,14 @@ One additive migration in Phase 4 (`20260904221004_add_profiles_delete_policy.sq
 
 #### Automated
 
-- [x] 4.1 Migration applies cleanly locally: `supabase migration up --local`
-- [x] 4.2 Type checking passes: `npx astro check`
-- [x] 4.3 Linting passes: `npm run lint`
-- [x] 4.4 Build succeeds: `npm run build`
+- [x] 4.1 Migration applies cleanly locally: `supabase migration up --local` — f9a34e7
+- [x] 4.2 Type checking passes: `npx astro check` — f9a34e7
+- [x] 4.3 Linting passes: `npm run lint` — f9a34e7
+- [x] 4.4 Build succeeds: `npm run build` — f9a34e7
 
 #### Manual
 
-- [x] 4.5 Confirmation dialog appears; canceling leaves data intact
-- [x] 4.6 Confirming wipes people/rankings/profile and signs out to `/`
-- [x] 4.7 Signing back in behaves like a brand-new account
-- [x] 4.8 A second account's data is unaffected
+- [x] 4.5 Confirmation dialog appears; canceling leaves data intact — f9a34e7
+- [x] 4.6 Confirming wipes people/rankings/profile and signs out to `/` — f9a34e7
+- [x] 4.7 Signing back in behaves like a brand-new account — f9a34e7
+- [x] 4.8 A second account's data is unaffected — f9a34e7
