@@ -120,10 +120,19 @@ export default function PersonForm({ serverError }: PersonFormProps) {
     saveDraftRows(rows);
   }, [rows]);
 
-  // Keeps the "+" add-person column in view: every time the row count
-  // changes (add or remove), snap the horizontal scroller to its new end.
+  // Keeps the "+" add-person control in view after the row count changes.
+  // Desktop lays the rows out as horizontally scrolling columns, mobile
+  // stacks them down the page -- so only snap the scroller sideways when it
+  // really overflows horizontally, otherwise bring the end of the stack into
+  // view vertically.
   useEffect(() => {
-    scrollContainerRef.current?.scrollTo({ left: scrollContainerRef.current.scrollWidth, behavior: "smooth" });
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    if (container.scrollWidth > container.clientWidth) {
+      container.scrollTo({ left: container.scrollWidth, behavior: "smooth" });
+      return;
+    }
+    container.lastElementChild?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [rows.length]);
 
   function updateRow(id: number, patch: Partial<PersonRowState>) {
@@ -188,30 +197,45 @@ export default function PersonForm({ serverError }: PersonFormProps) {
   }
 
   return (
-    <form method="POST" action="/api/people" className="flex h-full flex-col gap-4" onSubmit={handleSubmit} noValidate>
-      <div className="flex shrink-0 items-center justify-between gap-3">
+    <form
+      method="POST"
+      action="/api/people"
+      className="flex flex-col gap-4 md:h-full"
+      onSubmit={handleSubmit}
+      noValidate
+    >
+      <div className="flex shrink-0 flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <h1 className="font-display text-display-sm text-foreground">Dodaj osoby</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center">
           <ServerError message={serverError} />
-          <SubmitButton pendingText="Zapisywanie..." icon={<UserPlus className="size-4" />}>
-            Zapisz osoby
-          </SubmitButton>
+          {/* Mobile stacks the people down the page, so its save button sits
+              at the very bottom of the form instead (rendered below). */}
+          <div className="hidden md:block">
+            <SubmitButton pendingText="Zapisywanie..." icon={<UserPlus className="size-4" />}>
+              Zapisz osoby
+            </SubmitButton>
+          </div>
         </div>
       </div>
 
-      {/* Each person is a fixed-width column so adding one shows up beside the
-          existing ones (overflow-x-auto scrolls right as columns overflow the
-          available width) instead of growing the page downward -- field
-          spacing below is deliberately tighter than the shared components'
-          own defaults so one column's 8 fields fit a typical viewport height
-          without its own vertical scroll. */}
-      <div ref={scrollContainerRef} className="scrollbar-hide flex flex-1 items-start gap-4 overflow-x-auto pb-2">
+      {/* From md up each person is a fixed-width column so adding one shows up
+          beside the existing ones (overflow-x-auto scrolls right as columns
+          overflow the available width) instead of growing the page downward --
+          field spacing below is deliberately tighter than the shared
+          components' own defaults so one column's 8 fields fit a typical
+          viewport height without its own vertical scroll. On mobile there is
+          no room for side-by-side columns, so people stack one under another
+          and the page scrolls vertically as usual. */}
+      <div
+        ref={scrollContainerRef}
+        className="scrollbar-hide flex flex-1 flex-col gap-6 md:flex-row md:items-start md:gap-4 md:overflow-x-auto md:pb-2"
+      >
         {rows.map((row, index) => {
           const rowErrors = errors[row.id] ?? {};
           return (
             <div
               key={row.id}
-              className="border-border flex w-80 shrink-0 flex-col gap-3 border-r pr-4 last:border-r-0 last:pr-0"
+              className="border-border flex w-full shrink-0 flex-col gap-3 border-b pb-6 last:border-b-0 last:pb-0 md:w-80 md:border-r md:border-b-0 md:pr-4 md:pb-0 md:last:border-r-0 md:last:pr-0"
             >
               <div className="flex items-center justify-between">
                 <h2 className="text-muted-foreground text-sm font-medium">Osoba {index + 1}</h2>
@@ -346,11 +370,18 @@ export default function PersonForm({ serverError }: PersonFormProps) {
         <Button
           type="button"
           variant="outline"
-          className="h-auto min-h-[3rem] w-16 shrink-0 self-stretch"
+          className="h-auto min-h-[3rem] w-full shrink-0 md:w-16 md:self-stretch"
           onClick={addRow}
         >
           <Plus className="size-4" />
+          <span className="md:hidden">Dodaj kolejną osobę</span>
         </Button>
+      </div>
+
+      <div className="md:hidden">
+        <SubmitButton pendingText="Zapisywanie..." icon={<UserPlus className="size-4" />}>
+          Zapisz osoby
+        </SubmitButton>
       </div>
     </form>
   );

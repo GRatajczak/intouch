@@ -22,16 +22,22 @@ function formatLastContact(iso: string): string {
 
 /**
  * Stays un-hydrated -- no `client:` directive anywhere this renders. The
- * card-to-detail-page link is a separate `absolute inset-0 -z-10` overlay
- * `<a>` sitting behind the card's ordinary static content (which, being
- * non-positioned, paints above a negative-z-index sibling by default)
- * rather than the whole card being an `<a>` -- an anchor wrapping a
- * `<button>` ("Historia") is invalid HTML and was fragile (relied on a
- * delegated `preventDefault()` plus a z-index hack). This way "Historia" is
- * a normal, non-nested button; a single delegated click listener in
+ * card-to-detail-page link is a separate `absolute inset-0` overlay `<a>`
+ * covering the card, rather than the whole card being an `<a>` -- an anchor
+ * wrapping a `<button>` ("Historia") is invalid HTML and was fragile
+ * (relied on a delegated `preventDefault()`). This way "Historia" is a
+ * normal, non-nested button; a single delegated click listener in
  * people/index.astro's own <script> still dispatches its open event, so the
  * catalog grid ships zero React islands. Card-to-detail-page link --
  * plan.md Phase 4 §5.
+ *
+ * The overlay must paint ABOVE the card's static content, not behind it: it
+ * previously carried `-z-10`, which left it hit-testable only where no
+ * in-flow box sits on top. Every content row here is a full-width block, so
+ * that reduced the tap target to the 20px padding ring and the ~12px gaps
+ * between rows -- reachable with a mouse pointer, but not with a thumb, so
+ * on mobile the card was effectively not a link at all. "Historia" stays
+ * clickable by being positioned (`relative z-10`) above the overlay.
  *
  * Layout follows the design bundle's catalog card
  * (.ai/intouch-design-preparation/project/InTouch.dc.html:435-445): a
@@ -51,7 +57,7 @@ export function PersonCard({ person, facts }: PersonCardProps) {
       <a
         href={`/people/${person.id}`}
         aria-label={`Zobacz profil: ${person.name}`}
-        className="absolute inset-0 -z-10 rounded-[18px]"
+        className="absolute inset-0 rounded-[18px]"
       />
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className={`size-10 rounded-[13px] ${RELATIONSHIP_TYPE_SWATCH[relationshipType]}`} aria-hidden="true" />
@@ -97,7 +103,7 @@ export function PersonCard({ person, facts }: PersonCardProps) {
           type="button"
           data-open-contact-history={person.id}
           data-person-name={person.name}
-          className="text-muted-foreground hover:text-foreground relative text-xs font-medium underline-offset-2 hover:underline"
+          className="text-muted-foreground hover:text-foreground relative z-10 text-xs font-medium underline-offset-2 hover:underline"
         >
           Historia
         </button>
