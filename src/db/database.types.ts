@@ -84,32 +84,41 @@ export type Database = {
       }
       people: {
         Row: {
+          context_tags: string[]
           created_at: string
           description: string
           id: string
           is_collective: boolean
+          last_contact_bucket: string | null
           name: string
           owner_id: string
+          relationship_context: string | null
           relationship_type: string
           weight: number
         }
         Insert: {
+          context_tags?: string[]
           created_at?: string
           description: string
           id?: string
           is_collective?: boolean
+          last_contact_bucket?: string | null
           name: string
           owner_id: string
+          relationship_context?: string | null
           relationship_type: string
           weight: number
         }
         Update: {
+          context_tags?: string[]
           created_at?: string
           description?: string
           id?: string
           is_collective?: boolean
+          last_contact_bucket?: string | null
           name?: string
           owner_id?: string
+          relationship_context?: string | null
           relationship_type?: string
           weight?: number
         }
