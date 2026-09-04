@@ -306,31 +306,31 @@ No schema changes. `supabase/config.toml` and `supabase/templates/recovery.html`
 
 #### Automated
 
-- [x] 1.1 Type check passes: `npx astro check`
-- [x] 1.2 Lint passes: `npm run lint`
-- [x] 1.3 Build succeeds: `npm run build`
+- [x] 1.1 Type check passes: `npx astro check` — 16d16f6
+- [x] 1.2 Lint passes: `npm run lint` — 16d16f6
+- [x] 1.3 Build succeeds: `npm run build` — 16d16f6
 
 #### Manual
 
-- [x] 1.4 Submitting a known account's email redirects to `/auth/forgot-password-sent` and produces an Inbucket email
-- [x] 1.5 Submitting an unknown email shows the same success page (no enumeration signal)
-- [x] 1.6 Malformed email is caught client-side
+- [x] 1.4 Submitting a known account's email redirects to `/auth/forgot-password-sent` and produces an Inbucket email — 16d16f6
+- [x] 1.5 Submitting an unknown email shows the same success page (no enumeration signal) — 16d16f6
+- [x] 1.6 Malformed email is caught client-side — 16d16f6
 
 ### Phase 2: Token exchange + reset-password flow
 
 #### Automated
 
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 2.4 Real reset link lands on `/auth/reset-password` with no error
-- [ ] 2.5 Setting a new password redirects to `/` signed in
-- [ ] 2.6 Reusing/expiring a link shows the error state with a working "request a new link" path
-- [ ] 2.7 Direct navigation to `/auth/reset-password` without a token produces the expired-link error, not a crash
-- [ ] 2.8 Completing a reset in one session signs out a second active session for the same account
+- [x] 2.4 Real reset link lands on `/auth/reset-password` with no error
+- [x] 2.5 Setting a new password redirects to `/` signed in
+- [x] 2.6 Reusing/expiring a link shows the error state with a working "request a new link" path
+- [x] 2.7 Direct navigation to `/auth/reset-password` without a token produces the expired-link error, not a crash
+- [x] 2.8 Completing a reset in one session signs out a second active session for the same account
 
 ### Phase 3: Signin entry point + local SMTP/template wiring
 
