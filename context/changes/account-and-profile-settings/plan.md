@@ -107,6 +107,14 @@ A signed-in user can change their password by providing their current password, 
 
 **Contract**: `POST` handler. `401` with no `context.locals.user`. Parse + validate via `parsePasswordChangeForm`; `400` with the first issue's message on failure. Call `supabase.auth.signInWithPassword({ email: user.email, password: currentPassword })` on the request's `createClient(...)` instance — `400` with "Nieprawidłowe obecne hasło" on error, no further calls made. On success, `supabase.auth.updateUser({ password: newPassword })` (`500` with the Supabase error message on failure), then `supabase.auth.signOut({ scope: "others" })`, then `200` JSON success — same `authCookieHeaders` plumbing as `profile.ts:28-42`.
 
+#### 4. Settings page account section
+
+**File**: `src/pages/settings.astro`
+
+**Intent**: Render the new form so Phase 2 is actually reachable and testable — added during implementation; the plan omitted this wiring step originally even though Phase 3 already assumes a "Konto" section exists to add the email form alongside.
+
+**Contract**: A new "Konto" section (same card styling as the profile/reminders sections) rendering `<PasswordChangeForm client:load />`.
+
 ### Success Criteria:
 
 #### Automated Verification:
@@ -287,46 +295,46 @@ No schema migration in this slice. All three new API routes operate on existing 
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `npx astro check`
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Build succeeds: `npm run build`
+- [x] 1.1 Type checking passes: `npx astro check` — 2c54bf9
+- [x] 1.2 Linting passes: `npm run lint` — 2c54bf9
+- [x] 1.3 Build succeeds: `npm run build` — 2c54bf9
 
 #### Manual
 
-- [ ] 1.4 `/settings` shows the profile section with a working link to `/profile`
-- [ ] 1.5 `/profile` still works unchanged
+- [x] 1.4 `/settings` shows the profile section with a working link to `/profile` — 2c54bf9
+- [x] 1.5 `/profile` still works unchanged — 2c54bf9
 
 ### Phase 2: Password change
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npx astro check`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type checking passes: `npx astro check` — cc0ed0e
+- [x] 2.2 Linting passes: `npm run lint` — cc0ed0e
+- [x] 2.3 Build succeeds: `npm run build` — cc0ed0e
 
 #### Manual
 
-- [ ] 2.4 Wrong current password shows the error and nothing changes
-- [ ] 2.5 Valid change succeeds and signing in with the new password works
-- [ ] 2.6 A second active session is signed out after the change
-- [ ] 2.7 Mismatched new/confirm passwords are caught client-side
+- [x] 2.4 Wrong current password shows the error and nothing changes — cc0ed0e
+- [x] 2.5 Valid change succeeds and signing in with the new password works — cc0ed0e
+- [x] 2.6 A second active session is signed out after the change — cc0ed0e
+- [x] 2.7 Mismatched new/confirm passwords are caught client-side — cc0ed0e
 
 ### Phase 3: Account email — view and change
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npx astro check`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Build succeeds: `npm run build`
-- [ ] 3.4 `supabase start` picks up config/template changes without error
+- [x] 3.1 Type checking passes: `npx astro check`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Build succeeds: `npm run build`
+- [x] 3.4 `supabase start` picks up config/template changes without error
 
 #### Manual
 
-- [ ] 3.5 `/settings` shows the current account email
-- [ ] 3.6 Submitting a new email produces two branded Inbucket emails
-- [ ] 3.7 Both confirm links round-trip through `/auth/confirm` back to `/settings`
-- [ ] 3.8 After both confirmations, the displayed email reflects the change
-- [ ] 3.9 Malformed email is caught client-side
+- [x] 3.5 `/settings` shows the current account email
+- [x] 3.6 Submitting a new email produces two branded Inbucket emails
+- [x] 3.7 Both confirm links round-trip through `/auth/confirm` back to `/settings`
+- [x] 3.8 After both confirmations, the displayed email reflects the change
+- [x] 3.9 Malformed email is caught client-side
 
 ### Phase 4: Delete my data (danger zone)
 

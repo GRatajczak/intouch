@@ -1,5 +1,7 @@
 ---
 import AppShell from "@/components/layout/AppShell.astro";
+import EmailChangeForm from "@/components/settings/EmailChangeForm";
+import PasswordChangeForm from "@/components/settings/PasswordChangeForm";
 import { buttonVariants } from "@/components/ui/button";
 import { loadProfileName } from "@/lib/shell-summary";
 
@@ -21,6 +23,16 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
           Imię, data urodzenia, kontekst życiowy i rytm kontaktu — to, z czego korzysta podpowiedź AI.
         </p>
         <a href="/profile" class:list={buttonVariants({})}>Edytuj profil</a>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-foreground mb-3 text-sm font-semibold">Konto</h2>
+      <div class="border-border bg-card text-card-foreground shadow-card space-y-8 rounded-2xl border p-8">
+        <EmailChangeForm currentEmail={user?.email ?? ""} client:load />
+        <div class="border-border border-t pt-8">
+          <PasswordChangeForm client:load />
+        </div>
       </div>
     </section>
 
