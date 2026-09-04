@@ -1,0 +1,60 @@
+# InTouch
+
+> InTouch układa bliskie Ci osoby w kolejność — kto czeka najdłużej, na kim
+> najbardziej Ci zależy, u kogo właśnie coś się dzieje — i podpowiada jedną
+> osobę naraz, zawsze z wyjaśnieniem, dlaczego akurat ją.
+
+Bliscy nie znikają nagle, tylko po cichu: miesiąc bez kontaktu wydaje się
+niczym, a rok później nie wiesz, jak zacząć rozmowę. Kalendarz tu nie pomaga,
+bo cykliczne „zadzwoń do cioci” zamienia relację w obowiązek. InTouch bierze na
+siebie decyzję o tym, do kogo odezwać się teraz, żeby nie trzeba było trzymać
+trzydziestu osób w głowie naraz.
+
+Jak to działa, w czterech krokach:
+
+1. **Powiedz o sobie** — ile realnie masz czasu w tygodniu, jak wolisz się
+   odzywać i kiedy masz na to przestrzeń. Podpowiedzi trafiają w Twój rytm.
+2. **Wypisz bliskich** — imię, kim są dla Ciebie, co ich cieszy, luźne tagi
+   i waga relacji w skali 1–10.
+3. **Dostajesz kolejność** — lista od najpilniejszych do spokojnych, z okienkiem
+   czasowym i rozpisanymi czynnikami: waga relacji, czas ciszy, kontekst,
+   poprzednia próba.
+4. **Mówisz, czy się udało** — jedno kliknięcie po terminie. Nie udało się?
+   Wraca później, bez wyrzutów. Kolejność uczy się z Twoich odpowiedzi.
+
+Zasady, które definiują produkt:
+
+- **Maksymalnie jedno przypomnienie dziennie.** Zero serii, zero czerwonych
+  kropek, zero straszenia utratą passy.
+- **Każda propozycja jest wyjaśniona.** Nigdy nie dostajesz samego nazwiska —
+  zawsze widzisz czynniki, które je wypchnęły na górę.
+- **Dane pochodzą wyłącznie od użytkownika.** InTouch nie czyta skrzynki
+  pocztowej i nie importuje kontaktów z telefonu. Lista powstaje z tego, co sam
+  wpiszesz.
+- **To nie jest zamiennik kalendarza.** Urodziny i spotkania zostają tam, gdzie
+  są; InTouch pilnuje tylko relacji, które cichną.
+
+Dla kogo: rozproszona rodzina, przyjaźnie z dawnego etapu życia, ludzie z
+napiętym tygodniem. **Nie** dla sprzedaży ani networkingu — to nie jest CRM
+i świadomie nie obsługuje relacji zawodowych.
+
+Interfejs i treści są w całości po polsku. Aplikacja wymaga darmowego konta;
+poza stroną główną wszystkie ekrany są za logowaniem, więc nie da się ich
+zaindeksować ani odczytać bez sesji użytkownika.
+
+## Strony publiczne
+
+- [Strona główna](https://get-in-touch.pl/): pełny opis produktu — problem, sposób działania, dla kogo i zasady prywatności.
+- [Jak to działa](https://get-in-touch.pl/#jak-to-dziala): cztery kroki od założenia konta do pierwszej podpowiedzi.
+- [Dla kogo](https://get-in-touch.pl/#dla-kogo): trzy sytuacje życiowe, pod które produkt jest zaprojektowany.
+- [Zasady i prywatność](https://get-in-touch.pl/#zasady): co InTouch robi z danymi i czego świadomie nie robi.
+
+## Wejście do aplikacji
+
+- [Rejestracja](https://get-in-touch.pl/auth/signup): założenie konta e-mailem; konfiguracja zajmuje kilka minut.
+- [Logowanie](https://get-in-touch.pl/auth/signin): dla istniejących kont.
+
+## Optional
+
+- [Sitemap](https://get-in-touch.pl/sitemap-index.xml): strona główna jest jedynym indeksowanym adresem.
+- [robots.txt](https://get-in-touch.pl/robots.txt): ekrany za logowaniem (`/dashboard`, `/people`, `/profile`, `/settings`), trasy transakcyjne (`/auth/`) i API (`/api/`) są wyłączone z crawlowania.
