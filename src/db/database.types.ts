@@ -94,6 +94,7 @@ export type Database = {
           owner_id: string
           relationship_context: string | null
           relationship_type: string
+          status: string
           weight: number
         }
         Insert: {
@@ -107,6 +108,7 @@ export type Database = {
           owner_id: string
           relationship_context?: string | null
           relationship_type: string
+          status?: string
           weight: number
         }
         Update: {
@@ -120,6 +122,7 @@ export type Database = {
           owner_id?: string
           relationship_context?: string | null
           relationship_type?: string
+          status?: string
           weight?: number
         }
         Relationships: []
