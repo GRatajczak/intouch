@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zresetuj hasło do InTouch</title>
+  </head>
+  <body style="margin: 0; padding: 20px; background: #EFE9E1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif;">
+    <div style="max-width: 600px; margin: 0 auto; background: #FBF8F4; border-radius: 20px; overflow: hidden;">
+      <div style="padding: 28px 40px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #EAE3D9;">
+        <div style="display: inline-flex; align-items: center;">
+          <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #F3C7CD;"></span>
+          <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #C6CDEE; margin-left: -10px;"></span>
+        </div>
+        <div style="font-family: 'Instrument Serif', serif; font-size: 24px; color: #2A2724;">InTouch</div>
+      </div>
+      <div style="padding: 34px 40px 30px; color: #55504A; font-size: 16px; line-height: 1.65;">
+        <p style="margin: 0 0 16px;">Cześć,</p>
+        <p style="margin: 0 0 24px;">
+          Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta InTouch. Kliknij poniższy przycisk, aby ustawić
+          nowe hasło.
+        </p>
+        <p style="margin: 0 0 24px; text-align: center;">
+          <a
+            href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/auth/reset-password"
+            style="display: inline-block; background: #2A2724; color: #FBF8F4; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-size: 15px; font-weight: 600;"
+          >
+            Zresetuj hasło
+          </a>
+        </p>
+        <p style="margin: 0; font-size: 13px; color: #8B837A;">
+          Jeśli to nie Ty prosiłeś o zresetowanie hasła, możesz zignorować tę wiadomość — Twoje hasło pozostanie bez
+          zmian.
+        </p>
+      </div>
+      <div style="margin: 8px 0 0; background: #F3EDE5; padding: 24px 40px 30px; display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 13px; line-height: 1.6; color: #6B645C;">
+          Ten link wygasa po pewnym czasie i może zostać użyty tylko raz.
+        </div>
+        <div style="font-size: 13px; color: #8B837A;">InTouch</div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -320,30 +320,30 @@ No schema changes. `supabase/config.toml` and `supabase/templates/recovery.html`
 
 #### Automated
 
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check` — d01f25c
+- [x] 2.2 Lint passes: `npm run lint` — d01f25c
+- [x] 2.3 Build succeeds: `npm run build` — d01f25c
 
 #### Manual
 
-- [x] 2.4 Real reset link lands on `/auth/reset-password` with no error
-- [x] 2.5 Setting a new password redirects to `/` signed in
-- [x] 2.6 Reusing/expiring a link shows the error state with a working "request a new link" path
-- [x] 2.7 Direct navigation to `/auth/reset-password` without a token produces the expired-link error, not a crash
-- [x] 2.8 Completing a reset in one session signs out a second active session for the same account
+- [x] 2.4 Real reset link lands on `/auth/reset-password` with no error — d01f25c
+- [x] 2.5 Setting a new password redirects to `/` signed in — d01f25c
+- [x] 2.6 Reusing/expiring a link shows the error state with a working "request a new link" path — d01f25c
+- [x] 2.7 Direct navigation to `/auth/reset-password` without a token produces the expired-link error, not a crash — d01f25c
+- [x] 2.8 Completing a reset in one session signs out a second active session for the same account — d01f25c
 
 ### Phase 3: Signin entry point + local SMTP/template wiring
 
 #### Automated
 
-- [ ] 3.1 Type check passes: `npx astro check`
-- [ ] 3.2 Build succeeds: `npm run build`
-- [ ] 3.3 `supabase start` picks up `config.toml` changes without error
+- [x] 3.1 Type check passes: `npx astro check`
+- [x] 3.2 Build succeeds: `npm run build`
+- [x] 3.3 `supabase start` picks up `config.toml` changes without error
 
 #### Manual
 
-- [ ] 3.4 "Forgot your password?" link appears on `/auth/signin` and navigates correctly
-- [ ] 3.5 Local reset email uses the branded template and its link round-trips through `/auth/confirm` to `/auth/reset-password`
+- [x] 3.4 "Forgot your password?" link appears on `/auth/signin` and navigates correctly
+- [x] 3.5 Local reset email uses the branded template and its link round-trips through `/auth/confirm` to `/auth/reset-password`
 
 ### Phase 4: Production configuration + verification
 
