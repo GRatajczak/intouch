@@ -3,11 +3,21 @@ import { UserRound, UserPlus, Plus, Trash2, CircleAlert } from "lucide-react";
 import { TextField } from "@/components/forms/TextField";
 import { SelectField } from "@/components/forms/SelectField";
 import { WeightSelector } from "@/components/forms/WeightSelector";
+import { ChoiceChips } from "@/components/forms/ChoiceChips";
+import { SegmentedToggle } from "@/components/forms/SegmentedToggle";
+import { TagChipsField } from "@/components/forms/TagChipsField";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
 import { cn } from "@/lib/utils";
-import { peopleFormSchema, RELATIONSHIP_TYPES, RELATIONSHIP_TYPE_LABELS } from "@/lib/validation/person";
+import {
+  peopleFormSchema,
+  RELATIONSHIP_TYPES,
+  RELATIONSHIP_TYPE_LABELS,
+  LAST_CONTACT_BUCKETS,
+  LAST_CONTACT_BUCKET_LABELS,
+  CONTEXT_TAGS_MAX,
+} from "@/lib/validation/person";
 import type { PersonFormProps, PersonRowState } from "./types";
 
 const RELATIONSHIP_TYPE_OPTIONS = RELATIONSHIP_TYPES.map((value) => ({
@@ -19,6 +29,17 @@ const COLLECTIVE_OPTIONS = [
   { value: "false", label: "Osoba" },
   { value: "true", label: "Grupa" },
 ];
+
+const LAST_CONTACT_BUCKET_OPTIONS = LAST_CONTACT_BUCKETS.map((value) => ({
+  value,
+  label: LAST_CONTACT_BUCKET_LABELS[value],
+}));
+
+const TAG_MAX_LENGTH = 30;
+
+function toOptionalString(value: string): string | undefined {
+  return value.length > 0 ? value : undefined;
+}
 
 const textareaBase =
   "w-full rounded-lg bg-input border border-border px-3 py-2 text-foreground placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-ring transition-colors resize-none";
@@ -33,6 +54,9 @@ function createEmptyRow(): PersonRowState {
     description: "",
     isCollective: "false",
     weight: 0,
+    relationshipContext: "",
+    contextTags: [],
+    lastContactBucket: "",
   };
 }
 
@@ -67,6 +91,9 @@ export default function PersonForm({ serverError }: PersonFormProps) {
         description: row.description,
         isCollective: row.isCollective === "true",
         weight: row.weight,
+        relationshipContext: toOptionalString(row.relationshipContext),
+        contextTags: row.contextTags.length > 0 ? row.contextTags : undefined,
+        lastContactBucket: toOptionalString(row.lastContactBucket),
       })),
     );
     if (result.success) {
@@ -164,14 +191,42 @@ export default function PersonForm({ serverError }: PersonFormProps) {
               )}
             </div>
 
-            <SelectField
+            <SegmentedToggle
               id={`isCollective-${index}`}
+              name={`isCollective-${index}`}
               label="Osoba czy grupa"
               value={row.isCollective}
               onChange={(v) => {
                 updateRow(row.id, { isCollective: v });
               }}
               options={COLLECTIVE_OPTIONS}
+            />
+
+            <TextField
+              id={`relationshipContext-${index}`}
+              name={`relationshipContext-${index}`}
+              label="Kim jest dla Ciebie?"
+              value={row.relationshipContext}
+              onChange={(v) => {
+                updateRow(row.id, { relationshipContext: v });
+                clearRowError(row.id, "relationshipContext");
+              }}
+              placeholder="np. przyjaciel ze studiów"
+              error={rowErrors.relationshipContext}
+            />
+
+            <TagChipsField
+              id={`contextTags-${index}`}
+              name={`contextTags-${index}`}
+              label="Co go cieszy, co jest u niego ważne?"
+              value={row.contextTags}
+              onChange={(tags) => {
+                updateRow(row.id, { contextTags: tags });
+                clearRowError(row.id, "contextTags");
+              }}
+              max={CONTEXT_TAGS_MAX}
+              tagMaxLength={TAG_MAX_LENGTH}
+              error={rowErrors.contextTags}
             />
 
             <WeightSelector
@@ -183,6 +238,18 @@ export default function PersonForm({ serverError }: PersonFormProps) {
               }}
               label="Waga relacji (1–10)"
               error={rowErrors.weight}
+            />
+
+            <ChoiceChips
+              id={`lastContactBucket-${index}`}
+              name={`lastContactBucket-${index}`}
+              label="Kiedy ostatnio rozmawialiście?"
+              mode="single"
+              options={LAST_CONTACT_BUCKET_OPTIONS}
+              value={row.lastContactBucket ? [row.lastContactBucket] : []}
+              onChange={(selected) => {
+                updateRow(row.id, { lastContactBucket: selected[0] ?? "" });
+              }}
             />
           </div>
         );

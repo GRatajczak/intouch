@@ -9,4 +9,7 @@ export interface PersonRowState {
   description: string;
   isCollective: string;
   weight: number;
+  relationshipContext: string;
+  contextTags: string[];
+  lastContactBucket: string;
 }

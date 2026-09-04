@@ -459,29 +459,29 @@ consistent with `CLAUDE.md`'s forward-compatible migration rule.
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly against local Supabase: `supabase db reset`
-- [x] 1.2 Generated types compile: `npm run build`
-- [x] 1.3 Linting passes: `npm run lint`
+- [x] 1.1 Migration applies cleanly against local Supabase: `supabase db reset` — badbb26
+- [x] 1.2 Generated types compile: `npm run build` — badbb26
+- [x] 1.3 Linting passes: `npm run lint` — badbb26
 
 #### Manual
 
-- [x] 1.4 Inserting a row via `supabase` SQL editor with all three new columns populated succeeds and round-trips through a `select *`
-- [x] 1.5 Inserting a row with all three omitted succeeds (defaults/nulls hold)
+- [x] 1.4 Inserting a row via `supabase` SQL editor with all three new columns populated succeeds and round-trips through a `select *` — badbb26
+- [x] 1.5 Inserting a row with all three omitted succeeds (defaults/nulls hold) — badbb26
 
 ### Phase 2: PersonForm UI — new fields, multi-row preserved
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Build succeeds (astro + TS check): `npm run build`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Build succeeds (astro + TS check): `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Adding one person with all three new fields filled saves successfully and the values match what was entered
-- [ ] 2.4 Adding one person with all three new fields left empty saves successfully (optional path)
-- [ ] 2.5 Adding two people in the same submit, each with different tag sets and buckets, saves both rows correctly (multi-row preserved)
-- [ ] 2.6 Adding a 6th tag to a row is rejected client-side with a clear error
-- [ ] 2.7 Removing a tag chip and re-adding a different one works before submit
+- [x] 2.3 Adding one person with all three new fields filled saves successfully and the values match what was entered
+- [x] 2.4 Adding one person with all three new fields left empty saves successfully (optional path)
+- [x] 2.5 Adding two people in the same submit, each with different tag sets and buckets, saves both rows correctly (multi-row preserved)
+- [x] 2.6 Adding a 6th tag to a row is rejected client-side with a clear error
+- [x] 2.7 Removing a tag chip and re-adding a different one works before submit
 
 ### Phase 3: App shell integration for `/people/new`
 
