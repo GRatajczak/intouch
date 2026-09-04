@@ -87,7 +87,7 @@ export async function runRanking(ownerId: string, supabase: SupabaseClient<Datab
 
     const [{ data: profile }, { data: people }, facts] = await Promise.all([
       supabase.from("profiles").select("*").eq("owner_id", ownerId).maybeSingle(),
-      supabase.from("people").select("*").eq("owner_id", ownerId),
+      supabase.from("people").select("*").eq("owner_id", ownerId).eq("status", "active"),
       // Never throws on its own -- a query failure folds to an empty map via
       // the same `data ?? []` fallback loadContactFacts already applies, so
       // a facts-load problem degrades to today's history-blind prompt rather

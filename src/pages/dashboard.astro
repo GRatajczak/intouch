@@ -22,7 +22,7 @@ if (supabase && user) {
   // existence, so a signed-up user who skipped /profile still lands here.
   const [{ data: profile }, { count }, factsMap] = await Promise.all([
     supabase.from("profiles").select("owner_id").eq("owner_id", user.id).maybeSingle(),
-    supabase.from("people").select("*", { count: "exact", head: true }).eq("owner_id", user.id),
+    supabase.from("people").select("*", { count: "exact", head: true }).eq("owner_id", user.id).eq("status", "active"),
     loadContactFacts(supabase, user.id),
   ]);
   hasProfile = !!profile;

@@ -22,6 +22,7 @@ async function fetchPeople() {
       .from("people")
       .select("*")
       .eq("owner_id", user.id)
+      .order("status", { ascending: true })
       .order("weight", { ascending: false })
       .order("created_at", { ascending: true }),
     loadContactFacts(supabase, user.id),

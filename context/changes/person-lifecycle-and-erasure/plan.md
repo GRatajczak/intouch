@@ -350,32 +350,32 @@ The `status` migration (Phase 1) is purely additive with a `DEFAULT`, so it is f
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npx astro check`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Build passes: `npm run build`
+- [x] 2.1 Type checking passes: `npx astro check` — 159a4a2
+- [x] 2.2 Linting passes: `npm run lint` — 159a4a2
+- [x] 2.3 Build passes: `npm run build` — 159a4a2
 
 #### Manual
 
-- [x] 2.4 `PATCH` with a field change updates the row and returns it
-- [x] 2.5 `PATCH` with `{ "status": "deactivated" }` then `{ "status": "active" }` round-trips correctly
-- [x] 2.6 `DELETE` on an `active` person returns `409` and the row still exists
-- [x] 2.7 `DELETE` on a `deactivated` person returns success and the row is gone
-- [x] 2.8 `PATCH`/`DELETE` against another user's person id, and against a nonexistent id, both return `404`
+- [x] 2.4 `PATCH` with a field change updates the row and returns it — 159a4a2
+- [x] 2.5 `PATCH` with `{ "status": "deactivated" }` then `{ "status": "active" }` round-trips correctly — 159a4a2
+- [x] 2.6 `DELETE` on an `active` person returns `409` and the row still exists — 159a4a2
+- [x] 2.7 `DELETE` on a `deactivated` person returns success and the row is gone — 159a4a2
+- [x] 2.8 `PATCH`/`DELETE` against another user's person id, and against a nonexistent id, both return `404` — 159a4a2
 
 ### Phase 3: AI exclusion and counts
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npx astro check`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Build passes: `npm run build`
-- [ ] 3.4 Existing ranking path still passes end-to-end: `npm run verify:ranking -- <preview-or-local-url>`
+- [x] 3.1 Type checking passes: `npx astro check`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Build passes: `npm run build`
+- [x] 3.4 Existing ranking path still passes end-to-end: `npm run verify:ranking -- <preview-or-local-url>`
 
 #### Manual
 
-- [ ] 3.5 Deactivating a person and re-running the ranking produces a hierarchy that no longer mentions them
-- [ ] 3.6 The dashboard's people count drops by one immediately after deactivation
-- [ ] 3.7 `/people` shows a deactivated person's card after every active person's card, not filtered out
+- [x] 3.5 Deactivating a person and re-running the ranking produces a hierarchy that no longer mentions them
+- [x] 3.6 The dashboard's people count drops by one immediately after deactivation
+- [x] 3.7 `/people` shows a deactivated person's card after every active person's card, not filtered out
 
 ### Phase 4: Person detail page and lifecycle UI
 
