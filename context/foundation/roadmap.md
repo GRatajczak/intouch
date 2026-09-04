@@ -388,3 +388,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-02: (foundation) the Worker can call OpenAI without blocking the user** — Archived 2026-09-04 → `context/archive/2026-08-26-openai-ranking-call-path/`. Lesson: —.
 - **F-05: (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design** — Archived 2026-09-04 → `context/archive/2026-08-30-design-alignment-pass/`. Lesson: —.
 - **S-06: see a real marketing page at `/` explaining what InTouch is, before signing in** — Archived 2026-09-04 → `context/archive/2026-09-01-landing-page/`. Lesson: —.
+- **S-03: confirm whether a contact happened and see the ranking react** — Archived 2026-09-04 → `context/archive/2026-09-02-did-it-happen-feedback-loop/`. Lesson: —.
