@@ -349,11 +349,11 @@ No schema changes. `supabase/config.toml` and `supabase/templates/recovery.html`
 
 #### Automated
 
-- [x] 4.1 Build succeeds: `npm run build`
+- [x] 4.1 Build succeeds: `npm run build` — 4cc470b
 
 #### Manual
 
-- [x] 4.2 `get-in-touch.pl` verified in Resend
-- [x] 4.3 Production reset email delivered from `no-reply@get-in-touch.pl` with the branded template
-- [x] 4.4 End-to-end production reset sets a new password and lands signed in
-- [x] 4.5 A second production session is signed out after the reset
+- [x] 4.2 `get-in-touch.pl` verified in Resend — 4cc470b
+- [x] 4.3 Production reset email delivered from `no-reply@get-in-touch.pl` with the branded template — 4cc470b
+- [x] 4.4 End-to-end production reset sets a new password and lands signed in — 4cc470b
+- [x] 4.5 A second production session is signed out after the reset — 4cc470b
