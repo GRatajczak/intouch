@@ -500,12 +500,12 @@ consistent with `CLAUDE.md`'s forward-compatible migration rule.
 
 #### Automated
 
-- [x] 4.1 Linting passes: `npm run lint`
-- [x] 4.2 Build succeeds: `npm run build`
+- [x] 4.1 Linting passes: `npm run lint` — 771ddbe
+- [x] 4.2 Build succeeds: `npm run build` — 771ddbe
 - [x] 4.3 `tsx scripts/verify-ranking.ts` shows the new context lines present for a person with all three fields set, and absent for one with none — skipped by decision, see change.md
 
 #### Manual
 
-- [x] 4.4 A person added with tags shows those tags as chips on their card in `/people`
-- [x] 4.5 A person added without tags shows no chip row and no layout gap
-- [x] 4.6 Triggering a hierarchy re-generation for a user with a context-rich person produces a ranking explanation that plausibly reflects the new context (spot-check, not exact-match)
+- [x] 4.4 A person added with tags shows those tags as chips on their card in `/people` — 771ddbe
+- [x] 4.5 A person added without tags shows no chip row and no layout gap — 771ddbe
+- [x] 4.6 Triggering a hierarchy re-generation for a user with a context-rich person produces a ranking explanation that plausibly reflects the new context (spot-check, not exact-match) — 771ddbe

@@ -1,7 +1,7 @@
 ---
 change_id: add-person-context-fields
 title: "Add-person form: shell nav + richer per-person context fields"
-status: implementing
+status: implemented
 created: 2026-09-04
 updated: 2026-09-04
 archived_at: null
