@@ -76,7 +76,12 @@ const astroConfig = tseslint.config({
 
 export default tseslint.config(
   includeIgnoreFile(gitignorePath),
-  { ignores: ["src/db/database.types.ts", ".ai/**"] },
+  // supabase/.gitignore excludes .temp, but includeIgnoreFile reads the root
+  // .gitignore only -- so once `supabase start` has run, its scratch files land
+  // in the lint run and fail the project service ("was not found by the project
+  // service"). The test suite's RLS layer needs the stack up, so lint and a
+  // running stack now coincide routinely.
+  { ignores: ["src/db/database.types.ts", ".ai/**", "supabase/.temp/**"] },
   baseConfig,
   reactConfig,
   eslintPluginAstro.configs["flat/recommended"],
