@@ -471,34 +471,34 @@ No schema changes and no data migration. The only removal is `scripts/verify-rls
 
 #### Automated
 
-- [x] 1.1 `npm test` runs and exits 0
-- [x] 1.2 Probe A passes: `createClient` returns non-null, proving `astro:env/server` resolved and `.env.test` supplied both values
-- [x] 1.3 Probe B produces a definite outcome (loads, or fails with a recorded reason)
-- [x] 1.4 `npm run lint` passes with the new files present
-- [x] 1.5 `npx astro check` passes
-- [x] 1.6 `npm run build` still passes
+- [x] 1.1 `npm test` runs and exits 0 — 4ad8ae1
+- [x] 1.2 Probe A passes: `createClient` returns non-null, proving `astro:env/server` resolved and `.env.test` supplied both values — 4ad8ae1
+- [x] 1.3 Probe B produces a definite outcome (loads, or fails with a recorded reason) — 4ad8ae1
+- [x] 1.4 `npm run lint` passes with the new files present — 4ad8ae1
+- [x] 1.5 `npx astro check` passes — 4ad8ae1
+- [x] 1.6 `npm run build` still passes — 4ad8ae1
 
 #### Manual
 
-- [x] 1.7 The `cloudflare:workers` decision is written into Phase 3's scope note, with the branch taken and why
-- [x] 1.8 `.env.test` contains only local-stack values, with a header comment explaining why it is committed
-- [ ] 1.9 Both probe files are deleted before Phase 2 starts
+- [x] 1.7 The `cloudflare:workers` decision is written into Phase 3's scope note, with the branch taken and why — 4ad8ae1
+- [x] 1.8 `.env.test` contains only local-stack values, with a header comment explaining why it is committed — 4ad8ae1
+- [x] 1.9 Both probe files are deleted before Phase 2 starts
 
 ### Phase 2: RLS Layer
 
 #### Automated
 
-- [ ] 2.1 `npm test tests/rls` passes with the local stack running
-- [ ] 2.2 All five tables have cross-user SELECT, UPDATE, DELETE, forged-owner INSERT, and anonymous read + write assertions
-- [ ] 2.3 Each cross-user mutation test includes an independent victim-side read
-- [ ] 2.4 `npm run lint` and `npx astro check` pass
-- [ ] 2.5 `scripts/verify-rls.ts` no longer exists and `npm run verify:rls` is gone
+- [x] 2.1 `npm test tests/rls` passes with the local stack running
+- [x] 2.2 All five tables have cross-user SELECT, UPDATE, DELETE, forged-owner INSERT, and anonymous read + write assertions
+- [x] 2.3 Each cross-user mutation test includes an independent victim-side read
+- [x] 2.4 `npm run lint` and `npx astro check` pass
+- [x] 2.5 `scripts/verify-rls.ts` no longer exists and `npm run verify:rls` is gone
 
 #### Manual
 
-- [ ] 2.6 Inverting one RLS policy locally makes the corresponding test fail
-- [ ] 2.7 No assertion path uses the service-role key
-- [ ] 2.8 Teardown leaves no throwaway users behind
+- [x] 2.6 Inverting one RLS policy locally makes the corresponding test fail
+- [x] 2.7 No assertion path uses the service-role key
+- [x] 2.8 Teardown leaves no throwaway users behind
 
 ### Phase 3: Route Layer
 

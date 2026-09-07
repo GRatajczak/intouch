@@ -31,3 +31,15 @@ Two surprises worth writing down, not one:
 
 - `astro:env/server` inlines its values at transform time under any non-build Vite command, so env must exist at config-resolution time (`.env.test`) — `setGetEnv` is inert.
 - Running Astro's `getViteConfig` under a test runner requires removing the Cloudflare adapter's Vite plugins, or the runner never starts.
+
+### Phase 2 divergences from the plan
+
+1. **"Sessions minted once per suite run, shared across files" is not literally achievable.** Vitest isolates test files, so a module-level memo in `fixture.ts` would be re-evaluated per file — and memoising across files without a global teardown is actively harmful, since the first file's `afterAll` would delete users the second file still needs. The fixture therefore creates and destroys per file, and documents the real budget: 2 sign-ins per file against the 30-per-5-minutes cap at `supabase/config.toml:189`, so roughly fifteen RLS files per five minutes. With one file today the plan's intent holds. If `tests/rls/` grows past a handful, promote to a Vitest `globalSetup` that mints the sessions once and hands the tokens to each file — noted in the fixture's own comment.
+
+2. **`scripts/verify-rls.ts`'s comment about `profiles` DELETE was stale, and the new tests do not carry it forward.** The script tolerated either `42501` or a zero-row result, because `profiles` had no DELETE policy _and_ no DELETE grant when it was written. `20260904221004_add_profiles_delete_policy.sql` added both. Cross-owner profile DELETE now filters to zero rows like every other table, and `isolation.test.ts` asserts that uniformly.
+
+3. **The forged-owner INSERT asserts the error _code_, not merely that an error occurred.** On `profiles`, `owner_id` is the primary key, so an insert forging user A's id would fail on a `23505` unique violation even with RLS gone. Asserting `42501` is what keeps that test from passing against a removed boundary.
+
+### Still unverified after Phase 2
+
+The stack-down path (`readLocalStatus`'s "run `supabase start`" message) has not been exercised — doing so means stopping the developer's local stack. It is manual testing step 4 in the plan's Testing Strategy.
