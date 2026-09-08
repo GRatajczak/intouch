@@ -17,6 +17,8 @@ export default {
     const html = renderEmailShell({
       subject: PROOF_SUBJECT,
       bodyHtml: `<p>To jest testowa wiadomość potwierdzająca, że Worker InTouch potrafi wysłać e-mail z zaplanowanego triggera.</p><p style="color: #A39A90; font-size: 13px;">Uruchomienie: ${controller.cron} · ${new Date(controller.scheduledTime).toISOString()}</p>`,
+      footerNote:
+        "To jest testowa wiadomość ze ścieżki dostarczania InTouch — nie zawiera jeszcze prawdziwych przypomnień.",
     });
 
     let result: Awaited<ReturnType<typeof resend.emails.send>>;

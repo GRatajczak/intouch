@@ -818,29 +818,29 @@ requires. No backfill: every existing profile reads back `reminders_enabled = tr
 
 #### Automated
 
-- [x] 3.1 `npm test tests/reminders` passes
-- [x] 3.2 `npm test` — full suite green
-- [x] 3.3 `npx astro check` passes
-- [x] 3.4 `npm run lint` passes
+- [x] 3.1 `npm test tests/reminders` passes — 31b12d9
+- [x] 3.2 `npm test` — full suite green — 31b12d9
+- [x] 3.3 `npx astro check` passes — 31b12d9
+- [x] 3.4 `npm run lint` passes — 31b12d9
 
 #### Manual
 
-- [x] 3.5 Spot-check: removing one rule makes its test fail
+- [x] 3.5 Spot-check: removing one rule makes its test fail — 31b12d9
 
 ### Phase 4: Reminder email template
 
 #### Automated
 
-- [ ] 4.1 `npm run render:email-preview` writes the file without error
-- [ ] 4.2 `npx astro check` passes
-- [ ] 4.3 `npm run lint` passes
+- [x] 4.1 `npm run render:email-preview` writes the file without error
+- [x] 4.2 `npx astro check` passes
+- [x] 4.3 `npm run lint` passes
 
 #### Manual
 
-- [ ] 4.4 Preview matches the mock's structure and palette
-- [ ] 4.5 Weight bullet reads "n na 10", not the mock's "5 na 5"
-- [ ] 4.6 Every CTA renders as a visibly styled button
-- [ ] 4.7 Legible at phone width
+- [x] 4.4 Preview matches the mock's structure and palette
+- [x] 4.5 Weight bullet reads "n na 10", not the mock's "5 na 5"
+- [x] 4.6 Every CTA renders as a visibly styled button
+- [x] 4.7 Legible at phone width
 
 ### Phase 5: The sweep
 

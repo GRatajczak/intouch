@@ -1,10 +1,18 @@
+import { escapeHtml } from "@/lib/email/escape";
+
 interface RenderEmailShellOptions {
   subject: string;
   bodyHtml: string;
+  /**
+   * The grey line above the wordmark in the footer. A parameter rather than a
+   * constant because F-04's copy declared every message a delivery-path test,
+   * which stops being true the moment a real reminder uses this shell.
+   */
+  footerNote: string;
 }
 
 // Chrome only, styled from InTouch.dc.html:1080-1087,1141-1144 — bodyHtml carries no ranking data.
-export function renderEmailShell({ subject, bodyHtml }: RenderEmailShellOptions): string {
+export function renderEmailShell({ subject, bodyHtml, footerNote }: RenderEmailShellOptions): string {
   const date = new Date().toLocaleDateString("pl-PL", {
     weekday: "long",
     day: "numeric",
@@ -16,7 +24,7 @@ export function renderEmailShell({ subject, bodyHtml }: RenderEmailShellOptions)
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>${subject}</title>
+    <title>${escapeHtml(subject)}</title>
   </head>
   <body style="margin: 0; padding: 20px; background: #EFE9E1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif;">
     <div style="max-width: 600px; margin: 0 auto; background: #FBF8F4; border-radius: 20px; overflow: hidden;">
@@ -32,7 +40,7 @@ export function renderEmailShell({ subject, bodyHtml }: RenderEmailShellOptions)
         ${bodyHtml}
       </div>
       <div style="margin: 8px 0 0; background: #F3EDE5; padding: 24px 40px 30px; display: flex; flex-direction: column; gap: 8px;">
-        <div style="font-size: 13px; line-height: 1.6; color: #6B645C;">To jest testowa wiadomość ze ścieżki dostarczania InTouch — nie zawiera jeszcze prawdziwych przypomnień.</div>
+        <div style="font-size: 13px; line-height: 1.6; color: #6B645C;">${footerNote}</div>
         <div style="font-size: 13px; color: #8B837A;">InTouch</div>
       </div>
     </div>

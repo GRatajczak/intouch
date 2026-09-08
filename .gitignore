@@ -3,6 +3,7 @@ dist/
 
 # local scratch output
 email-preview.html
+email-preview-shell.html
 
 # ad hoc manual-verification helpers -- hold real local credentials
 scripts/manual-verify-*.sh
