@@ -1,7 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/db/database.types";
-
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
+import { calendarDaysBetween } from "@/lib/dates";
 
 export const RECENT_NOTES_PER_PERSON = 2;
 
@@ -21,8 +20,11 @@ export interface ContactFacts {
 function foldEvents(events: Tables<"contact_events">[]): ContactFacts {
   const lastHappened = events.find((event) => event.outcome === "happened") ?? null;
   const lastHappenedAt = lastHappened?.occurred_at ?? null;
+  // Calendar days in APP_TIME_ZONE, not elapsed 24-hour blocks: this number
+  // is what the recency floor's thresholds and ContactMarker's "today"
+  // predicate both read.
   const daysSinceLastHappened =
-    lastHappenedAt === null ? null : Math.floor((Date.now() - new Date(lastHappenedAt).getTime()) / MS_PER_DAY);
+    lastHappenedAt === null ? null : calendarDaysBetween(new Date(lastHappenedAt), new Date());
 
   const lastAttemptFailed = events[0]?.outcome === "not_yet";
 

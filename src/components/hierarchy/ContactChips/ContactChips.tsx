@@ -1,16 +1,17 @@
+import { calendarDaysBetween } from "@/lib/dates";
 import type { ContactChipsProps } from "./types";
 
 // Same dziś-check + toLocaleDateString fallback shape as
 // RefreshBanner.tsx's formatComputedAt -- "X dni temu" only for a recent
 // window, an actual date once it's stale enough that a day count stops
-// being useful.
+// being useful. The day count comes from the shared APP_TIME_ZONE helper so
+// this chip and the prompt cannot disagree about which day an event fell on.
 function formatRelativeDate(iso: string): string {
   const date = new Date(iso);
-  const now = new Date();
-  if (date.toDateString() === now.toDateString()) {
+  const diffDays = calendarDaysBetween(date, new Date());
+  if (diffDays === 0) {
     return "dziś";
   }
-  const diffDays = Math.floor((now.getTime() - date.getTime()) / (24 * 60 * 60 * 1000));
   if (diffDays === 1) {
     return "wczoraj";
   }

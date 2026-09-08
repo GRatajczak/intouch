@@ -458,31 +458,31 @@ zmiany dotyczą sposobu wyliczania nowych rankingów, nie kształtu już zapisan
 
 #### Automated
 
-- [x] 1.1 Typy przechodzą: `npx astro check`
-- [x] 1.2 Lint przechodzi: `npm run lint`
-- [x] 1.3 Build przechodzi: `npm run build`
-- [x] 1.4 Istniejąca sucha przechodzi bez regresji: `npm test`
+- [x] 1.1 Typy przechodzą: `npx astro check` — b9374ca
+- [x] 1.2 Lint przechodzi: `npm run lint` — b9374ca
+- [x] 1.3 Build przechodzi: `npm run build` — b9374ca
+- [x] 1.4 Istniejąca sucha przechodzi bez regresji: `npm test` — b9374ca
 
 #### Manual
 
-- [x] 1.5 Prompt osoby z udanym kontaktem nie zawiera linii z szacunkiem
-- [x] 1.6 Osoba z samymi wpisami „Jeszcze nie" nadal ma w prompcie szacunek
-- [x] 1.7 Uzasadnienia nadal rozstrzygają remisy kontekstem z opisów
+- [x] 1.5 Prompt osoby z udanym kontaktem nie zawiera linii z szacunkiem — b9374ca
+- [x] 1.6 Osoba z samymi wpisami „Jeszcze nie" nadal ma w prompcie szacunek — b9374ca
+- [x] 1.7 Uzasadnienia nadal rozstrzygają remisy kontekstem z opisów — b9374ca
 
 ### Phase 2: Wspólne liczenie dni kalendarzowych
 
 #### Automated
 
-- [ ] 2.1 Typy przechodzą: `npx astro check`
-- [ ] 2.2 Lint przechodzi: `npm run lint`
-- [ ] 2.3 Build przechodzi: `npm run build`
-- [ ] 2.4 Istniejąca sucha przechodzi: `npm test`
+- [x] 2.1 Typy przechodzą: `npx astro check`
+- [x] 2.2 Lint przechodzi: `npm run lint`
+- [x] 2.3 Build przechodzi: `npm run build`
+- [x] 2.4 Istniejąca sucha przechodzi: `npm test`
 
 #### Manual
 
-- [ ] 2.5 Chip i uzasadnienie zgadzają się co do dnia kontaktu sprzed doby
-- [ ] 2.6 „Już potwierdzone dzisiaj" znika po północy czasu polskiego, nie po 24 h
-- [ ] 2.7 Historia osoby i karta osoby nadal renderują daty poprawnie
+- [x] 2.5 Chip i uzasadnienie zgadzają się co do dnia kontaktu sprzed doby
+- [x] 2.6 „Już potwierdzone dzisiaj" znika po północy czasu polskiego, nie po 24 h
+- [x] 2.7 Historia osoby i karta osoby nadal renderują daty poprawnie
 
 ### Phase 3: Podłoga, uzasadnienie i kolejność
 
