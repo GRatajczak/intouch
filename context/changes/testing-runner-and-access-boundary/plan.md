@@ -522,27 +522,27 @@ No schema changes and no data migration. The only removal is `scripts/verify-rls
 
 #### Automated
 
-- [x] 4.1 With `TEST_BASE_URL` set and a server running, `npm test tests/http` passes
-- [x] 4.2 With `TEST_BASE_URL` unset, `npm test` exits 0 and reports the layer as skipped, not failed
-- [x] 4.3 Both cookie jars are minted through `/api/auth/signin`, with no hand-crafted cookie names
-- [x] 4.4 The origin-check test covers JSON, form-encoded and bodiless requests
+- [x] 4.1 With `TEST_BASE_URL` set and a server running, `npm test tests/http` passes — 2c9b7e5
+- [x] 4.2 With `TEST_BASE_URL` unset, `npm test` exits 0 and reports the layer as skipped, not failed — 2c9b7e5
+- [x] 4.3 Both cookie jars are minted through `/api/auth/signin`, with no hand-crafted cookie names — 2c9b7e5
+- [x] 4.4 The origin-check test covers JSON, form-encoded and bodiless requests — 2c9b7e5
 
 #### Manual
 
-- [x] 4.5 Run the layer against a dev server you start yourself; confirm the skip/run switch both ways
-- [x] 4.6 The skip message names `TEST_BASE_URL` clearly enough to act on
-- [x] 4.7 A deliberately wrong `TEST_BASE_URL` fails loudly rather than skipping
+- [x] 4.5 Run the layer against a dev server you start yourself; confirm the skip/run switch both ways — 2c9b7e5
+- [x] 4.6 The skip message names `TEST_BASE_URL` clearly enough to act on — 2c9b7e5
+- [x] 4.7 A deliberately wrong `TEST_BASE_URL` fails loudly rather than skipping — 2c9b7e5
 
 ### Phase 5: Cookbook and Sync
 
 #### Automated
 
-- [ ] 5.1 No "TBD — see §3 Phase 1" placeholder remains in `context/foundation/test-plan.md`
-- [ ] 5.2 `npm test` passes from a clean checkout with the local stack running
-- [ ] 5.3 `npm run lint`, `npx astro check` and `npm run build` all pass
+- [x] 5.1 No "TBD — see §3 Phase 1" placeholder remains in `context/foundation/test-plan.md`
+- [x] 5.2 `npm test` passes from a clean checkout with the local stack running
+- [x] 5.3 `npm run lint`, `npx astro check` and `npm run build` all pass
 
 #### Manual
 
-- [ ] 5.4 A reader can add a new access-boundary test using §6.2/§6.3 alone
-- [ ] 5.5 The follow-up change folder exists and names both gaps plus the page-route exclusion
-- [ ] 5.6 §4's Vitest row records the actual installed version
+- [x] 5.4 A reader can add a new access-boundary test using §6.2/§6.3 alone
+- [x] 5.5 The follow-up change folder exists and names both gaps plus the page-route exclusion
+- [x] 5.6 §4's Vitest row records the actual installed version
