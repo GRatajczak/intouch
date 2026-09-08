@@ -68,6 +68,13 @@ export default defineConfig({
       // F-04 already proved works in the deployed Worker. Keep the two in sync:
       // change `site` and this secret together.
       APP_BASE_URL: envField.string({ context: "server", access: "secret", optional: true }),
+      // F-06's PostHog project token. Same optional-secret shape as the three
+      // keys above: src/lib/analytics/config.ts returns null when it is absent,
+      // so a missing key silently disables analytics rather than failing the
+      // Worker -- and analytics failing is the one thing here no user can see.
+      // Deliberately NOT registered in src/lib/config-status.ts; the reasoning
+      // is recorded in that factory.
+      POSTHOG_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
 });

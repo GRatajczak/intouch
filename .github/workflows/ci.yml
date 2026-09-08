@@ -25,6 +25,7 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
           APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
       - run: npm run lint
       - run: npm run build
         env:
@@ -35,3 +36,4 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
           APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}

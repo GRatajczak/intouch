@@ -3,7 +3,7 @@ project: "InTouch"
 version: 2
 status: draft
 created: 2026-08-15
-updated: 2026-09-04
+updated: 2026-09-08
 prd_version: 2
 main_goal: speed
 top_blocker: time
@@ -46,11 +46,11 @@ successfully done").
 | F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | done                                        |
 | F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | done |
 | F-05 | `design-alignment-pass`      | (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design | F-03, S-01 | NFR-browser (mobile usability) | done      |
-| F-06 | `product-analytics-posthog`  | (foundation) the primary funnel is measurable in PostHog, with no third-party personal data in any event | S-03 | Success Criteria (Primary + Secondary), NFR-privacy | ready |
+| F-06 | `product-analytics-posthog`  | (foundation) the primary funnel is measurable in PostHog, with no third-party personal data in any event | S-03 | Success Criteria (Primary + Secondary), NFR-privacy | in-progress |
 | S-01 | `profile-and-first-people`   | fill a self-profile and add people with a weight, and see them    | F-01, F-03    | FR-001, FR-002, FR-003, FR-004 | done      |
 | S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02, S-09 | US-01, FR-007               | done        |
 | S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | done |
-| S-04 | `decay-driven-reminders`     | be reminded, unprompted, about relationships going quiet          | S-03, F-04    | FR-008, NFR-once-per-day       | blocked  |
+| S-04 | `decay-driven-reminders`     | be reminded, unprompted, about relationships going quiet          | S-03, F-04    | FR-008, NFR-once-per-day       | done        |
 | S-05 | `person-lifecycle-and-erasure`| edit, deactivate and permanently delete a person                  | S-01          | FR-005, NFR-privacy            | in-progress |
 | S-06 | `landing-page`                | see a real marketing page at `/` explaining what InTouch is, before signing in | F-03          | Access Control ("unauthenticated visitor") | done |
 | S-07 | `account-and-profile-settings` | edit their own profile after first fill and manage their account from `/settings`       | S-01, F-05    | FR-001, FR-002, FR-008 (address), Access Control | done |
@@ -67,7 +67,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 | A      | The loop                  | `F-01` + `F-03` → `S-01` → `S-09` → `S-02` → `S-03` | The must-have path — the shortest chain of `must-have` requirements that reaches the north star, with nothing optional in it. Under `main_goal: speed`, nothing outranks this chain. |
 | B      | AI call path              | `F-02`                               | Runs in parallel with `F-01`/`S-01`; joins Stream A at `S-02`.                                 |
 | C      | Data lifecycle & erasure  | `S-05`                               | Branches off `S-01`, runs parallel to `S-02`/`S-03`. Carries the binary privacy NFR.           |
-| D      | Proactive reminders       | `F-04` → `S-04`                      | `F-04` is unblocked and can start now; `S-04` still waits on the cadence decision.             |
+| D      | Proactive reminders       | `F-04` → `S-04`                      | `F-04` shipped; `S-04`'s cadence decision was resolved during its plan (2026-09-08) and it is now in planning.             |
 | E      | Visual foundation         | `F-03` → `F-05`                      | Runs in parallel with `F-01`/`F-02`; joins Stream A at `S-01`, the first slice that renders product screens. `F-05` follows once `S-01` ships, since its shell needs real people/profile data to show. |
 | F      | Public landing page       | `F-03` → `S-06`                      | Parallel with everything else once `F-03` lands. A leaf outcome — nothing downstream depends on it; it's the first thing a visitor meets, not a foundation for anything. |
 | H      | Product measurement       | `S-03` → `F-06`                      | Starts once the funnel it measures exists. A leaf track — nothing depends on it structurally; it feeds the *decisions* still open on `S-04` (Open Questions 3 and 5) rather than any slice's code. |
@@ -175,7 +175,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - **Reverse proxy under the app's own domain?** Standard PostHog advice for beating ad blockers, and cheap on Workers — but it is an extra route to maintain. Owner: user, during this foundation's plan. Block: no.
   - **Does the user get an opt-out, and is it in `/settings` (`S-07`) or absent from the MVP?** Owner: user, during this foundation's plan.
 - **Risk:** The technical risk is low — one wrapper, a handful of call sites, one secret. The real risks are two. First, **privacy leakage by convenience**: the moment an event carries a person's name or description "just for context", the product's binary privacy guardrail is broken in a vendor's database, and `F-01`'s RLS work bought nothing. The wrapper must make the safe call the easy one — an allow-list of event properties, not a free-form object. Second, **instrumentation sprawl**: PostHog will happily take autocapture, session replay, feature flags, A/B tests and error tracking, none of which the Success Criteria asked for. Scope is capped at the named funnel events plus one insight that reads them; everything else is a later decision, and session replay in particular would record screens full of third-party personal data (see also the parked error-tracking entry under `## Parked`, which this foundation does *not* silently resolve).
-- **Status:** ready
+- **Status:** in-progress
 
 ## Slices
 
@@ -225,12 +225,12 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Prerequisites:** S-03, F-04
 - **Parallel with:** S-05
 - **Blockers:** —
-- **Unknowns:**
-  - How often do reminders fire without becoming spam users mute? The once-per-day NFR is a ceiling, not the trigger rule; the decay-driven trigger logic is unresolved. Owner: user. Block: yes.
-  - What does one reminder email actually contain — the single most urgent person, the top few, or the whole hierarchy? Decides whether the email pulls the user into the app (feeding the `S-03` confirmation loop) or is a digest they dismiss without opening it. Owner: user. Block: no — affects the template, not whether the slice can be built. Routed from PRD Open Question 4.
-  - How does a scheduled sweep, which runs with no signed-in user, read across users' rows without defeating `F-01`'s owner-scoped RLS? Owner: resolved during this slice's plan. Block: no.
+- **Unknowns:** — all three resolved during this slice's plan (2026-09-08):
+  - ~~How often do reminders fire without becoming spam users mute?~~ — an urgency gate (only `this_week` / `two_weeks` entries qualify) plus a 3-day per-user cooldown. The once-per-day NFR stays the ceiling above that, and nothing urgent means silence rather than a filler email. Closes PRD Open Question 3.
+  - ~~What does one reminder email actually contain?~~ — one hero person with a "Dlaczego akurat teraz" factor list, plus a two-line "W kolejce" teaser, matching the design bundle's own framing ("jeden mail, jedna osoba, jedno wezwanie"). A digest was rejected precisely because it is read and dismissed without ever feeding the `S-03` loop. Closes PRD Open Question 4.
+  - ~~How does a scheduled sweep read across users' rows without defeating `F-01`'s RLS?~~ — a `SECURITY DEFINER` `reminder_candidates()` function with a fixed return shape is the only cross-owner query, callable by `service_role` alone; the service-role key is confined to `src/lib/supabase-admin.ts` and every per-user read after that point reuses the existing owner-filtered helpers.
 - **Risk:** Still blocked, but on one decision rather than two — the delivery channel is now settled (email via Resend, PRD v2) and its wiring is lifted into `F-04`, which can proceed immediately and in parallel. What remains is the cadence rule, a one-sitting decision rather than research; resolving it promotes this slice. Deliberately not sequenced earlier despite being the vision's most distinctive promise ("the app decides on your behalf"), because under `top_blocker: time` the scheduled-sweep infrastructure is worth paying for only once the loop it drives is proven. Its sharpest technical risk is the RLS unknown above: this is the first code in the repo that acts on behalf of users who are not present, and a sweep that reaches for a service-role key to get the job done would quietly undo the guarantee `F-01` exists to establish.
-- **Status:** blocked
+- **Status:** done — shipped `4cebfee`…`f72b686`; impl-reviewed (0 critical, all 7 findings triaged). Production-verified by a real send (`d0afb2f3`, 2026-09-08 10:20 UTC).
 
 ### S-05: Person lifecycle and erasure
 
@@ -335,7 +335,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-09       | `self-profile-rhythm-fields`   | Self-profile rhythm fields feeding the AI schedule             | done                  | Shipped `adae754`…`a4c7f99`; impl-reviewed. Linear GRA-20 |
 | F-04       | `resend-email-delivery-path`   | Send one real email from the Worker on a schedule via Resend   | done                  | Shipped `c7df7e9`…`d34bfbf`; impl-reviewed, production-verified |
 | F-05       | `design-alignment-pass`        | App shell (sidebar/bottom-nav) + catalog grid reskin from the finished design | done | Shipped `ab2fded`…`ff28367`. Linear GRA-18                  |
-| S-04       | `decay-driven-reminders`       | Decay-driven reminders, at most once per day                   | no                    | S-03 and F-04 done — unblocked on prerequisites. Still blocked: reminder cadence undecided |
+| S-04       | `decay-driven-reminders`       | Decay-driven reminders, at most once per day                   | yes                   | Unblocked 2026-09-08 — cadence and email content resolved during this slice's plan          |
 | S-05       | `person-lifecycle-and-erasure` | Edit, deactivate and irreversibly delete a person              | yes                   | S-01 done — unblocked; runs parallel to the whole Stream A chain |
 | S-06       | `landing-page`                 | Public landing page at `/` from the existing design + copy     | done                  | Shipped `edcfa48`…`a01cb9f`. Linear GRA-19                   |
 | S-07       | `account-and-profile-settings` | Editable profile + account settings on the `/settings` page    | yes                   | S-01 and F-05 done — unblocked. Replaces the stub's placeholder copy |
@@ -391,3 +391,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-03: confirm whether a contact happened and see the ranking react** — Archived 2026-09-04 → `context/archive/2026-09-02-did-it-happen-feedback-loop/`. Lesson: —.
 - **S-07: edit their own profile after first fill and manage their account from `/settings`** — Archived 2026-09-04 → `context/archive/2026-09-04-account-and-profile-settings/`. Lesson: —.
 - **S-10: add a person through a form inside the app shell, with richer per-person context (who they are, freeform tags, roughly when last in touch)** — Archived 2026-09-04 → `context/archive/2026-09-04-add-person-context-fields/`. Lesson: —.
+- **S-04: be reminded, unprompted, about relationships going quiet** — Archived 2026-09-08 → `context/archive/2026-09-08-decay-driven-reminders/`. Lesson: —.
