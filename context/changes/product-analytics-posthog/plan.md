@@ -785,31 +785,31 @@ opted in by default and can opt out from `/settings` once Phase 4 lands.
 
 #### Automated
 
-- [x] 4.1 Type checking passes: `npx astro check`
-- [x] 4.2 Linting passes (including `jsx-a11y`): `npm run lint`
-- [x] 4.3 Build passes: `npm run build`
+- [x] 4.1 Type checking passes: `npx astro check` — 6f671bc
+- [x] 4.2 Linting passes (including `jsx-a11y`): `npm run lint` — 6f671bc
+- [x] 4.3 Build passes: `npm run build` — 6f671bc
 
 #### Manual
 
-- [x] 4.4 `/settings` renders the "Prywatność" section correctly and the button looks like a button
-- [x] 4.5 Opting out then completing a funnel step produces no new event
-- [x] 4.6 Opting back in restores event flow
-- [x] 4.7 The choice survives a reload and a fresh sign-in
-- [x] 4.8 The other four `/settings` sections are unaffected
+- [x] 4.4 `/settings` renders the "Prywatność" section correctly and the button looks like a button — 6f671bc
+- [x] 4.5 Opting out then completing a funnel step produces no new event — 6f671bc
+- [x] 4.6 Opting back in restores event flow — 6f671bc
+- [x] 4.7 The choice survives a reload and a fresh sign-in — 6f671bc
+- [x] 4.8 The other four `/settings` sections are unaffected — 6f671bc
 
 ### Phase 5: Verification script, funnel insight and event catalog
 
 #### Automated
 
-- [ ] 5.1 `npm run verify:analytics -- <deployed-url>` exits zero
-- [ ] 5.2 Type checking passes: `npx astro check`
-- [ ] 5.3 Linting passes: `npm run lint`
-- [ ] 5.4 Build passes: `npm run build`
+- [x] 5.1 `npm run verify:analytics -- <deployed-url>` exits zero
+- [x] 5.2 Type checking passes: `npx astro check`
+- [x] 5.3 Linting passes: `npm run lint`
+- [x] 5.4 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 5.5 A saved PostHog funnel shows all five steps in order with non-zero counts
-- [ ] 5.6 Spot-checking one event of each type finds none of the forbidden fields
-- [ ] 5.7 No PostHog person profile was created
-- [ ] 5.8 `event-catalog.md` matches what the code actually sends
-- [ ] 5.9 The `[F-06]` Linear issue reflects reality
+- [x] 5.5 A saved PostHog funnel shows all five steps in order with non-zero counts
+- [x] 5.6 Spot-checking one event of each type finds none of the forbidden fields
+- [x] 5.7 No PostHog person profile was created
+- [x] 5.8 `event-catalog.md` matches what the code actually sends
+- [x] 5.9 The `[F-06]` Linear issue reflects reality

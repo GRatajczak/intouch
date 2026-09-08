@@ -20,6 +20,7 @@
     "verify:ranking": "tsx scripts/verify-ranking.ts",
     "verify:feedback-loop": "tsx scripts/verify-feedback-loop.ts",
     "verify:reminders": "tsx --env-file-if-exists=.dev.vars scripts/verify-reminders.ts",
+    "verify:analytics": "tsx --env-file-if-exists=.dev.vars scripts/verify-analytics.ts",
     "render:email-preview": "tsx scripts/render-email-preview.ts"
   },
   "dependencies": {
