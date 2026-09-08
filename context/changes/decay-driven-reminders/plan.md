@@ -876,7 +876,7 @@ after the fact — see `plan-brief.md`'s Key Decisions table for the reasoning.
 
 #### Manual
 
-- [ ] 5.6 Dry-run hero matches the dashboard's top card
+- [x] 5.6 Dry-run hero matches the dashboard's top card — 76e810c
 - [x] 5.7 Two consecutive dry runs produce identical output — 76e810c
 - [x] 5.8 A user with `reminders_enabled = false` never appears — 76e810c
 
@@ -909,5 +909,5 @@ after the fact — see `plan-brief.md`'s Key Decisions table for the reasoning.
 - [x] 7.5 `wrangler tail` shows a clean `[reminders]` summary, no uncaught exception
 - [x] 7.6 A `reminder_sends` row exists with `status = 'sent'` and a message id
 - [x] 7.7 A second invocation inside the cooldown sends nothing and adds no row
-- [ ] 7.8 The email renders correctly in a real mail client, desktop and phone
+- [x] 7.8 The email renders correctly in a real mail client, desktop and phone
 - [x] 7.9 Linear `[S-04]` updated with SHAs, divergences and open manual items
