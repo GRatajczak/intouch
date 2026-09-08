@@ -804,28 +804,28 @@ requires. No backfill: every existing profile reads back `reminders_enabled = tr
 
 #### Automated
 
-- [x] 2.1 `supabase migration up` applies cleanly locally
-- [x] 2.2 `npm run db:types` regenerates and the diff shows the new table, column and both functions
-- [x] 2.3 `npx astro check` passes with the regenerated types
-- [x] 2.4 `npm test tests/rls` green, extended to cover `reminder_sends`
+- [x] 2.1 `supabase migration up` applies cleanly locally — cc43b79
+- [x] 2.2 `npm run db:types` regenerates and the diff shows the new table, column and both functions — cc43b79
+- [x] 2.3 `npx astro check` passes with the regenerated types — cc43b79
+- [x] 2.4 `npm test tests/rls` green, extended to cover `reminder_sends` — cc43b79
 
 #### Manual
 
-- [x] 2.5 `reminder_candidates` rejected as `authenticated`, returns rows as `service_role`
-- [x] 2.6 Migration applied to the hosted Supabase project
+- [x] 2.5 `reminder_candidates` rejected as `authenticated`, returns rows as `service_role` — cc43b79
+- [x] 2.6 Migration applied to the hosted Supabase project — cc43b79
 
 ### Phase 3: Decision logic (test-first)
 
 #### Automated
 
-- [ ] 3.1 `npm test tests/reminders` passes
-- [ ] 3.2 `npm test` — full suite green
-- [ ] 3.3 `npx astro check` passes
-- [ ] 3.4 `npm run lint` passes
+- [x] 3.1 `npm test tests/reminders` passes
+- [x] 3.2 `npm test` — full suite green
+- [x] 3.3 `npx astro check` passes
+- [x] 3.4 `npm run lint` passes
 
 #### Manual
 
-- [ ] 3.5 Spot-check: removing one rule makes its test fail
+- [x] 3.5 Spot-check: removing one rule makes its test fail
 
 ### Phase 4: Reminder email template
 
