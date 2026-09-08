@@ -77,6 +77,25 @@ describe("POST /api/settings/reminders", () => {
     expect(await remindersEnabledFor("A")).toBe(true);
   });
 
+  it("reports 404 rather than success when there is no profile row to update", async () => {
+    // PostgREST answers an UPDATE that matched zero rows with `error: null`, so a
+    // route checking only `error` would say 200 and write nothing. On this route
+    // that means telling someone their reminders are off when nothing changed --
+    // and /settings is reachable without a profile row, since middleware.ts gates
+    // /people on one and not /settings.
+    setRouteClient(fx.clientA);
+
+    const response = await toggleReminders(
+      createContext({
+        user: { id: "00000000-0000-0000-0000-000000000000" },
+        method: "POST",
+        json: { enabled: false },
+      }),
+    );
+
+    expect(response.status).toBe(404);
+  });
+
   it("writes only the row the handler was told to, never the connection's owner", async () => {
     // A's session, B's identity. A route that updated `profiles` without an
     // owner filter would silently switch A's reminders off here -- and A would

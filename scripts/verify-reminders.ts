@@ -13,6 +13,7 @@
 // REMINDER_FROM / APP_BASE_URL from the environment, so whichever Supabase
 // project those point at is the one it reads.
 import { runSweep, type ReminderCandidate, type SweepDeps } from "../src/lib/reminders/sweep";
+import { MAX_REFRESHES_PER_RUN, REMINDER_COOLDOWN_DAYS } from "../src/lib/reminders/select";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../src/db/database.types";
 
@@ -76,7 +77,13 @@ if (send) {
   process.exit(1);
 }
 
-const { data: candidates } = await supabase.rpc("reminder_candidates", { cooldown_days: 3, max_rows: 25 });
+// Imported, not repeated: the whole point of naming these is that retuning
+// them is one edit. Hardcoding them here would let the dry run silently answer
+// a different question than the sweep the moment the cadence changes.
+const { data: candidates } = await supabase.rpc("reminder_candidates", {
+  cooldown_days: REMINDER_COOLDOWN_DAYS,
+  max_rows: MAX_REFRESHES_PER_RUN,
+});
 const rows = (candidates ?? []) as ReminderCandidate[];
 
 console.log(`Candidates (opted in, outside cooldown): ${String(rows.length)}`);

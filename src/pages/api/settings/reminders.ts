@@ -46,14 +46,27 @@ export const POST: APIRoute = async (context) => {
     return jsonResponse({ error: "Supabase nie jest skonfigurowany" }, 500);
   }
 
-  const { error } = await supabase
+  // `.select().maybeSingle()` rather than a bare update, matching
+  // contact-events/[id].ts and people/[id].ts: PostgREST reports an UPDATE that
+  // matched zero rows as `error: null`, so checking only `error` would answer
+  // 200 to a caller whose row does not exist and write nothing. That is the
+  // trap tests/rls/isolation.test.ts's header describes -- RLS filters, it does
+  // not reject -- and it is worst on precisely this route, whose whole job is to
+  // stop unwanted email. A signed-in user can reach /settings without a profile
+  // row (middleware.ts gates /people on one, not /settings).
+  const { data: updated, error } = await supabase
     .from("profiles")
     .update({ reminders_enabled: parsed.data.enabled })
-    .eq("owner_id", user.id);
+    .eq("owner_id", user.id)
+    .select("reminders_enabled")
+    .maybeSingle();
 
   if (error) {
     return jsonResponse({ error: error.message }, 500);
   }
+  if (!updated) {
+    return jsonResponse({ error: "Nie znaleziono profilu do zaktualizowania" }, 404);
+  }
 
-  return jsonResponse({ enabled: parsed.data.enabled }, 200);
+  return jsonResponse({ enabled: updated.reminders_enabled }, 200);
 };
