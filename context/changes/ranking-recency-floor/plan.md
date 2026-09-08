@@ -488,27 +488,27 @@ zmiany dotyczą sposobu wyliczania nowych rankingów, nie kształtu już zapisan
 
 #### Automated
 
-- [x] 3.1 Nowy test przechodzi: `npm test tests/unit`
-- [x] 3.2 Cała sucha przechodzi: `npm test`
-- [x] 3.3 Typy przechodzą: `npx astro check`
-- [x] 3.4 Lint przechodzi: `npm run lint`
-- [x] 3.5 Build przechodzi: `npm run build`
+- [x] 3.1 Nowy test przechodzi: `npm test tests/unit` — 49ea5cb
+- [x] 3.2 Cała sucha przechodzi: `npm test` — 49ea5cb
+- [x] 3.3 Typy przechodzą: `npx astro check` — 49ea5cb
+- [x] 3.4 Lint przechodzi: `npm run lint` — 49ea5cb
+- [x] 3.5 Build przechodzi: `npm run build` — 49ea5cb
 
 #### Manual
 
-- [x] 3.6 Osoba o wysokiej wadze z kontaktem dziś dostaje „Nie ma pośpiechu" ze spójnym uzasadnieniem
-- [x] 3.7 Kolor numeru pozycji zgadza się z kolorem plakietki; wygaszony wpis nie stoi na pozycji 1
-- [x] 3.8 Sekwencja „rozmawialiśmy" → „jeszcze nie" nie jest wygaszana
+- [x] 3.6 Osoba o wysokiej wadze z kontaktem dziś dostaje „Nie ma pośpiechu" ze spójnym uzasadnieniem — 49ea5cb
+- [x] 3.7 Kolor numeru pozycji zgadza się z kolorem plakietki; wygaszony wpis nie stoi na pozycji 1 — 49ea5cb
+- [x] 3.8 Sekwencja „rozmawialiśmy" → „jeszcze nie" nie jest wygaszana — 49ea5cb
 
 ### Phase 4: Weryfikacja end-to-end wobec wdrożonego Workera
 
 #### Automated
 
-- [ ] 4.1 Skrypt przechodzi: `npm run verify:ranking -- <preview-url>`
-- [ ] 4.2 Lint i typy przechodzą: `npm run lint`, `npx astro check`
+- [x] 4.1 Skrypt przechodzi: `npm run verify:ranking -- <preview-url>`
+- [x] 4.2 Lint i typy przechodzą: `npm run lint`, `npx astro check`
 
 #### Manual
 
-- [ ] 4.3 Ścieżka testera na wdrożonej wersji daje spokojną plakietkę, stabilną między przeliczeniami
-- [ ] 4.4 Żadne uzasadnienie osoby z kontaktem nie zawiera frazy „szacunkowo"
-- [ ] 4.5 `wrangler tail` pokazuje log z liczbą wpisów objętych podłogą
+- [x] 4.3 Ścieżka testera na wdrożonej wersji daje spokojną plakietkę, stabilną między przeliczeniami
+- [x] 4.4 Żadne uzasadnienie osoby z kontaktem nie zawiera frazy „szacunkowo"
+- [x] 4.5 `wrangler tail` pokazuje log z liczbą wpisów objętych podłogą
