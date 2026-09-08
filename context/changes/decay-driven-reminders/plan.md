@@ -781,6 +781,28 @@ requires. No backfill: every existing profile reads back `reminders_enabled = tr
 - Risk #7 in `context/foundation/test-plan.md`
 - `src/lib/ranking/run.ts:76` (`runRanking`), `src/lib/ranking/store.ts:57` (`loadLatestRanking`), `src/lib/contact-history/facts.ts:66` (`loadContactFacts`)
 
+## Divergences from this plan
+
+Recorded here because Phase blocks and Progress step titles are not rewritten
+after the fact — see `plan-brief.md`'s Key Decisions table for the reasoning.
+
+- **Sending domain (`88380ac`).** Phase 1 and Progress row 1.5 name
+  `mail.get-in-touch.pl`. That subdomain never existed in the Resend account;
+  the apex `get-in-touch.pl` was what had been verified, and the shipped sender
+  is `przypomnienia@get-in-touch.pl`. Row 1.5 is checked against the apex.
+- **`APP_BASE_URL` (`76e810c`).** Phase 4 said `baseUrl` comes from
+  `astro.config.mjs`'s `site`. `src/worker.ts` is bundled by wrangler, not
+  Astro, so `astro:config/*` could not be relied on; a fourth secret carries it
+  instead. The duplication is now documented in `CLAUDE.md`.
+- **Sweep split into two files (`76e810c`).** Phase 5 named
+  `runReminderSweep({dryRun})` in `sweep.ts`. Shipped as an injectable
+  `runSweep(deps, options)` there, with real-client wiring in `run-sweep.ts` —
+  which is what made the eight hermetic failure-branch tests possible without
+  `vi.mock`.
+- **Unit tests in `tests/unit/` (`31b12d9`).** Phase 3 said `tests/reminders/`;
+  `recency-floor.test.ts` had meanwhile established `tests/unit/` as the home
+  for pure-function tests, and `vitest.config.ts` already included it.
+
 ## Progress
 
 > Convention: `- [ ]` pending, `- [x]` done. Append ` — <commit sha>` when a step lands. Do not rename step titles. See `references/progress-format.md`.
@@ -796,7 +818,7 @@ requires. No backfill: every existing profile reads back `reminders_enabled = tr
 
 #### Manual
 
-- [ ] 1.5 Resend dashboard shows `mail.get-in-touch.pl` as Verified
+- [x] 1.5 Resend dashboard shows `mail.get-in-touch.pl` as Verified
 - [x] 1.6 `wrangler secret list` shows `SUPABASE_SERVICE_ROLE_KEY` and `REMINDER_FROM` — 4cebfee
 - [x] 1.7 Cloudflare Trigger Events shows the schedule as `0 6 * * *` — 4cebfee
 
@@ -883,9 +905,9 @@ requires. No backfill: every existing profile reads back `reminders_enabled = tr
 
 #### Manual
 
-- [ ] 7.4 A real reminder arrives from `przypomnienia@mail.get-in-touch.pl`
-- [ ] 7.5 `wrangler tail` shows a clean `[reminders]` summary, no uncaught exception
-- [ ] 7.6 A `reminder_sends` row exists with `status = 'sent'` and a message id
-- [ ] 7.7 A second invocation inside the cooldown sends nothing and adds no row
+- [x] 7.4 A real reminder arrives from `przypomnienia@mail.get-in-touch.pl`
+- [x] 7.5 `wrangler tail` shows a clean `[reminders]` summary, no uncaught exception
+- [x] 7.6 A `reminder_sends` row exists with `status = 'sent'` and a message id
+- [x] 7.7 A second invocation inside the cooldown sends nothing and adds no row
 - [ ] 7.8 The email renders correctly in a real mail client, desktop and phone
-- [ ] 7.9 Linear `[S-04]` updated with SHAs, divergences and open manual items
+- [x] 7.9 Linear `[S-04]` updated with SHAs, divergences and open manual items

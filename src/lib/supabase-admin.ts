@@ -1,4 +1,4 @@
-// The ONLY file in this repo that reads SUPABASE_SERVICE_ROLE_KEY.
+// The only file in the APPLICATION that reads SUPABASE_SERVICE_ROLE_KEY.
 //
 // Every RLS policy in this schema is `to authenticated using (auth.uid() =
 // owner_id)`. S-04's reminder sweep runs from a Cron Trigger with no signed-in
@@ -6,13 +6,23 @@
 // this module exists. A service-role client bypasses RLS entirely, so the
 // bypass is confined here rather than spread across the sweep.
 //
-// IMPORT RESTRICTION: only `src/lib/reminders/**` and
-// `scripts/verify-reminders.ts` may import this module, and they may use it
+// IMPORT RESTRICTION: only `src/lib/reminders/**` may import this module, and
 // only to call the two SECURITY DEFINER functions the sweep needs
 // (`reminder_candidates`, `record_reminder_send`) plus owner-filtered reads for
 // one already-selected owner. Nothing reachable from a request handler may
 // import it: a route already has the caller's session, and reaching for this
 // client there would silently turn an owner-scoped read into a global one.
+//
+// That restriction is ENFORCED, not merely stated -- see the
+// `no-restricted-imports` rule in eslint.config.js. Widen the allowlist there
+// deliberately if a future feature needs admin access; do not delete the rule.
+//
+// One caveat, so this header stays true: `scripts/verify-reminders.ts` reads
+// the same secret, but through `process.env` rather than by importing this
+// module. It has no choice -- it runs under `tsx`, where the `astro:env/server`
+// specifier below does not resolve at all (verified: ERR_UNSUPPORTED_ESM_URL_SCHEME).
+// It is a local developer script, never bundled and never deployed, so the
+// boundary that matters -- nothing an HTTP request can reach -- still holds.
 //
 // The narrowing that actually matters is in SQL, not here. `reminder_candidates`
 // is the only cross-owner query in the system: a SECURITY DEFINER function with

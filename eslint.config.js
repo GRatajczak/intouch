@@ -87,5 +87,33 @@ export default tseslint.config(
   eslintPluginAstro.configs["flat/recommended"],
   ...eslintPluginAstro.configs["flat/jsx-a11y-recommended"],
   astroConfig,
+  // S-04 introduced this repo's first service-role Supabase client, which
+  // bypasses RLS entirely. `src/lib/supabase-admin.ts` states the boundary in a
+  // header comment, but a comment is not a rule -- and the whole safety
+  // argument for that module rests on nothing reachable from a request ever
+  // importing it. This makes the boundary mechanical: only the reminder sweep,
+  // which runs from a Cron Trigger with no user in scope, may reach for it.
+  //
+  // If a future feature genuinely needs admin access, widen this allowlist
+  // deliberately rather than deleting the rule -- the point is that adding an
+  // importer becomes a decision someone made, not an accident nobody saw.
+  {
+    files: ["**/*.{js,jsx,ts,tsx,astro}"],
+    ignores: ["src/lib/reminders/**", "src/lib/supabase-admin.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["**/supabase-admin", "@/lib/supabase-admin"],
+              message:
+                "supabase-admin bypasses RLS and may only be imported from src/lib/reminders/**. A request handler already has the caller's session -- use @/lib/supabase instead.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   eslintPluginPrettier,
 );

@@ -4,8 +4,8 @@
 - **Plan**: `context/changes/decay-driven-reminders/plan.md`
 - **Scope**: Full plan — phases 1–7 (47/49 Progress items complete)
 - **Date**: 2026-09-08
-- **Verdict**: NEEDS ATTENTION
-- **Findings**: 0 critical, 3 warnings, 4 observations (F1, F2 fixed 2026-09-08; F3–F7 pending)
+- **Verdict**: NEEDS ATTENTION → resolved (all findings triaged, see Decisions)
+- **Findings**: 0 critical, 3 warnings, 4 observations — all triaged 2026-09-08 (F1–F5 fixed, F6–F7 accepted)
 
 ## Verdicts
 
@@ -62,13 +62,13 @@
   - Strength: Makes the boundary mechanical rather than aspirational, and collapses two service-role client constructions into one.
   - Tradeoff: `verify-reminders.ts` runs under `tsx`, where `astro:env/server` does not resolve — importing `createAdminClient` may not work there, which is likely why it was written this way. Needs checking before committing to it.
   - Confidence: MEDIUM — the lint rule is certain; the script half depends on that resolution question.
-  - Blind spot: Have not verified whether `astro:env/server` resolves under `tsx`; if it does not, only the lint rule and a corrected comment are achievable.
+  - Blind spot: RESOLVED — verified that `astro:env/server` does NOT resolve under `tsx` (`ERR_UNSUPPORTED_ESM_URL_SCHEME`), so the script genuinely cannot import `createAdminClient`. Only the lint rule and a corrected comment were achievable.
 - **Fix B**: Correct the header comment only — state that the script reads the secret separately and why.
   - Strength: Honest immediately, zero risk.
   - Tradeoff: Leaves the boundary unenforced; the next importer still gets no signal.
   - Confidence: HIGH.
   - Blind spot: None significant.
-- **Decision**: PENDING
+- **Decision**: FIXED — both halves applied. `no-restricted-imports` rule added in `eslint.config.js` confining `@/lib/supabase-admin` to `src/lib/reminders/**`; verified it fires by injecting an import into an API route. Header comment corrected to state the truth about `verify-reminders.ts` and why it has no alternative.
 
 ### F4 — Progress row 1.5 records a sender domain that was never used
 
@@ -78,7 +78,7 @@
 - **Location**: context/changes/decay-driven-reminders/plan.md (Progress, row 1.5)
 - **Detail**: Row 1.5 is checked as "Resend dashboard shows `mail.get-in-touch.pl` as Verified". That subdomain does not exist in the Resend account; the shipped sender is `przypomnienia@get-in-touch.pl` on the apex. The divergence is documented in `plan-brief.md`, in `astro.config.mjs`'s comment, in commit `88380ac` and in the Linear comment — but the plan's own Progress record, which `/10x-archive` reads, asserts something untrue.
 - **Fix**: Since Progress step titles are not renamed by convention, add a one-line divergence note under the plan's References section pointing at `88380ac`.
-- **Decision**: PENDING
+- **Decision**: FIXED — plan.md now carries a `## Divergences from this plan` section covering all four deviations.
 
 ### F5 — `APP_BASE_URL` duplicates `site` with no guard against drift
 
@@ -88,7 +88,7 @@
 - **Location**: astro.config.mjs (env schema), src/lib/reminders/run-sweep.ts:1
 - **Detail**: Phase 4's contract said `baseUrl` "comes from `astro.config.mjs`'s `site` value, never a hardcoded domain (CLAUDE.md)". The implementation reads a separate `APP_BASE_URL` secret instead, because `src/worker.ts` is bundled by wrangler rather than Astro and `astro:config/*` could not be relied on there. The reasoning is sound and recorded in code, but CLAUDE.md still states the canonical domain lives in exactly one place, and nothing detects the two falling out of sync — a stale `APP_BASE_URL` produces emails whose links point at the wrong host, and every automated check stays green.
 - **Fix**: Add the exception to CLAUDE.md's canonical-domain rule so the written rule matches reality, and consider a build-time assertion comparing the two.
-- **Decision**: PENDING
+- **Decision**: FIXED (documentation half) — CLAUDE.md now records the exception and the keep-in-sync obligation. No build-time assertion added: the two values live in different systems (a config file and a Workers secret) with no build step that sees both.
 
 ### F6 — Person name reaches `console.log` on the dry-run path
 
@@ -98,7 +98,7 @@
 - **Location**: src/lib/reminders/sweep.ts:137
 - **Detail**: `console.log(\`[reminders] would send to owner ${ownerId}: ${subject}\`)` — the subject embeds the hero's name. Only fires under `dryRun: true`, which only `scripts/verify-reminders.ts` passes; the production `scheduled` path logs UUIDs and counts only. Worth naming because it is the single place a third party's name reaches a log line in this feature, and `F-06`'s privacy constraint forbids exactly that in event payloads.
 - **Fix**: None required while it stays dry-run-only. Revisit if the dry run is ever wired into anything that ships logs off the machine.
-- **Decision**: PENDING
+- **Decision**: ACCEPTED — left as is. The line is the dry run's entire value (it names who would be emailed), it only reaches a developer's own terminal, and `dryRun: true` is passed by nothing but the local script. Revisit if that ever changes.
 
 ### F7 — Sweep split across two files rather than the planned one
 
@@ -108,4 +108,4 @@
 - **Location**: src/lib/reminders/sweep.ts, src/lib/reminders/run-sweep.ts
 - **Detail**: The plan named `runReminderSweep({dryRun})` in `sweep.ts`. Implementation exports a dependency-injected `runSweep(deps, options)` from `sweep.ts` and puts the real-client wiring in a new `run-sweep.ts`. Functionally equivalent, and the split is what makes the eight hermetic failure-branch tests possible without `vi.mock` — consistent with the explicit-seam convention in `tests/routes/route-client.ts`.
 - **Fix**: None — the divergence improves on the plan. Recorded so the next reader is not surprised.
-- **Decision**: PENDING
+- **Decision**: ACCEPTED — recorded in plan.md's new `## Divergences` section.
