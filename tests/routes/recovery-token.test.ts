@@ -62,8 +62,9 @@ describe("GET /auth/confirm", () => {
     // looks like to our code, without asking Supabase to produce one.
     verifyOtp.mockResolvedValue({ error: { message: "Token has expired or is invalid" } });
 
-    const context = createContext({ method: "GET", searchParams: { token_hash: "stale-token", type: "recovery" } });
-    const response = await confirm(context as never);
+    const response = await confirm(
+      createContext({ method: "GET", searchParams: { token_hash: "stale-token", type: "recovery" } }) as never,
+    );
 
     expect(verifyOtp).toHaveBeenCalledWith({ type: "recovery", token_hash: "stale-token" });
     expect(response.status).toBe(302);
@@ -72,10 +73,16 @@ describe("GET /auth/confirm", () => {
     // Our branch: the error redirect, not the sign-in redirect and not `next`.
     expect(location.startsWith("/auth/reset-password?error=")).toBe(true);
 
-    // No session was established: nothing was written to the cookie jar, and no
-    // auth cookie header rode along on the response.
-    expect(context.cookies.has("sb-access-token")).toBe(false);
-    expect(response.headers.get("Set-Cookie")).toBeNull();
+    // "Creates no session" is asserted here as "the success path was not taken":
+    // not the `next` redirect, and not the sign-in redirect the malformed-input
+    // branch produces. Whether a real session cookie would have been set cannot be
+    // proven at this layer at all -- the Supabase client is stubbed, so no cookie
+    // is written either way, and an assertion about cookie names here would pass
+    // whether or not a session had been created. The real cookie chain is
+    // tests/http's subject.
+    expect(location).not.toBe("/auth/reset-password");
+    expect(location).not.toBe("/auth/signin");
+    expect(verifyOtp).toHaveBeenCalledTimes(1);
   });
 
   it.each([

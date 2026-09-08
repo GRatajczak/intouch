@@ -59,3 +59,24 @@ The stack-down path (`readLocalStatus`'s "run `supabase start`" message) has not
 - The three unauthenticated response families on this surface, and why a uniform 401 expectation would be wrong.
 - Why route-layer cross-owner tests must not run under the attacker's own RLS session: the suite would prove one layer twice while claiming to prove two.
 - `service_role` has no table grants in this schema — worth stating before someone else reaches for it.
+
+### Phase 4 divergences from the plan
+
+1. **The fixture warms every route this layer touches, which the plan did not anticipate.** `astro dev` transforms a route's whole module graph on first request. `POST /api/rankings` reaches the ranking runner and the OpenAI client, so its first call took over five seconds and blew Vitest's default 5s timeout — while every later call answered in about 90ms. Two tests failed for that reason alone, and the failure read as a hang rather than as compilation. `warmRoutes()` now pays that cost inside `beforeAll` (budget raised to 120s), with anonymous requests only, so nothing can create or change data. Per-test timings stay meaningful and a genuine hang still fails at 5s.
+
+2. **`tests/rls/fixture.ts` now returns `credentialsA` / `credentialsB`.** The HTTP layer needs to sign in _through the app's own route_ to get real cookies, so it needs the throwaway users' passwords. Reusing the existing fixture beat standing up a second user factory.
+
+3. **The skip reason is carried by a `describe.runIf` test whose name is the instruction.** Vitest's default reporter does not print skipped test names, so a plain `describe.skipIf` would have hidden the guidance behind a verbose flag. The reason now appears as a visible line naming `TEST_BASE_URL` and the exact command to run.
+
+4. **A vacuous assertion from Phase 3 was found and fixed.** `recovery-token.test.ts` asserted `context.cookies.has("sb-access-token") === false` as its "no session was created" check. That passed regardless: `sb-access-token` is not the cookie name @supabase/ssr uses, and with `createClient` stubbed no cookie is written on either branch. It now asserts what the route layer can actually observe — which branch was taken, and that `verifyOtp` ran exactly once — with a comment pointing at tests/http as where the real cookie chain is proven. Exactly the "happy assertion that cannot fail" the plan's anti-pattern table warns about.
+
+### For Phase 5's cookbook (§6.1)
+
+The three layers do not map cleanly onto three prerequisites, and §6.1 should say so per file rather than per directory:
+
+| File                                                          | Needs                                                   |
+| ------------------------------------------------------------- | ------------------------------------------------------- |
+| `tests/rls/*`                                                 | local Supabase stack                                    |
+| `tests/routes/unauthenticated`, `tests/routes/recovery-token` | nothing                                                 |
+| `tests/routes/cross-owner`, `tests/routes/delete-data`        | local Supabase stack                                    |
+| `tests/http/*`                                                | a server the developer starts, plus the stack behind it |

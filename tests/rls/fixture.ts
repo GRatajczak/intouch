@@ -20,9 +20,17 @@ export type Row = Record<string, unknown>;
 /** One seeded row per table, for a single owner. */
 export type SeededRows = Record<TableName, Row>;
 
+export interface Credentials {
+  email: string;
+  password: string;
+}
+
 export interface RlsFixture {
   userAId: string;
   userBId: string;
+  /** Sign-in details for the two throwaway users, so tests/http can mint real cookie jars. */
+  credentialsA: Credentials;
+  credentialsB: Credentials;
   /** Anon-key client carrying user A's real session. */
   clientA: TestClient;
   /** Anon-key client carrying user B's real session. */
@@ -68,7 +76,7 @@ export async function createRlsFixture(): Promise<RlsFixture> {
   const seededA = await seedOwner(clientA, userAId, "A");
   const seededB = await seedOwner(clientB, userBId, "B");
 
-  return { userAId, userBId, clientA, clientB, anonClient, seededA, seededB };
+  return { userAId, userBId, credentialsA, credentialsB, clientA, clientB, anonClient, seededA, seededB };
 }
 
 let adminForTeardown: TestClient | null = null;
@@ -111,11 +119,7 @@ function readLocalStatus(): LocalStatus {
   return status;
 }
 
-async function createConfirmedUser(
-  admin: TestClient,
-  credentials: { email: string; password: string },
-  label: string,
-): Promise<string> {
+async function createConfirmedUser(admin: TestClient, credentials: Credentials, label: string): Promise<string> {
   const { data, error } = await admin.auth.admin.createUser({ ...credentials, email_confirm: true });
   if (error) throw new Error(`failed to create user ${label}: ${error.message}`);
   return data.user.id;
@@ -124,7 +128,7 @@ async function createConfirmedUser(
 async function signedInClient(
   apiUrl: string,
   anonKey: string,
-  credentials: { email: string; password: string },
+  credentials: Credentials,
   label: string,
 ): Promise<TestClient> {
   const client = createClient<Database>(apiUrl, anonKey, NO_PERSIST);

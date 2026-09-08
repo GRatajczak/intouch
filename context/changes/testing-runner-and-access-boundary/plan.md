@@ -504,34 +504,34 @@ No schema changes and no data migration. The only removal is `scripts/verify-rls
 
 #### Automated
 
-- [x] 3.1 `npm test tests/routes` passes
-- [x] 3.2 Every route has an unauthenticated assertion matching its real response family
-- [x] 3.3 Every id-addressed route has a wrong-owner assertion plus a victim-side read
-- [x] 3.4 "Nonexistent id" and "someone else's id" responses are asserted equal
-- [x] 3.5 Both FK paths in `POST /api/contact-events` are covered
-- [x] 3.6 The four recovery-token branches pass with the vendor error injected and no live auth call
-- [x] 3.7 `npm run lint` and `npx astro check` pass
+- [x] 3.1 `npm test tests/routes` passes — cf8bc27
+- [x] 3.2 Every route has an unauthenticated assertion matching its real response family — cf8bc27
+- [x] 3.3 Every id-addressed route has a wrong-owner assertion plus a victim-side read — cf8bc27
+- [x] 3.4 "Nonexistent id" and "someone else's id" responses are asserted equal — cf8bc27
+- [x] 3.5 Both FK paths in `POST /api/contact-events` are covered — cf8bc27
+- [x] 3.6 The four recovery-token branches pass with the vendor error injected and no live auth call — cf8bc27
+- [x] 3.7 `npm run lint` and `npx astro check` pass — cf8bc27
 
 #### Manual
 
-- [x] 3.8 Removing one route's auth guard makes exactly that route's test fail
-- [x] 3.9 Removing one `.eq("owner_id", …)` does not leave the suite silently green
-- [x] 3.10 No test asserts on a Supabase-authored error string
+- [x] 3.8 Removing one route's auth guard makes exactly that route's test fail — cf8bc27
+- [x] 3.9 Removing one `.eq("owner_id", …)` does not leave the suite silently green — cf8bc27
+- [x] 3.10 No test asserts on a Supabase-authored error string — cf8bc27
 
 ### Phase 4: HTTP Layer (opt-in)
 
 #### Automated
 
-- [ ] 4.1 With `TEST_BASE_URL` set and a server running, `npm test tests/http` passes
-- [ ] 4.2 With `TEST_BASE_URL` unset, `npm test` exits 0 and reports the layer as skipped, not failed
-- [ ] 4.3 Both cookie jars are minted through `/api/auth/signin`, with no hand-crafted cookie names
-- [ ] 4.4 The origin-check test covers JSON, form-encoded and bodiless requests
+- [x] 4.1 With `TEST_BASE_URL` set and a server running, `npm test tests/http` passes
+- [x] 4.2 With `TEST_BASE_URL` unset, `npm test` exits 0 and reports the layer as skipped, not failed
+- [x] 4.3 Both cookie jars are minted through `/api/auth/signin`, with no hand-crafted cookie names
+- [x] 4.4 The origin-check test covers JSON, form-encoded and bodiless requests
 
 #### Manual
 
-- [ ] 4.5 Run the layer against a dev server you start yourself; confirm the skip/run switch both ways
-- [ ] 4.6 The skip message names `TEST_BASE_URL` clearly enough to act on
-- [ ] 4.7 A deliberately wrong `TEST_BASE_URL` fails loudly rather than skipping
+- [x] 4.5 Run the layer against a dev server you start yourself; confirm the skip/run switch both ways
+- [x] 4.6 The skip message names `TEST_BASE_URL` clearly enough to act on
+- [x] 4.7 A deliberately wrong `TEST_BASE_URL` fails loudly rather than skipping
 
 ### Phase 5: Cookbook and Sync
 

@@ -85,8 +85,8 @@ function buildRequest(url: URL, init: ContextInit): Request {
 
 /**
  * The narrowest AstroCookies stand-in: `src/lib/supabase.ts` only ever calls
- * `.set()`, and only from `createServerClient`'s setAll callback. Writes are
- * recorded rather than discarded so a test can assert on them if it needs to.
+ * `.set()`, and only from `createServerClient`'s setAll callback -- which is
+ * stubbed out in this layer, so nothing ever reaches it here.
  */
 function createCookieStub() {
   const written = new Map<string, string>();
