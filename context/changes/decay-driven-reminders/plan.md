@@ -862,24 +862,24 @@ requires. No backfill: every existing profile reads back `reminders_enabled = tr
 
 #### Automated
 
-- [x] 6.1 `npm test tests/routes` green, extended for `/api/settings/reminders`
-- [x] 6.2 `npx astro check` passes
-- [x] 6.3 `npm run lint` passes
-- [x] 6.4 `npm run build` succeeds
+- [x] 6.1 `npm test tests/routes` green, extended for `/api/settings/reminders` — eb1916e
+- [x] 6.2 `npx astro check` passes — eb1916e
+- [x] 6.3 `npm run lint` passes — eb1916e
+- [x] 6.4 `npm run build` succeeds — eb1916e
 
 #### Manual
 
-- [x] 6.5 Toggling off survives a reload
-- [x] 6.6 With the toggle off the dry run omits that user
-- [x] 6.7 Toast appears on both success and failure
+- [x] 6.5 Toggling off survives a reload — eb1916e
+- [x] 6.6 With the toggle off the dry run omits that user — eb1916e
+- [x] 6.7 Toast appears on both success and failure — eb1916e
 
 ### Phase 7: Production verification
 
 #### Automated
 
-- [ ] 7.1 `npm run build && wrangler deploy` succeeds
-- [ ] 7.2 `wrangler secret list` shows both new secrets
-- [ ] 7.3 Deployed `wrangler.jsonc` carries `"0 6 * * *"`
+- [x] 7.1 `npm run build && wrangler deploy` succeeds
+- [x] 7.2 `wrangler secret list` shows both new secrets
+- [x] 7.3 Deployed `wrangler.jsonc` carries `"0 6 * * *"`
 
 #### Manual
 

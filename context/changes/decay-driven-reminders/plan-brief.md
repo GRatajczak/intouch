@@ -42,7 +42,7 @@ urgent gets silence.
 | Ranking freshness | Refresh stale rankings inside the sweep, capped per run | The target persona never opens the app, so their ranking is always stale — skipping them would mean the feature never fires for the people it exists for |
 | Cross-owner reads | Service-role client in one module + narrow `SECURITY DEFINER` RPCs | RLS stays intact on every request path; the bypass is one auditable surface with a fixed return shape, not a blanket `select *` |
 | Send state | A `reminder_sends` table, one row per email | One table enforces the cooldown, makes the once-a-day NFR queryable, and satisfies "delivery outcomes must be observable" |
-| Sender | Verified subdomain `mail.get-in-touch.pl` | Closes the `lessons.md` gap and keeps transactional reputation off the apex domain serving the site |
+| Sender | ~~Verified subdomain `mail.get-in-touch.pl`~~ → **apex `get-in-touch.pl`** | Planned as a subdomain to keep sending reputation off the site's domain, but the apex was what had actually been verified in Resend and a second DNS round was not worth the delay (changed 2026-09-08, phase 7) |
 | Email CTAs | Plain deep links into the app | No unauthenticated mutation endpoint; honours the PRD non-goal and lands the user where S-03's confirmation UI already is |
 | Settings | On/off toggle only | A kill switch is non-negotiable; a frequency slider hands the deciding back to the user, which is the opposite of the product's claim |
 | Follow-up email | Out of scope | The mock's "czy się udało?" is a different trigger, and S-03's in-app prompt already closes the loop |
@@ -120,10 +120,20 @@ is mostly configuration and phase 7 is entirely operational.
   `authenticated`), but nothing mechanically prevents a future import of
   `supabase-admin.ts` from elsewhere. Worth a lint rule or a `lessons.md` entry
   once it lands.
-- **Assumption: cron handlers have enough CPU headroom for an OpenAI call.** True
-  in principle — cron gets far more than the 10ms request limit and the wait is
-  I/O — but `lessons.md` is explicit that this is only established by observing
-  production, which is phase 7's job.
+- ~~**Assumption: cron handlers have enough CPU headroom for an OpenAI call.**~~ —
+  settled 2026-09-08 by a real production run: `[ranking] job cron:… done in
+  5360ms`, whole sweep `in 8221ms`, no exception. This was the change's largest
+  technical unknown.
+- **The urgency gate may be too tight to ever fire.** The first production sweep
+  reported `considered=3 sent=0 skipped={"nothing_urgent":3}` — correct
+  behaviour, but it means no user's top entry was `this_week` or `two_weeks`.
+  With `ranking-recency-floor` cooling anyone contacted recently, a diligent
+  user may never cross the gate, and FR-008 would hold only on paper. This is
+  the judgement `F-06`'s funnel exists to replace with a number; `URGENT_WINDOWS`
+  and `REMINDER_COOLDOWN_DAYS` are named constants so retuning is one edit.
+- **The send path itself is still unproven end to end.** Everything up to and
+  including rendering ran in production; nothing has yet been handed to Resend
+  because nobody qualified.
 
 ## Success Criteria (Summary)
 

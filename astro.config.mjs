@@ -49,8 +49,11 @@ export default defineConfig({
       // the sweep needs. Optional for the same reason as the two keys above: a
       // missing key must fail one scheduled sweep, never the whole Worker.
       SUPABASE_SERVICE_ROLE_KEY: envField.string({ context: "server", access: "secret", optional: true }),
-      // The reminder emails' From address, on the verified mail.get-in-touch.pl
-      // subdomain. Not a secret in the cryptographic sense, but it lives here
+      // The reminder emails' From address, on the verified get-in-touch.pl
+      // domain. The plan chose a mail.* subdomain to keep sending reputation off
+      // the apex; the apex is what was actually verified in Resend, and redoing
+      // DNS was not worth the delay. Revisit if deliverability ever suffers.
+      // Not a secret in the cryptographic sense, but it lives here
       // rather than as a source literal so the sender can be changed without a
       // code deploy -- and because F-04 shipped it hardcoded, which lessons.md
       // records as a gap to close before this slice sends to real users.
