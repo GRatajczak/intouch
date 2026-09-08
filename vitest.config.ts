@@ -33,12 +33,18 @@ export default defineConfig(async (env) => {
       // server-side: RLS policies, API route handlers, HTTP requests.
       environment: "node",
       // One directory per layer, each with exactly one prerequisite:
+      //   tests/unit   -- none; pure functions, no clock, no network, no database
       //   tests/rls    -- the local Supabase stack must be up (`supabase start`)
       //   tests/routes -- none; `.env.test` supplies everything
       //   tests/http   -- a server the developer starts, addressed by TEST_BASE_URL
       // Listing them separately keeps `npm test tests/<layer>` meaningful.
       // tests/stubs/ is deliberately absent: it holds helpers, not tests.
-      include: ["tests/rls/**/*.test.ts", "tests/routes/**/*.test.ts", "tests/http/**/*.test.ts"],
+      include: [
+        "tests/unit/**/*.test.ts",
+        "tests/rls/**/*.test.ts",
+        "tests/routes/**/*.test.ts",
+        "tests/http/**/*.test.ts",
+      ],
     },
   })(env);
 

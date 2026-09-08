@@ -473,32 +473,32 @@ zmiany dotyczą sposobu wyliczania nowych rankingów, nie kształtu już zapisan
 
 #### Automated
 
-- [x] 2.1 Typy przechodzą: `npx astro check`
-- [x] 2.2 Lint przechodzi: `npm run lint`
-- [x] 2.3 Build przechodzi: `npm run build`
-- [x] 2.4 Istniejąca sucha przechodzi: `npm test`
+- [x] 2.1 Typy przechodzą: `npx astro check` — 177efb6
+- [x] 2.2 Lint przechodzi: `npm run lint` — 177efb6
+- [x] 2.3 Build przechodzi: `npm run build` — 177efb6
+- [x] 2.4 Istniejąca sucha przechodzi: `npm test` — 177efb6
 
 #### Manual
 
-- [x] 2.5 Chip i uzasadnienie zgadzają się co do dnia kontaktu sprzed doby
-- [x] 2.6 „Już potwierdzone dzisiaj" znika po północy czasu polskiego, nie po 24 h
-- [x] 2.7 Historia osoby i karta osoby nadal renderują daty poprawnie
+- [x] 2.5 Chip i uzasadnienie zgadzają się co do dnia kontaktu sprzed doby — 177efb6
+- [x] 2.6 „Już potwierdzone dzisiaj" znika po północy czasu polskiego, nie po 24 h — 177efb6
+- [x] 2.7 Historia osoby i karta osoby nadal renderują daty poprawnie — 177efb6
 
 ### Phase 3: Podłoga, uzasadnienie i kolejność
 
 #### Automated
 
-- [ ] 3.1 Nowy test przechodzi: `npm test tests/unit`
-- [ ] 3.2 Cała sucha przechodzi: `npm test`
-- [ ] 3.3 Typy przechodzą: `npx astro check`
-- [ ] 3.4 Lint przechodzi: `npm run lint`
-- [ ] 3.5 Build przechodzi: `npm run build`
+- [x] 3.1 Nowy test przechodzi: `npm test tests/unit`
+- [x] 3.2 Cała sucha przechodzi: `npm test`
+- [x] 3.3 Typy przechodzą: `npx astro check`
+- [x] 3.4 Lint przechodzi: `npm run lint`
+- [x] 3.5 Build przechodzi: `npm run build`
 
 #### Manual
 
-- [ ] 3.6 Osoba o wysokiej wadze z kontaktem dziś dostaje „Nie ma pośpiechu" ze spójnym uzasadnieniem
-- [ ] 3.7 Kolor numeru pozycji zgadza się z kolorem plakietki; wygaszony wpis nie stoi na pozycji 1
-- [ ] 3.8 Sekwencja „rozmawialiśmy" → „jeszcze nie" nie jest wygaszana
+- [x] 3.6 Osoba o wysokiej wadze z kontaktem dziś dostaje „Nie ma pośpiechu" ze spójnym uzasadnieniem
+- [x] 3.7 Kolor numeru pozycji zgadza się z kolorem plakietki; wygaszony wpis nie stoi na pozycji 1
+- [x] 3.8 Sekwencja „rozmawialiśmy" → „jeszcze nie" nie jest wygaszana
 
 ### Phase 4: Weryfikacja end-to-end wobec wdrożonego Workera
 

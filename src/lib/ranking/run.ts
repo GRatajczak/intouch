@@ -3,8 +3,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/db/database.types";
 import { createOpenAIClient } from "@/lib/openai";
 import { writeJob } from "@/lib/ai-jobs";
-import { loadContactFacts } from "@/lib/contact-history/facts";
+import { loadContactFacts, type ContactFacts } from "@/lib/contact-history/facts";
 import { buildRankingPrompt } from "@/lib/ranking/prompt";
+import { applyRecencyFloor, sortByUrgency } from "@/lib/ranking/recency-floor";
 import { persistRanking, type PersistRankingEntry } from "@/lib/ranking/store";
 import { rankingOutputSchema, type RankingOutputEntry, type TimeWindow } from "@/lib/validation/ranking";
 
@@ -25,6 +26,12 @@ function truncateNullable(value: string | null, maxLength: number): string | nul
   return value === null ? null : truncate(value, maxLength);
 }
 
+export interface ReconcileResult {
+  entries: PersistRankingEntry[];
+  /** How many entries the recency floor overrode -- reported in the completion log. */
+  flooredCount: number;
+}
+
 /**
  * Reconciles the model's entries against the people actually sent: drops any
  * id the model hallucinated -- never sent to it -- and appends any sent
@@ -33,21 +40,37 @@ function truncateNullable(value: string | null, maxLength: number): string | nul
  * integrity: without this a hallucinated id becomes a foreign-key violation
  * at insert time, and a silently dropped person disappears from the user's
  * screen with no trace.
+ *
+ * It also enforces the recency floor (see recency-floor.ts) and returns the
+ * entries ordered by urgency, so `rank_position` -- assigned by persistRanking
+ * as the array index + 1 -- cannot contradict the window driving the card's
+ * colour. Entries appended for people the model skipped are already `no_rush`,
+ * the calmest window, so the floor never touches them and the stable sort
+ * leaves them at the tail.
  */
-function reconcileEntries(modelEntries: RankingOutputEntry[], peopleSent: { id: string }[]): PersistRankingEntry[] {
+function reconcileEntries(
+  modelEntries: RankingOutputEntry[],
+  peopleSent: { id: string }[],
+  facts: Map<string, ContactFacts>,
+): ReconcileResult {
   const sentIds = new Set(peopleSent.map((person) => person.id));
   const seen = new Set<string>();
   const reconciled: PersistRankingEntry[] = [];
+  let flooredCount = 0;
 
   for (const entry of modelEntries) {
     if (!sentIds.has(entry.personId) || seen.has(entry.personId)) {
       continue;
     }
     seen.add(entry.personId);
+    const floored = applyRecencyFloor(entry.timeWindow, facts.get(entry.personId));
+    if (floored.applied) {
+      flooredCount += 1;
+    }
     reconciled.push({
       personId: entry.personId,
-      timeWindow: entry.timeWindow,
-      reason: truncate(entry.reason, REASON_MAX_LENGTH),
+      timeWindow: floored.timeWindow,
+      reason: truncate(floored.reason ?? entry.reason, REASON_MAX_LENGTH),
       contextNote: truncateNullable(entry.contextNote, CONTEXT_NOTE_MAX_LENGTH),
       rhythmNote: truncateNullable(entry.rhythmNote, RHYTHM_NOTE_MAX_LENGTH),
     });
@@ -66,7 +89,7 @@ function reconcileEntries(modelEntries: RankingOutputEntry[], peopleSent: { id: 
     }
   }
 
-  return reconciled;
+  return { entries: sortByUrgency(reconciled), flooredCount };
 }
 
 /**
@@ -115,7 +138,7 @@ export async function runRanking(ownerId: string, supabase: SupabaseClient<Datab
       throw new Error("OpenAI response had no parsed output");
     }
 
-    const entries = reconcileEntries(parsed.entries, peopleIncluded);
+    const { entries, flooredCount } = reconcileEntries(parsed.entries, peopleIncluded, facts);
 
     const rankingId = await persistRanking(supabase, {
       ownerId,
@@ -128,7 +151,9 @@ export async function runRanking(ownerId: string, supabase: SupabaseClient<Datab
     await writeJob(jobId, { status: "done", rankingId });
     // Without this the happy path is invisible in `wrangler tail` -- mirrors
     // ai-ping.ts's own completion log.
-    console.log(`[ranking] job ${jobId} done in ${String(Date.now() - startedAt)}ms`);
+    console.log(
+      `[ranking] job ${jobId} done in ${String(Date.now() - startedAt)}ms, recency floor applied to ${String(flooredCount)} entries`,
+    );
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[ranking] job ${jobId} failed: ${message}`);
