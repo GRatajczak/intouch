@@ -45,6 +45,19 @@ export default defineConfig({
       // The only address Resend's onboarding@resend.dev test sender can deliver
       // to (the account owner's own verified email) — see F-04's plan.
       RESEND_TEST_RECIPIENT: envField.string({ context: "server", access: "secret", optional: true }),
+      // S-04's reminder sweep runs from a Cron Trigger with no signed-in user, so
+      // every `auth.uid() = owner_id` policy returns zero rows for it. This key is
+      // the deliberate, single exception -- read by src/lib/supabase-admin.ts and
+      // nothing else, and usable only to call the two SECURITY DEFINER functions
+      // the sweep needs. Optional for the same reason as the two keys above: a
+      // missing key must fail one scheduled sweep, never the whole Worker.
+      SUPABASE_SERVICE_ROLE_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+      // The reminder emails' From address, on the verified mail.get-in-touch.pl
+      // subdomain. Not a secret in the cryptographic sense, but it lives here
+      // rather than as a source literal so the sender can be changed without a
+      // code deploy -- and because F-04 shipped it hardcoded, which lessons.md
+      // records as a gap to close before this slice sends to real users.
+      REMINDER_FROM: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
 });

@@ -6,10 +6,15 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "preview_urls": true,
-  // F-04: daily reminder-delivery proof send. Non-versioned — apply with
-  // `wrangler triggers deploy`, not `versions upload` alone.
+  // S-04: the daily decay-driven reminder sweep. 06:00 UTC = 08:00 CEST /
+  // 07:00 CET — chosen for a Poland-only user base, so the hour shifts by one
+  // with DST rather than being pinned to local time. Exactly ONE entry: the
+  // free plan caps Cron Triggers at 5 per account (not per Worker), so a
+  // temporary tight interval for verification must REPLACE this line, never
+  // sit alongside it. Non-versioned — apply with `wrangler triggers deploy`
+  // or a real `wrangler deploy`, not `versions upload` alone.
   "triggers": {
-    "crons": ["0 0 * * *"],
+    "crons": ["0 6 * * *"],
   },
   "assets": {
     "binding": "ASSETS",

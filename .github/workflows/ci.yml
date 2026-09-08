@@ -23,6 +23,8 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_TEST_RECIPIENT: ${{ secrets.RESEND_TEST_RECIPIENT }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
       - run: npm run lint
       - run: npm run build
         env:
@@ -31,3 +33,5 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_TEST_RECIPIENT: ${{ secrets.RESEND_TEST_RECIPIENT }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
