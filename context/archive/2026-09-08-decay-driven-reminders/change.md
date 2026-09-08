@@ -1,10 +1,10 @@
 ---
 change_id: decay-driven-reminders
 title: Be reminded by email, unprompted, about relationships going quiet
-status: impl_reviewed
+status: archived
 created: 2026-09-08
 updated: 2026-09-08
-archived_at: null
+archived_at: 2026-09-08T12:01:18Z
 ---
 
 ## Notes
