@@ -1,1 +1,32 @@
+# Layer 2 of the local quality gates (see CLAUDE.md "Module 3, Lesson 3").
+#
+# Per-edit hooks in .claude/hooks/ only see what the agent edited. This layer sees
+# everything that is about to become a commit -- manual edits, another session's
+# work, a rebase -- and runs the checks that were too slow for the agent loop.
+#
+# husky runs this with plain sh and no error handling of its own: without `set -e`
+# only the *last* command's exit code would decide whether the commit is blocked.
+set -e
+
+# 1. ESLint --fix / prettier --write on staged files (config in package.json).
 npx lint-staged
+
+# 2. Full typecheck, .astro templates included. ~12s: too slow to run on every
+#    edit, cheap once per commit. This is the gate that catches a template-only
+#    type error, which the per-edit `tsc --noEmit` structurally cannot see.
+npx astro check
+
+# 3. Tests related to staged files in the test-plan.md Risk #1 area
+#    (cross-user access boundary). Same scoping rule as the per-edit hook, applied
+#    to the staged set instead of a single file. Directory pathspecs match every
+#    file beneath them.
+RISK_FILES=$(git diff --cached --name-only --diff-filter=ACMR \
+  -- src/pages/api src/pages/auth src/db src/middleware.ts src/lib/supabase.ts)
+
+if [ -n "$RISK_FILES" ]; then
+  # tests/rls needs `supabase start` and fails hard when it is down, so it stays
+  # out of the commit gate too; CI runs the full suite with the stack up.
+  # AI_AGENT=1: see the note in .claude/hooks/post-edit-related-tests.sh.
+  # shellcheck disable=SC2086
+  AI_AGENT=1 npx vitest related $RISK_FILES --run --exclude 'tests/rls/**'
+fi

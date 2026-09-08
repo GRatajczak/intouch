@@ -75,7 +75,7 @@ orchestrator updates Status as artifacts appear on disk.
 
 | #   | Phase name                                   | Goal (one line)                                                                                                               | Risks covered     | Test types                                                           | Status      | Change folder                                         |
 | --- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------- | -------------------------------------------------------------------- | ----------- | ----------------------------------------------------- |
-| 1   | Runner bootstrap and access boundary         | Vitest exists and runs, and neither a second user nor an anonymous caller can reach the first user's data through real routes | #1, #5            | unit + integration                                                   | implemented | `context/changes/testing-runner-and-access-boundary/` |
+| 1   | Runner bootstrap and access boundary         | Vitest exists and runs, and neither a second user nor an anonymous caller can reach the first user's data through real routes | #1, #5            | unit + integration                                                   | complete    | `context/changes/testing-runner-and-access-boundary/` |
 | 2   | Erasure and lifecycle                        | Deletion is complete across every table, and deactivate retains history while leaving the ranking input                       | #2                | integration                                                          | not started | —                                                     |
 | 3   | AI boundary contract and job terminal states | Bad provider output becomes a visible error instead of a rendered order, and no job can strand the polling view               | #3, #4            | unit/contract on fixtures + integration + one AI-native sanity judge | not started | —                                                     |
 | 4   | Input boundary and prompt composition        | The server enforces the same bounds as the form, and free text cannot change the ranking output contract                      | #6                | integration + unit                                                   | not started | —                                                     |
@@ -112,15 +112,29 @@ The full set of gates that must pass before a change reaches production.
 "Required after §3 Phase N" means the gate is enforced once that rollout
 phase lands; before that, the gate is planned.
 
-| Gate                                               | Where                  | Required?                    | Catches                                                                                     |
-| -------------------------------------------------- | ---------------------- | ---------------------------- | ------------------------------------------------------------------------------------------- |
-| lint + typecheck                                   | local + CI             | required (wired)             | syntactic / type drift                                                                      |
-| build                                              | local + CI             | required (wired)             | broken build, missing env schema entries                                                    |
-| unit + integration                                 | local + CI             | required after §3 Phase 5    | logic regressions, access-boundary and erasure regressions                                  |
-| suite blocks deploy                                | CI on push to `main`   | required after §3 Phase 5    | a regression auto-deploying to production                                                   |
-| post-edit hook on the test suite                   | local (agent loop)     | recommended after §3 Phase 5 | regressions at edit time, before CI                                                         |
-| manual human look at any visible UI change         | before merge           | required (convention)        | rendering failures every automated check passes — see `lessons.md` on `.astro` link-buttons |
-| pre-prod smoke against a `versions upload` preview | between merge and prod | optional                     | Workers-runtime-only failures that `astro dev` cannot show                                  |
+| Gate                                               | Where                      | Required?                 | Catches                                                                                      |
+| -------------------------------------------------- | -------------------------- | ------------------------- | -------------------------------------------------------------------------------------------- |
+| lint + typecheck                                   | per-edit + pre-commit + CI | required (wired)          | syntactic / type drift — `eslint --fix` and `tsc --noEmit` per edit, `astro check` at commit |
+| build                                              | local + CI                 | required (wired)          | broken build, missing env schema entries                                                     |
+| unit + integration                                 | local + CI                 | required after §3 Phase 5 | logic regressions, access-boundary and erasure regressions                                   |
+| suite blocks deploy                                | CI on push to `main`       | required after §3 Phase 5 | a regression auto-deploying to production                                                    |
+| post-edit hook on the test suite                   | local (agent loop)         | wired for Risk #1 only    | cross-user access-boundary regressions at edit time, before CI                               |
+| manual human look at any visible UI change         | before merge               | required (convention)     | rendering failures every automated check passes — see `lessons.md` on `.astro` link-buttons  |
+| pre-prod smoke against a `versions upload` preview | between merge and prod     | optional                  | Workers-runtime-only failures that `astro dev` cannot show                                   |
+
+Local layering (wired 2026-09-08, `.claude/hooks/` + `.husky/pre-commit`):
+
+| Layer                                  | What runs                                                                                                                                                                                                                     | Cost                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| per-edit (`PostToolUse` `Write\|Edit`) | `eslint --cache --fix` on the edited file; `tsc --noEmit`; `vitest related` **only** when the edited file is in the Risk #1 surface (`src/pages/api`, `src/pages/auth`, `src/middleware.ts`, `src/db`, `src/lib/supabase.ts`) | ~3–7s, hooks run in parallel; 0s outside those paths |
+| pre-commit (husky)                     | `lint-staged`; `astro check` (the only checker that sees `.astro` templates); `vitest related` on staged Risk #1 files                                                                                                        | ~15s                                                 |
+| CI                                     | full `npm test` with the Supabase stack up                                                                                                                                                                                    | —                                                    |
+
+`tests/rls/**` is excluded from both local layers: it is the one suite with an
+external prerequisite (`supabase start`) and it fails hard rather than skipping
+when the stack is down, which would make every local gate red on a machine with
+no local Postgres. `tests/http` needs no exclusion — it self-skips on an unset
+`TEST_BASE_URL`. Both run in full via `npm test` and in CI.
 
 The suite is deliberately not gated until Phase 5: gating a suite of one
 phase's tests buys nothing and blocks the rollout on flakiness before there
