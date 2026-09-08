@@ -1,7 +1,7 @@
 ---
 change_id: testing-runner-and-access-boundary
 title: Testing runner and access boundary
-status: implementing
+status: implemented
 created: 2026-09-07
 updated: 2026-09-08
 archived_at: null

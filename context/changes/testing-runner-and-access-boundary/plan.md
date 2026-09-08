@@ -537,12 +537,12 @@ No schema changes and no data migration. The only removal is `scripts/verify-rls
 
 #### Automated
 
-- [x] 5.1 No "TBD — see §3 Phase 1" placeholder remains in `context/foundation/test-plan.md`
-- [x] 5.2 `npm test` passes from a clean checkout with the local stack running
-- [x] 5.3 `npm run lint`, `npx astro check` and `npm run build` all pass
+- [x] 5.1 No "TBD — see §3 Phase 1" placeholder remains in `context/foundation/test-plan.md` — 4a093cd
+- [x] 5.2 `npm test` passes from a clean checkout with the local stack running — 4a093cd
+- [x] 5.3 `npm run lint`, `npx astro check` and `npm run build` all pass — 4a093cd
 
 #### Manual
 
-- [x] 5.4 A reader can add a new access-boundary test using §6.2/§6.3 alone
-- [x] 5.5 The follow-up change folder exists and names both gaps plus the page-route exclusion
-- [x] 5.6 §4's Vitest row records the actual installed version
+- [x] 5.4 A reader can add a new access-boundary test using §6.2/§6.3 alone — 4a093cd
+- [x] 5.5 The follow-up change folder exists and names both gaps plus the page-route exclusion — 4a093cd
+- [x] 5.6 §4's Vitest row records the actual installed version — 4a093cd
