@@ -737,33 +737,33 @@ opted in by default and can opt out from `/settings` once Phase 4 lands.
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly against the local stack: `supabase db reset`
-- [x] 1.2 Regenerated types include the new column: `npm run db:types` leaves a clean diff on rerun
-- [x] 1.3 Type checking passes: `npx astro check`
-- [x] 1.4 Linting passes: `npm run lint`
-- [x] 1.5 Build passes with the new env schema entry: `npm run build`
+- [x] 1.1 Migration applies cleanly against the local stack: `supabase db reset` — 5e55410
+- [x] 1.2 Regenerated types include the new column: `npm run db:types` leaves a clean diff on rerun — 5e55410
+- [x] 1.3 Type checking passes: `npx astro check` — 5e55410
+- [x] 1.4 Linting passes: `npm run lint` — 5e55410
+- [x] 1.5 Build passes with the new env schema entry: `npm run build` — 5e55410
 
 #### Manual
 
-- [x] 1.6 A PostHog Cloud EU project exists and its project API key is in hand
-- [x] 1.7 `POSTHOG_API_KEY` set in `.dev.vars`, Workers Secrets and GitHub repo secrets
-- [x] 1.8 `src/lib/analytics/events.ts` alone makes the permitted properties obvious
+- [x] 1.6 A PostHog Cloud EU project exists and its project API key is in hand — 5e55410
+- [x] 1.7 `POSTHOG_API_KEY` set in `.dev.vars`, Workers Secrets and GitHub repo secrets — 5e55410
+- [x] 1.8 `src/lib/analytics/events.ts` alone makes the permitted properties obvious — 5e55410
 
 ### Phase 2: Funnel steps 1–3
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npx astro check`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Build passes: `npm run build`
+- [x] 2.1 Type checking passes: `npx astro check`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.4 A fresh signup produces one `signup_started`
-- [ ] 2.5 First profile fill produces exactly one `profile_completed`; a second save produces none
-- [ ] 2.6 First person/batch produces exactly one `first_person_added` with a correct `people_added`; a second add produces none
-- [ ] 2.7 Those events carry no name, no free text and no email
-- [ ] 2.8 Signup, profile save and person add still respond as fast as before
+- [x] 2.4 A fresh signup produces one `signup_started`
+- [x] 2.5 First profile fill produces exactly one `profile_completed`; a second save produces none
+- [x] 2.6 First person/batch produces exactly one `first_person_added` with a correct `people_added`; a second add produces none
+- [x] 2.7 Those events carry no name, no free text and no email
+- [x] 2.8 Signup, profile save and person add still respond as fast as before
 
 ### Phase 3: Funnel steps 4–5
 

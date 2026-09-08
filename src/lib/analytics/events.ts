@@ -36,14 +36,20 @@ interface SignupStarted {
   properties?: never;
 }
 
-/** Step 2: the self-profile was filled for the first time. */
+/**
+ * Step 2: the self-profile was filled for the first time.
+ *
+ * The plan also specified `has_life_context` and `has_birth_date` presence
+ * booleans. They are deliberately absent: `profileSchema` in
+ * src/lib/validation/profile.ts requires both fields (`.min(1, ...)`), so the
+ * route 400s before the upsert if either is empty and both booleans would be
+ * a constant `true` on every event ever sent -- a property of the schema, not
+ * of user behaviour, that would read in a PostHog breakdown as a real 100%.
+ * Re-add them only if those fields ever become optional.
+ */
 interface ProfileCompleted {
   event: "profile_completed";
   properties: {
-    /** Whether `life_context` was filled -- never the text itself. */
-    has_life_context: boolean;
-    /** Whether `birth_date` was filled -- never the date itself. */
-    has_birth_date: boolean;
     /**
      * How many preferred channels were picked. The enum VALUES stay out: which
      * channels a person prefers is a personal attribute, and the count is what
