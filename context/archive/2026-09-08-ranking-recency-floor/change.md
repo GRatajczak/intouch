@@ -1,10 +1,10 @@
 ---
 change_id: ranking-recency-floor
 title: Suggested time window must react to a recorded contact, deterministically
-status: implemented
+status: archived
 created: 2026-09-08
 updated: 2026-09-08
-archived_at: null
+archived_at: 2026-09-08T09:13:37Z
 ---
 
 ## Notes
