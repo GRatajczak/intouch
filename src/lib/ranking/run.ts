@@ -1,6 +1,6 @@
 import { zodTextFormat } from "openai/helpers/zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/db/database.types";
+import type { Database, Tables } from "@/db/database.types";
 import { createOpenAIClient } from "@/lib/openai";
 import { writeJob } from "@/lib/ai-jobs";
 import { loadContactFacts, type ContactFacts } from "@/lib/contact-history/facts";
@@ -14,6 +14,25 @@ import { capture, consentFromOptOut } from "@/lib/analytics";
 // this slice. Named constant so the model is visible at a glance and never
 // duplicated as a string literal elsewhere.
 export const RANKING_MODEL = "gpt-5.4-mini";
+
+/**
+ * The ranking's people input: every ACTIVE person this owner has.
+ *
+ * Extracted from runRanking's Promise.all so the S-05 exclusion rule has one
+ * named home instead of living as a bare `.eq()` inside a destructuring call.
+ * That matters for proof, not for tidiness: tests/routes/erasure.test.ts asserts
+ * a deactivated person never reaches the prompt, and the only way to assert that
+ * without re-stating the filter -- i.e. without writing a test that stays green
+ * when the filter is deleted -- is to call the app's own query. runRanking itself
+ * cannot serve as that oracle here: it needs a live OpenAI client.
+ */
+export async function loadRankingPeople(
+  supabase: SupabaseClient<Database>,
+  ownerId: string,
+): Promise<Tables<"people">[] | null> {
+  const { data } = await supabase.from("people").select("*").eq("owner_id", ownerId).eq("status", "active");
+  return data;
+}
 
 const REASON_MAX_LENGTH = 400;
 const CONTEXT_NOTE_MAX_LENGTH = 60;
@@ -121,9 +140,9 @@ export async function runRanking(
       throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    const [{ data: profile }, { data: people }, facts] = await Promise.all([
+    const [{ data: profile }, people, facts] = await Promise.all([
       supabase.from("profiles").select("*").eq("owner_id", ownerId).maybeSingle(),
-      supabase.from("people").select("*").eq("owner_id", ownerId).eq("status", "active"),
+      loadRankingPeople(supabase, ownerId),
       // Never throws on its own -- a query failure folds to an empty map via
       // the same `data ?? []` fallback loadContactFacts already applies, so
       // a facts-load problem degrades to today's history-blind prompt rather

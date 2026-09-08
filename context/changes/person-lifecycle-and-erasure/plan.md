@@ -400,7 +400,7 @@ The `status` migration (Phase 1) is purely additive with a `DEFAULT`, so it is f
 
 #### Automated
 
-- [ ] 5.1 `npm run verify:erasure` passes against a local Supabase instance
-- [ ] 5.2 Type checking passes: `npx astro check`
-- [ ] 5.3 Linting passes: `npm run lint`
-- [ ] 5.4 Build passes: `npm run build`
+- [x] 5.1 `npm run verify:erasure` passes against a local Supabase instance (adapted: the plan's template `scripts/verify-rls.ts` was deleted and promoted to `tests/rls/fixture.ts` by test-plan Phase 1, so the proof landed as `tests/routes/erasure.test.ts` in the existing Vitest suite instead of a standalone `tsx` script — one proof of the erasure NFR rather than two, resolving roadmap open question #13. Runs via `npm test`; verified to fail under two deliberate mutations)
+- [x] 5.2 Type checking passes: `npx astro check`
+- [x] 5.3 Linting passes: `npm run lint`
+- [x] 5.4 Build passes: `npm run build`

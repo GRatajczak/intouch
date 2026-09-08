@@ -3,7 +3,7 @@ change_id: person-lifecycle-and-erasure
 title: Edit, deactivate and irreversibly delete a person
 status: impl_reviewed
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-08
 archived_at: null
 ---
 
