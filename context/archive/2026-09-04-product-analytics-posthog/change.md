@@ -1,10 +1,10 @@
 ---
 change_id: product-analytics-posthog
 title: PostHog product analytics for the primary success funnel
-status: implemented
+status: archived
 created: 2026-09-04
 updated: 2026-09-08
-archived_at: null
+archived_at: 2026-09-08T13:37:29Z
 ---
 
 ## Notes

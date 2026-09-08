@@ -46,7 +46,7 @@ successfully done").
 | F-03 | `design-system-foundation`   | (foundation) one token layer the screens actually use, no starter theme | —       | NFR-browser, FR-007/FR-009 design concerns | done                                        |
 | F-04 | `resend-email-delivery-path` | (foundation) the Worker can send a real email on a schedule       | —             | FR-008, NFR-email-channel      | done |
 | F-05 | `design-alignment-pass`      | (foundation) persistent nav shell (sidebar/bottom-bar) + catalog grid reskin, matching the finished design | F-03, S-01 | NFR-browser (mobile usability) | done      |
-| F-06 | `product-analytics-posthog`  | (foundation) the primary funnel is measurable in PostHog, with no third-party personal data in any event | S-03 | Success Criteria (Primary + Secondary), NFR-privacy | in-progress |
+| F-06 | `product-analytics-posthog`  | (foundation) the primary funnel is measurable in PostHog, with no third-party personal data in any event | S-03 | Success Criteria (Primary + Secondary), NFR-privacy | done |
 | S-01 | `profile-and-first-people`   | fill a self-profile and add people with a weight, and see them    | F-01, F-03    | FR-001, FR-002, FR-003, FR-004 | done      |
 | S-02 | `ai-contact-hierarchy`       | see a ranked "who to reconnect with" list with time windows       | S-01, F-02, S-09 | US-01, FR-007               | done        |
 | S-03 | `did-it-happen-feedback-loop`| confirm whether a contact happened and see the ranking react      | S-02          | US-01, FR-009                  | done |
@@ -175,7 +175,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - **Reverse proxy under the app's own domain?** Standard PostHog advice for beating ad blockers, and cheap on Workers — but it is an extra route to maintain. Owner: user, during this foundation's plan. Block: no.
   - **Does the user get an opt-out, and is it in `/settings` (`S-07`) or absent from the MVP?** Owner: user, during this foundation's plan.
 - **Risk:** The technical risk is low — one wrapper, a handful of call sites, one secret. The real risks are two. First, **privacy leakage by convenience**: the moment an event carries a person's name or description "just for context", the product's binary privacy guardrail is broken in a vendor's database, and `F-01`'s RLS work bought nothing. The wrapper must make the safe call the easy one — an allow-list of event properties, not a free-form object. Second, **instrumentation sprawl**: PostHog will happily take autocapture, session replay, feature flags, A/B tests and error tracking, none of which the Success Criteria asked for. Scope is capped at the named funnel events plus one insight that reads them; everything else is a later decision, and session replay in particular would record screens full of third-party personal data (see also the parked error-tracking entry under `## Parked`, which this foundation does *not* silently resolve).
-- **Status:** in-progress
+- **Status:** done
 
 ## Slices
 
@@ -392,3 +392,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-07: edit their own profile after first fill and manage their account from `/settings`** — Archived 2026-09-04 → `context/archive/2026-09-04-account-and-profile-settings/`. Lesson: —.
 - **S-10: add a person through a form inside the app shell, with richer per-person context (who they are, freeform tags, roughly when last in touch)** — Archived 2026-09-04 → `context/archive/2026-09-04-add-person-context-fields/`. Lesson: —.
 - **S-04: be reminded, unprompted, about relationships going quiet** — Archived 2026-09-08 → `context/archive/2026-09-08-decay-driven-reminders/`. Lesson: —.
+- **F-06: (foundation) the PRD's primary funnel is measurable end to end: each step a user completes — signed up, self-profile filled, first person added, hierarchy generated, suggestion confirmed as done — emits one named event to PostHog through a single typed wrapper in `src/lib/analytics/`, keyed by the Supabase user id and nothing else.** — Archived 2026-09-08 → `context/archive/2026-09-04-product-analytics-posthog/`. Lesson: —.
