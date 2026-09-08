@@ -769,33 +769,33 @@ opted in by default and can opt out from `/settings` once Phase 4 lands.
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `npx astro check`
-- [x] 3.2 Linting passes: `npm run lint`
-- [x] 3.3 Build passes: `npm run build`
+- [x] 3.1 Type checking passes: `npx astro check` — c21e1fd
+- [x] 3.2 Linting passes: `npm run lint` — c21e1fd
+- [x] 3.3 Build passes: `npm run build` — c21e1fd
 
 #### Manual
 
-- [x] 3.4 One `hierarchy_generated` matching the persisted ranking, with a plausible `duration_ms`
-- [x] 3.5 "Tak, rozmawialiśmy" produces one `contact_confirmed`; "not yet" produces none
-- [x] 3.6 `hierarchy_generated` carries no person name, no `reason` text and no prompt fragment
-- [x] 3.7 `contact_confirmed` carries no `person_id` and no note text
-- [x] 3.8 The ranking still completes and the view still leaves `pending`
+- [x] 3.4 One `hierarchy_generated` matching the persisted ranking, with a plausible `duration_ms` — c21e1fd
+- [x] 3.5 "Tak, rozmawialiśmy" produces one `contact_confirmed`; "not yet" produces none — c21e1fd
+- [x] 3.6 `hierarchy_generated` carries no person name, no `reason` text and no prompt fragment — c21e1fd
+- [x] 3.7 `contact_confirmed` carries no `person_id` and no note text — c21e1fd
+- [x] 3.8 The ranking still completes and the view still leaves `pending` — c21e1fd
 
 ### Phase 4: Opt-out control in `/settings`
 
 #### Automated
 
-- [ ] 4.1 Type checking passes: `npx astro check`
-- [ ] 4.2 Linting passes (including `jsx-a11y`): `npm run lint`
-- [ ] 4.3 Build passes: `npm run build`
+- [x] 4.1 Type checking passes: `npx astro check`
+- [x] 4.2 Linting passes (including `jsx-a11y`): `npm run lint`
+- [x] 4.3 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 4.4 `/settings` renders the "Prywatność" section correctly and the button looks like a button
-- [ ] 4.5 Opting out then completing a funnel step produces no new event
-- [ ] 4.6 Opting back in restores event flow
-- [ ] 4.7 The choice survives a reload and a fresh sign-in
-- [ ] 4.8 The other four `/settings` sections are unaffected
+- [x] 4.4 `/settings` renders the "Prywatność" section correctly and the button looks like a button
+- [x] 4.5 Opting out then completing a funnel step produces no new event
+- [x] 4.6 Opting back in restores event flow
+- [x] 4.7 The choice survives a reload and a fresh sign-in
+- [x] 4.8 The other four `/settings` sections are unaffected
 
 ### Phase 5: Verification script, funnel insight and event catalog
 

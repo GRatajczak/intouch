@@ -48,3 +48,15 @@ export const remindersToggleSchema = z.object({
 });
 
 export type RemindersToggleValues = z.infer<typeof remindersToggleSchema>;
+
+// F-06's analytics opt-out. Same JSON-body shape as remindersToggleSchema
+// above, and deliberately the same polarity as that switch rather than the
+// column's: `enabled: true` means "send events", which the UI writes to the
+// database as `analytics_opt_out: false`. The inversion lives in one place --
+// src/pages/api/settings/analytics.ts -- so neither the island nor this schema
+// has to think in negatives.
+export const analyticsToggleSchema = z.object({
+  enabled: z.boolean("Podaj wartość przełącznika"),
+});
+
+export type AnalyticsToggleValues = z.infer<typeof analyticsToggleSchema>;

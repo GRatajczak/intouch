@@ -2,6 +2,7 @@
 import AppShell from "@/components/layout/AppShell.astro";
 import DeleteDataSection from "@/components/settings/DeleteDataSection";
 import RemindersSection from "@/components/settings/RemindersSection";
+import AnalyticsSection from "@/components/settings/AnalyticsSection";
 import EmailChangeForm from "@/components/settings/EmailChangeForm";
 import PasswordChangeForm from "@/components/settings/PasswordChangeForm";
 import { buttonVariants } from "@/components/ui/button";
@@ -16,11 +17,22 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
 // signed-up user who never filled the profile form -- renders the switch in the
 // same state the sweep will actually read.
 const supabase = createClient(Astro.request.headers, Astro.cookies);
-const reminderPrefs =
+// Both toggles read from the same row, so one query serves them.
+const settingsPrefs =
   supabase && user
-    ? (await supabase.from("profiles").select("reminders_enabled").eq("owner_id", user.id).maybeSingle()).data
+    ? (
+        await supabase
+          .from("profiles")
+          .select("reminders_enabled, analytics_opt_out")
+          .eq("owner_id", user.id)
+          .maybeSingle()
+      ).data
     : null;
-const remindersEnabled = reminderPrefs?.reminders_enabled ?? true;
+const remindersEnabled = settingsPrefs?.reminders_enabled ?? true;
+// Inverted here because the column is negative and the switch is positive: no
+// profile row, or a row predating F-06, means analytics are on -- the same
+// default the wrapper's consent read applies.
+const analyticsEnabled = !(settingsPrefs?.analytics_opt_out ?? false);
 ---
 
 <AppShell title="Ustawienia" profileName={profileName}>
@@ -53,6 +65,13 @@ const remindersEnabled = reminderPrefs?.reminders_enabled ?? true;
       <h2 class="text-foreground mb-3 text-sm font-semibold">Przypomnienia</h2>
       <div class="border-border bg-card text-card-foreground shadow-card rounded-2xl border p-8">
         <RemindersSection remindersEnabled={remindersEnabled} client:load />
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-foreground mb-3 text-sm font-semibold">Prywatność</h2>
+      <div class="border-border bg-card text-card-foreground shadow-card rounded-2xl border p-8">
+        <AnalyticsSection analyticsEnabled={analyticsEnabled} client:load />
       </div>
     </section>
 
