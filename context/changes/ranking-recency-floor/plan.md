@@ -504,11 +504,11 @@ zmiany dotyczą sposobu wyliczania nowych rankingów, nie kształtu już zapisan
 
 #### Automated
 
-- [x] 4.1 Skrypt przechodzi: `npm run verify:ranking -- <preview-url>`
-- [x] 4.2 Lint i typy przechodzą: `npm run lint`, `npx astro check`
+- [x] 4.1 Skrypt przechodzi: `npm run verify:ranking -- <preview-url>` — 44fe61b
+- [x] 4.2 Lint i typy przechodzą: `npm run lint`, `npx astro check` — 44fe61b
 
 #### Manual
 
-- [x] 4.3 Ścieżka testera na wdrożonej wersji daje spokojną plakietkę, stabilną między przeliczeniami
-- [x] 4.4 Żadne uzasadnienie osoby z kontaktem nie zawiera frazy „szacunkowo"
-- [x] 4.5 `wrangler tail` pokazuje log z liczbą wpisów objętych podłogą
+- [x] 4.3 Ścieżka testera na wdrożonej wersji daje spokojną plakietkę, stabilną między przeliczeniami — 44fe61b
+- [x] 4.4 Żadne uzasadnienie osoby z kontaktem nie zawiera frazy „szacunkowo" — 44fe61b
+- [x] 4.5 `wrangler tail` pokazuje log z liczbą wpisów objętych podłogą — 44fe61b
