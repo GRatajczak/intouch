@@ -801,15 +801,15 @@ opted in by default and can opt out from `/settings` once Phase 4 lands.
 
 #### Automated
 
-- [x] 5.1 `npm run verify:analytics -- <deployed-url>` exits zero
-- [x] 5.2 Type checking passes: `npx astro check`
-- [x] 5.3 Linting passes: `npm run lint`
-- [x] 5.4 Build passes: `npm run build`
+- [x] 5.1 `npm run verify:analytics -- <deployed-url>` exits zero — e5cc8b2
+- [x] 5.2 Type checking passes: `npx astro check` — e5cc8b2
+- [x] 5.3 Linting passes: `npm run lint` — e5cc8b2
+- [x] 5.4 Build passes: `npm run build` — e5cc8b2
 
 #### Manual
 
-- [x] 5.5 A saved PostHog funnel shows all five steps in order with non-zero counts
-- [x] 5.6 Spot-checking one event of each type finds none of the forbidden fields
-- [x] 5.7 No PostHog person profile was created
-- [x] 5.8 `event-catalog.md` matches what the code actually sends
-- [x] 5.9 The `[F-06]` Linear issue reflects reality
+- [x] 5.5 A saved PostHog funnel shows all five steps in order with non-zero counts — e5cc8b2
+- [x] 5.6 Spot-checking one event of each type finds none of the forbidden fields — e5cc8b2
+- [x] 5.7 No PostHog person profile was created — e5cc8b2
+- [x] 5.8 `event-catalog.md` matches what the code actually sends — e5cc8b2
+- [x] 5.9 The `[F-06]` Linear issue reflects reality — e5cc8b2
