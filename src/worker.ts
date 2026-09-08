@@ -1,43 +1,37 @@
 import { handle } from "@astrojs/cloudflare/handler";
-import { RESEND_TEST_RECIPIENT } from "astro:env/server";
-import { createResendClient } from "./lib/resend";
-import { renderEmailShell } from "./lib/email/shell";
-
-const PROOF_SUBJECT = "InTouch — sprawdzenie ścieżki dostarczania";
+import { runReminderSweep } from "./lib/reminders/run-sweep";
 
 export default {
   fetch: handle,
+  /**
+   * The daily reminder sweep (FR-008), fired by the `0 6 * * *` trigger in
+   * wrangler.jsonc -- 08:00 CEST, the morning of the user base's timezone.
+   *
+   * Replaces F-04's proof send, whose only job was to establish that this
+   * handler can reach Resend at all.
+   *
+   * Rethrows only what stopped the sweep from running. A single owner's failed
+   * send is caught inside, counted, and written to reminder_sends, so the
+   * dashboard's Trigger Events tab shows red for an infrastructure problem and
+   * green for a run that did its job -- including one where somebody's email
+   * bounced.
+   */
   async scheduled(controller, _env, _ctx) {
-    const resend = createResendClient();
-    if (!resend || !RESEND_TEST_RECIPIENT) {
-      console.warn("resend: skipped — RESEND_API_KEY or RESEND_TEST_RECIPIENT not configured");
+    const startedAt = Date.now();
+    const summary = await runReminderSweep();
+
+    if (!summary) {
       return;
     }
 
-    const html = renderEmailShell({
-      subject: PROOF_SUBJECT,
-      bodyHtml: `<p>To jest testowa wiadomość potwierdzająca, że Worker InTouch potrafi wysłać e-mail z zaplanowanego triggera.</p><p style="color: #A39A90; font-size: 13px;">Uruchomienie: ${controller.cron} · ${new Date(controller.scheduledTime).toISOString()}</p>`,
-      footerNote:
-        "To jest testowa wiadomość ze ścieżki dostarczania InTouch — nie zawiera jeszcze prawdziwych przypomnień.",
-    });
-
-    let result: Awaited<ReturnType<typeof resend.emails.send>>;
-    try {
-      result = await resend.emails.send({
-        from: "InTouch <onboarding@resend.dev>",
-        to: [RESEND_TEST_RECIPIENT],
-        subject: PROOF_SUBJECT,
-        html,
-      });
-    } catch (err) {
-      console.error("resend: failed", err);
-      throw err;
-    }
-
-    if (result.error) {
-      console.error("resend: failed", result.error);
-      throw new Error(result.error.message);
-    }
-    console.log("resend: sent", result.data.id);
+    console.log(
+      `[reminders] ${controller.cron} considered=${String(summary.considered)} ` +
+        `refreshed=${String(summary.refreshed)} sent=${String(summary.sent)} ` +
+        `failed=${String(summary.failed)} skipped=${JSON.stringify(summary.skipped)} ` +
+        // Elapsed time is the only evidence in production that the OpenAI
+        // refresh fits inside a cron invocation's budget -- lessons.md is
+        // explicit that a fast local run proves nothing about that.
+        `in ${String(Date.now() - startedAt)}ms`,
+    );
   },
 } satisfies ExportedHandler<Env>;

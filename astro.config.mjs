@@ -42,9 +42,6 @@ export default defineConfig({
       // null when absent, so a missing key fails one scheduled send, not the
       // whole Worker.
       RESEND_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
-      // The only address Resend's onboarding@resend.dev test sender can deliver
-      // to (the account owner's own verified email) — see F-04's plan.
-      RESEND_TEST_RECIPIENT: envField.string({ context: "server", access: "secret", optional: true }),
       // S-04's reminder sweep runs from a Cron Trigger with no signed-in user, so
       // every `auth.uid() = owner_id` policy returns zero rows for it. This key is
       // the deliberate, single exception -- read by src/lib/supabase-admin.ts and
@@ -58,6 +55,16 @@ export default defineConfig({
       // code deploy -- and because F-04 shipped it hardcoded, which lessons.md
       // records as a gap to close before this slice sends to real users.
       REMINDER_FROM: envField.string({ context: "server", access: "secret", optional: true }),
+      // The origin S-04's reminder links are built from.
+      //
+      // This DUPLICATES `site` above, and that is a deliberate, narrow
+      // exception to the "one place only" rule in CLAUDE.md. `site` reaches
+      // app code through Astro's own pipeline, but src/worker.ts is bundled by
+      // wrangler (wrangler.jsonc `main`), not by Astro -- so `astro:config/*`
+      // cannot be relied on there, while `astro:env/server` is the channel
+      // F-04 already proved works in the deployed Worker. Keep the two in sync:
+      // change `site` and this secret together.
+      APP_BASE_URL: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
 });

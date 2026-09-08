@@ -831,32 +831,32 @@ requires. No backfill: every existing profile reads back `reminders_enabled = tr
 
 #### Automated
 
-- [x] 4.1 `npm run render:email-preview` writes the file without error
-- [x] 4.2 `npx astro check` passes
-- [x] 4.3 `npm run lint` passes
+- [x] 4.1 `npm run render:email-preview` writes the file without error — ba35178
+- [x] 4.2 `npx astro check` passes — ba35178
+- [x] 4.3 `npm run lint` passes — ba35178
 
 #### Manual
 
-- [x] 4.4 Preview matches the mock's structure and palette
-- [x] 4.5 Weight bullet reads "n na 10", not the mock's "5 na 5"
-- [x] 4.6 Every CTA renders as a visibly styled button
-- [x] 4.7 Legible at phone width
+- [x] 4.4 Preview matches the mock's structure and palette — ba35178
+- [x] 4.5 Weight bullet reads "n na 10", not the mock's "5 na 5" — ba35178
+- [x] 4.6 Every CTA renders as a visibly styled button — ba35178
+- [x] 4.7 Legible at phone width — ba35178
 
 ### Phase 5: The sweep
 
 #### Automated
 
-- [ ] 5.1 `npm test` — full suite green
-- [ ] 5.2 `npx astro check` passes
-- [ ] 5.3 `npm run lint` passes
-- [ ] 5.4 `npm run build` succeeds
-- [ ] 5.5 `npm run verify:reminders -- --dry-run` exits 0 with a plausible send set
+- [x] 5.1 `npm test` — full suite green
+- [x] 5.2 `npx astro check` passes
+- [x] 5.3 `npm run lint` passes
+- [x] 5.4 `npm run build` succeeds
+- [x] 5.5 `npm run verify:reminders -- --dry-run` exits 0 with a plausible send set
 
 #### Manual
 
 - [ ] 5.6 Dry-run hero matches the dashboard's top card
-- [ ] 5.7 Two consecutive dry runs produce identical output
-- [ ] 5.8 A user with `reminders_enabled = false` never appears
+- [x] 5.7 Two consecutive dry runs produce identical output
+- [x] 5.8 A user with `reminders_enabled = false` never appears
 
 ### Phase 6: Reminders toggle on `/settings`
 

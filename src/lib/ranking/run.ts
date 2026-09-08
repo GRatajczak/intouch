@@ -100,7 +100,19 @@ function reconcileEntries(
  * failed job -- nothing is written to `rankings` on failure, so the previous
  * ranking survives untouched.
  */
-export async function runRanking(ownerId: string, supabase: SupabaseClient<Database>, jobId: string): Promise<void> {
+/**
+ * Returns its terminal status -- the same value it writes to the KV job.
+ *
+ * S-04's sweep needs this: it must not send an email built from a ranking
+ * whose refresh just failed, and the failure is otherwise invisible here
+ * because every path is caught and reported as a job status rather than
+ * thrown. Purely additive -- POST /api/rankings ignores the return value.
+ */
+export async function runRanking(
+  ownerId: string,
+  supabase: SupabaseClient<Database>,
+  jobId: string,
+): Promise<"done" | "failed"> {
   const startedAt = Date.now();
   try {
     const openai = createOpenAIClient();
@@ -154,9 +166,11 @@ export async function runRanking(ownerId: string, supabase: SupabaseClient<Datab
     console.log(
       `[ranking] job ${jobId} done in ${String(Date.now() - startedAt)}ms, recency floor applied to ${String(flooredCount)} entries`,
     );
+    return "done";
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[ranking] job ${jobId} failed: ${message}`);
     await writeJob(jobId, { status: "failed", error: message });
+    return "failed";
   }
 }
