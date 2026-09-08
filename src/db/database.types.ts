@@ -135,6 +135,7 @@ export type Database = {
           name: string
           owner_id: string
           preferred_channels: string[]
+          reminders_enabled: boolean
           updated_at: string
           weekly_time_budget: string | null
         }
@@ -145,6 +146,7 @@ export type Database = {
           name: string
           owner_id: string
           preferred_channels?: string[]
+          reminders_enabled?: boolean
           updated_at?: string
           weekly_time_budget?: string | null
         }
@@ -155,6 +157,7 @@ export type Database = {
           name?: string
           owner_id?: string
           preferred_channels?: string[]
+          reminders_enabled?: boolean
           updated_at?: string
           weekly_time_budget?: string | null
         }
@@ -238,12 +241,78 @@ export type Database = {
         }
         Relationships: []
       }
+      reminder_sends: {
+        Row: {
+          error: string | null
+          id: string
+          owner_id: string
+          person_id: string | null
+          provider_message_id: string | null
+          ranking_id: string | null
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          error?: string | null
+          id?: string
+          owner_id: string
+          person_id?: string | null
+          provider_message_id?: string | null
+          ranking_id?: string | null
+          sent_at?: string
+          status: string
+        }
+        Update: {
+          error?: string | null
+          id?: string
+          owner_id?: string
+          person_id?: string | null
+          provider_message_id?: string | null
+          ranking_id?: string | null
+          sent_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminder_sends_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminder_sends_ranking_id_fkey"
+            columns: ["ranking_id"]
+            isOneToOne: false
+            referencedRelation: "rankings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      record_reminder_send: {
+        Args: {
+          p_error: string
+          p_owner_id: string
+          p_person_id: string
+          p_provider_message_id: string
+          p_ranking_id: string
+          p_status: string
+        }
+        Returns: string
+      }
+      reminder_candidates: {
+        Args: { cooldown_days: number; max_rows: number }
+        Returns: {
+          email: string
+          last_sent_at: string
+          owner_id: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

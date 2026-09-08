@@ -11,8 +11,8 @@ import type { Database } from "@/db/database.types";
 
 export type TestClient = SupabaseClient<Database>;
 
-/** The five owner-scoped tables. Every one of them is asserted on. */
-export type TableName = "people" | "profiles" | "rankings" | "ranking_entries" | "contact_events";
+/** The six owner-scoped tables. Every one of them is asserted on. */
+export type TableName = "people" | "profiles" | "rankings" | "ranking_entries" | "contact_events" | "reminder_sends";
 
 /** A row as this suite handles it: column-name keyed, shape enforced by the DB. */
 export type Row = Record<string, unknown>;
@@ -39,6 +39,9 @@ export interface RlsFixture {
   anonClient: TestClient;
   seededA: SeededRows;
   seededB: SeededRows;
+  /** Where the local stack lives, so `mintExtraSession` can open another session. */
+  apiUrl: string;
+  anonKey: string;
 }
 
 interface LocalStatus {
@@ -50,10 +53,15 @@ interface LocalStatus {
 const NO_PERSIST = { auth: { autoRefreshToken: false, persistSession: false } };
 
 // supabase/config.toml:189 caps sign_in_sign_ups at 30 per 5 minutes per IP, and
-// this fixture spends two of them. Vitest isolates test files, so a second file in
-// tests/rls/ spends two more -- the budget allows roughly fifteen RLS files per
-// five minutes. If the layer ever grows past a handful, promote this to a Vitest
-// globalSetup that mints the sessions once and hands the tokens to each file.
+// this fixture spends two of them. Vitest isolates test files, so every file pays
+// again -- and some pay more than two: each `mintExtraSession` call is one more,
+// and a tests/http file spends four (this fixture's two, plus a real POST to
+// /api/auth/signin per cookie jar). A full run of the current suite is around
+// eighteen. That clears the cap once, but two full runs inside five minutes --
+// an ordinary edit-and-rerun loop with TEST_BASE_URL set -- does not, and the
+// failure reads like an auth bug rather than a rate limit. If the layer grows,
+// promote this to a Vitest globalSetup that mints the sessions once and hands the
+// tokens to each file.
 export async function createRlsFixture(): Promise<RlsFixture> {
   const { API_URL, ANON_KEY, SERVICE_ROLE_KEY } = readLocalStatus();
 
@@ -63,11 +71,14 @@ export async function createRlsFixture(): Promise<RlsFixture> {
   const credentialsA = { email: `rls-a-${suffix}@example.com`, password: "rls-fixture-password-A-1!" };
   const credentialsB = { email: `rls-b-${suffix}@example.com`, password: "rls-fixture-password-B-1!" };
 
-  const userAId = await createConfirmedUser(admin, credentialsA, "A");
-  const userBId = await createConfirmedUser(admin, credentialsB, "B");
-
-  createdUserIds.push(userAId, userBId);
+  // Registered one at a time, and before the next call can throw: a failure between
+  // the two creations used to leave user A in auth.users with nothing recording it,
+  // and teardown then no-opped on a null admin. The leak was permanent and silent.
   adminForTeardown = admin;
+  const userAId = await createConfirmedUser(admin, credentialsA, "A");
+  createdUserIds.push(userAId);
+  const userBId = await createConfirmedUser(admin, credentialsB, "B");
+  createdUserIds.push(userBId);
 
   const clientA = await signedInClient(API_URL, ANON_KEY, credentialsA, "A");
   const clientB = await signedInClient(API_URL, ANON_KEY, credentialsB, "B");
@@ -76,7 +87,19 @@ export async function createRlsFixture(): Promise<RlsFixture> {
   const seededA = await seedOwner(clientA, userAId, "A");
   const seededB = await seedOwner(clientB, userBId, "B");
 
-  return { userAId, userBId, credentialsA, credentialsB, clientA, clientB, anonClient, seededA, seededB };
+  return {
+    userAId,
+    userBId,
+    credentialsA,
+    credentialsB,
+    clientA,
+    clientB,
+    anonClient,
+    seededA,
+    seededB,
+    apiUrl: API_URL,
+    anonKey: ANON_KEY,
+  };
 }
 
 let adminForTeardown: TestClient | null = null;
@@ -90,10 +113,57 @@ const createdUserIds: string[] = [];
 export async function destroyRlsFixture(): Promise<void> {
   const admin = adminForTeardown;
   if (!admin) return;
+
+  // One failure must not cost the rest. The loop used to splice the whole list up
+  // front and abort on the first throw, so every id after it was lost with no way
+  // to retry. Now a failed id goes back on the list and the failures are reported
+  // loudly -- a leak the next run would trip over is worth failing the suite for.
+  const failures: string[] = [];
   for (const id of createdUserIds.splice(0)) {
-    await admin.auth.admin.deleteUser(id);
+    try {
+      const { error } = await admin.auth.admin.deleteUser(id);
+      if (error) throw new Error(error.message);
+    } catch (cause: unknown) {
+      createdUserIds.push(id);
+      failures.push(`${id}: ${cause instanceof Error ? cause.message : String(cause)}`);
+    }
   }
+
+  if (failures.length > 0) {
+    throw new Error(
+      `teardown left ${failures.length.toString()} throwaway user(s) in the local auth.users: ${failures.join("; ")}`,
+    );
+  }
+
   adminForTeardown = null;
+}
+
+/**
+ * A second, independent session for one of the fixture's two users.
+ *
+ * Needed by any test whose route calls `auth.signOut()`: the route clears the
+ * session on whatever client it was handed, so that client can no longer read
+ * anything back -- an assertion made through it would return zero rows because
+ * the session is gone, not because the data is. Post-state has to be observed
+ * through a session the route never touched. Costs one more sign-in against the
+ * cap noted on `createRlsFixture`.
+ */
+export async function mintExtraSession(fx: RlsFixture, which: "A" | "B"): Promise<TestClient> {
+  const credentials = which === "A" ? fx.credentialsA : fx.credentialsB;
+  return await signedInClient(fx.apiUrl, fx.anonKey, credentials, `${which} (extra session)`);
+}
+
+/**
+ * A service-role client against the local stack.
+ *
+ * Used only to prove the *positive* half of a grant -- that a function revoked
+ * from anon and authenticated is still callable by the role the sweep actually
+ * runs as. Asserting only the denials would pass just as happily against a
+ * function nobody can call at all.
+ */
+export function createServiceClient(): TestClient {
+  const { API_URL, SERVICE_ROLE_KEY } = readLocalStatus();
+  return createClient<Database>(API_URL, SERVICE_ROLE_KEY, NO_PERSIST);
 }
 
 function readLocalStatus(): LocalStatus {
@@ -186,7 +256,20 @@ async function seedOwner(client: TestClient, ownerId: string, label: string): Pr
     note: `Note ${label}`,
   });
 
-  return { people, profiles, rankings, ranking_entries, contact_events };
+  // Last, because it references both people and rankings
+  // (20260908090338_create_reminder_sends.sql:54-56). Seeded through the owner's
+  // own client like every other row here: the sweep writes these through the
+  // service role, but an owner reading their own send history goes through the
+  // same policies as everything else, and that is what this suite asserts.
+  const reminder_sends = await insertOne(client, "reminder_sends", {
+    owner_id: ownerId,
+    person_id: people.id,
+    ranking_id: rankings.id,
+    status: "sent",
+    provider_message_id: `msg-${label}`,
+  });
+
+  return { people, profiles, rankings, ranking_entries, contact_events, reminder_sends };
 }
 
 async function insertOne(client: TestClient, table: TableName, row: Row): Promise<Row> {

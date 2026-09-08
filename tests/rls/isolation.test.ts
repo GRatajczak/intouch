@@ -1,9 +1,10 @@
-// Risk #1: cross-user read or mutation of people, rankings or contact events.
+// Risk #1: cross-user read or mutation of people, rankings, contact events or
+// reminder sends.
 //
 // Proven against real Postgres with two real users, because the thing under test
 // is a Postgres policy -- a mock would happily lie about it. Every table gets the
-// same six properties, so they are written once and parameterised across the five
-// rather than copied five times; each property catches a different regression.
+// same nine properties, so they are written once and parameterised across the six
+// rather than copied six times; each property catches a different regression.
 //
 // Two semantics make these assertions meaningful, and getting either backwards
 // would produce a test that passes against broken code:
@@ -97,6 +98,18 @@ const SPECS: TableSpec[] = [
       person_id: seeded.people.id,
       outcome: "happened",
       note: "Forged note",
+    }),
+  },
+  {
+    table: "reminder_sends",
+    key: "id",
+    probe: "provider_message_id",
+    forge: (ownerId, seeded) => ({
+      owner_id: ownerId,
+      person_id: seeded.people.id,
+      ranking_id: seeded.rankings.id,
+      status: "sent",
+      provider_message_id: "forged-message-id",
     }),
   },
 ];

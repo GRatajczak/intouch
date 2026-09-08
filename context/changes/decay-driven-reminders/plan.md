@@ -789,30 +789,30 @@ requires. No backfill: every existing profile reads back `reminders_enabled = tr
 
 #### Automated
 
-- [x] 1.1 `npm run build` succeeds with the new env schema
-- [x] 1.2 `npx astro check` passes
-- [x] 1.3 `npm run lint` passes
-- [x] 1.4 `npm test` — existing suite stays green with both fields in `.env.test`
+- [x] 1.1 `npm run build` succeeds with the new env schema — 4cebfee
+- [x] 1.2 `npx astro check` passes — 4cebfee
+- [x] 1.3 `npm run lint` passes — 4cebfee
+- [x] 1.4 `npm test` — existing suite stays green with both fields in `.env.test` — 4cebfee
 
 #### Manual
 
 - [ ] 1.5 Resend dashboard shows `mail.get-in-touch.pl` as Verified
-- [x] 1.6 `wrangler secret list` shows `SUPABASE_SERVICE_ROLE_KEY` and `REMINDER_FROM`
-- [x] 1.7 Cloudflare Trigger Events shows the schedule as `0 6 * * *`
+- [x] 1.6 `wrangler secret list` shows `SUPABASE_SERVICE_ROLE_KEY` and `REMINDER_FROM` — 4cebfee
+- [x] 1.7 Cloudflare Trigger Events shows the schedule as `0 6 * * *` — 4cebfee
 
 ### Phase 2: Schema for absent-user reads
 
 #### Automated
 
-- [ ] 2.1 `supabase migration up` applies cleanly locally
-- [ ] 2.2 `npm run db:types` regenerates and the diff shows the new table, column and both functions
-- [ ] 2.3 `npx astro check` passes with the regenerated types
-- [ ] 2.4 `npm test tests/rls` green, extended to cover `reminder_sends`
+- [x] 2.1 `supabase migration up` applies cleanly locally
+- [x] 2.2 `npm run db:types` regenerates and the diff shows the new table, column and both functions
+- [x] 2.3 `npx astro check` passes with the regenerated types
+- [x] 2.4 `npm test tests/rls` green, extended to cover `reminder_sends`
 
 #### Manual
 
-- [ ] 2.5 `reminder_candidates` rejected as `authenticated`, returns rows as `service_role`
-- [ ] 2.6 Migration applied to the hosted Supabase project
+- [x] 2.5 `reminder_candidates` rejected as `authenticated`, returns rows as `service_role`
+- [x] 2.6 Migration applied to the hosted Supabase project
 
 ### Phase 3: Decision logic (test-first)
 
