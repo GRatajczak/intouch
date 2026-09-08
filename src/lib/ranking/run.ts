@@ -8,6 +8,7 @@ import { buildRankingPrompt } from "@/lib/ranking/prompt";
 import { applyRecencyFloor, sortByUrgency } from "@/lib/ranking/recency-floor";
 import { persistRanking, type PersistRankingEntry } from "@/lib/ranking/store";
 import { rankingOutputSchema, type RankingOutputEntry, type TimeWindow } from "@/lib/validation/ranking";
+import { capture, consentFromOptOut } from "@/lib/analytics";
 
 // F-02's gpt-4o-mini was a throwaway ping choice it explicitly deferred to
 // this slice. Named constant so the model is visible at a glance and never
@@ -161,10 +162,43 @@ export async function runRanking(
     });
 
     await writeJob(jobId, { status: "done", rankingId });
+
+    const durationMs = Date.now() - startedAt;
+
+    // F-06 funnel step 4, at the point the hierarchy is TRUTHFULLY generated:
+    // after persistRanking and after the job reaches its terminal state. POST
+    // /api/rankings returns 202 long before this and means only "dispatched".
+    //
+    // A plain `await`, not dispatch(): this whole function already runs inside
+    // rankings.ts's cfContext.waitUntil(), so there is no second deferral to
+    // reach for and no cfContext in scope. It sits after writeJob so a capture
+    // can never stop the job reaching "done" -- though capture() also never
+    // throws.
+    //
+    // PRIVACY: this is the densest third-party-PII scope in the repo. `profile`,
+    // `people`, `facts`, `messages` (the literal prompt), `response` (raw model
+    // output) and `entries[].reason` are all in scope here and NONE of them may
+    // be referenced below. The event catalog makes that a type error; this
+    // comment is here so a reader checks it deliberately anyway.
+    //
+    // Consent comes from the already-loaded profile row -- no second query.
+    if (consentFromOptOut(profile.analytics_opt_out)) {
+      await capture(ownerId, {
+        event: "hierarchy_generated",
+        properties: {
+          model: RANKING_MODEL,
+          people_total: people.length,
+          people_considered: peopleIncluded.length,
+          duration_ms: durationMs,
+        },
+      });
+    }
+
     // Without this the happy path is invisible in `wrangler tail` -- mirrors
-    // ai-ping.ts's own completion log.
+    // ai-ping.ts's own completion log. Shares `durationMs` with the event above
+    // so the two never disagree.
     console.log(
-      `[ranking] job ${jobId} done in ${String(Date.now() - startedAt)}ms, recency floor applied to ${String(flooredCount)} entries`,
+      `[ranking] job ${jobId} done in ${String(durationMs)}ms, recency floor applied to ${String(flooredCount)} entries`,
     );
     return "done";
   } catch (err: unknown) {

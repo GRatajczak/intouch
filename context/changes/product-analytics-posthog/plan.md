@@ -753,33 +753,33 @@ opted in by default and can opt out from `/settings` once Phase 4 lands.
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npx astro check`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Build passes: `npm run build`
+- [x] 2.1 Type checking passes: `npx astro check` — 3b83bb6
+- [x] 2.2 Linting passes: `npm run lint` — 3b83bb6
+- [x] 2.3 Build passes: `npm run build` — 3b83bb6
 
 #### Manual
 
-- [x] 2.4 A fresh signup produces one `signup_started`
-- [x] 2.5 First profile fill produces exactly one `profile_completed`; a second save produces none
-- [x] 2.6 First person/batch produces exactly one `first_person_added` with a correct `people_added`; a second add produces none
-- [x] 2.7 Those events carry no name, no free text and no email
-- [x] 2.8 Signup, profile save and person add still respond as fast as before
+- [x] 2.4 A fresh signup produces one `signup_started` — 3b83bb6
+- [x] 2.5 First profile fill produces exactly one `profile_completed`; a second save produces none — 3b83bb6
+- [x] 2.6 First person/batch produces exactly one `first_person_added` with a correct `people_added`; a second add produces none — 3b83bb6
+- [x] 2.7 Those events carry no name, no free text and no email — 3b83bb6
+- [x] 2.8 Signup, profile save and person add still respond as fast as before — 3b83bb6
 
 ### Phase 3: Funnel steps 4–5
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npx astro check`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Build passes: `npm run build`
+- [x] 3.1 Type checking passes: `npx astro check`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 3.4 One `hierarchy_generated` matching the persisted ranking, with a plausible `duration_ms`
-- [ ] 3.5 "Tak, rozmawialiśmy" produces one `contact_confirmed`; "not yet" produces none
-- [ ] 3.6 `hierarchy_generated` carries no person name, no `reason` text and no prompt fragment
-- [ ] 3.7 `contact_confirmed` carries no `person_id` and no note text
-- [ ] 3.8 The ranking still completes and the view still leaves `pending`
+- [x] 3.4 One `hierarchy_generated` matching the persisted ranking, with a plausible `duration_ms`
+- [x] 3.5 "Tak, rozmawialiśmy" produces one `contact_confirmed`; "not yet" produces none
+- [x] 3.6 `hierarchy_generated` carries no person name, no `reason` text and no prompt fragment
+- [x] 3.7 `contact_confirmed` carries no `person_id` and no note text
+- [x] 3.8 The ranking still completes and the view still leaves `pending`
 
 ### Phase 4: Opt-out control in `/settings`
 

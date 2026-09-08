@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { createClient } from "@/lib/supabase";
 import { loadPersonContactFacts } from "@/lib/contact-history/facts";
 import { createContactEventSchema } from "@/lib/validation/contact-event";
+import { dispatch, hasAnalyticsConsent } from "@/lib/analytics";
 
 // Mirrors src/pages/api/rankings.ts's json() helper -- a JSON contract for
 // the browser island, never a redirect.
@@ -75,7 +76,36 @@ export const POST: APIRoute = async (context) => {
     return json({ error: insertError.message }, 500);
   }
 
-  const facts = await loadPersonContactFacts(supabase, ownerId, personId);
+  // F-06 funnel step 5, the terminal one -- and ONLY that. This route succeeds
+  // for both outcomes, but "not_yet" is a different answer, not a weaker
+  // version of this one, so it emits nothing.
+  //
+  // Consent needs its own read: this route touches people, ranking_entries and
+  // contact_events, never profiles. One extra subrequest on a route that makes
+  // four, against the ~43 spare measured for a full ranking run.
+  //
+  // Deliberately NOT in the payload: person_id (a stable identifier that joins
+  // straight back to `name` and `description` in people), the note text, and
+  // `outcome` itself -- the event only exists for "happened", so carrying it
+  // would be a constant.
+  //
+  // The read rides along with the facts load this route already awaits, so it
+  // costs a subrequest but no extra latency -- nothing new is serialized into
+  // the response path.
+  const [facts, consented] = await Promise.all([
+    loadPersonContactFacts(supabase, ownerId, personId),
+    outcome === "happened" ? hasAnalyticsConsent(supabase, ownerId) : Promise.resolve(false),
+  ]);
+
+  if (outcome === "happened" && consented) {
+    dispatch(context.locals.cfContext, ownerId, {
+      event: "contact_confirmed",
+      properties: {
+        has_note: Boolean(note),
+        from_suggestion: Boolean(rankingEntryId),
+      },
+    });
+  }
 
   return json({ event: inserted, facts }, 201);
 };
