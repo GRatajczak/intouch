@@ -201,6 +201,10 @@ Invoke the real exported handler with `createContext()` from `tests/routes/conte
 
 **Do not run cross-owner route tests under the attacker's own session.** RLS would silently catch what the route stopped catching, and the suite would prove one layer twice while claiming to prove two. The instrument that works: give the handler a connection carrying user A's real session while `locals.user` says the caller is B, leaving the route's own `.eq("owner_id", …)` as the only barrier. Verify it by deleting that filter — the test must go red.
 
+**This applies to mass-delete routes too, and that is where it was missed.** `POST /api/settings/delete-data` deletes by `owner_id` across three tables; run under the caller's own session, RLS restricts the delete to exactly the same rows the filter would, so the filter can be removed with the suite still green. Found and fixed 2026-09-08 — see `context/changes/access-boundary-followups/` §4. If a route's protection is a filter over rows the connection already owns, the mismatch instrument is the only thing that can see it.
+
+**A route that calls `auth.signOut()` invalidates the client the test handed it.** Every assertion made through that client afterwards returns zero rows because the session is gone, not because the data is — so a post-state read through it passes whether or not the route did anything. Read post-state through a session minted *after* the handler returned (`mintExtraSession(fx, "A")`), and budget the extra sign-in.
+
 **The obvious alternative does not work here.** Every migration grants table privileges to `anon` and `authenticated` only, so a `service_role` client gets `permission denied for table people` straight from PostgREST. That is a good property of the schema; do not widen a grant to make a test convenient.
 
 **Never assert on a vendor-authored error string.** Inject the failure (`verifyOtp` returning an error) and assert which branch _we_ took. Supabase's message text is unsanitised and version-dependent, and pinning it turns a vendor patch into a false regression.
@@ -244,6 +248,7 @@ contributors should respect these unless the underlying assumption changes.
 
 - Strategy (§1–§5) last reviewed: 2026-09-04
 - Stack versions last verified: 2026-09-08 (Vitest 5.0.0 added by §3 Phase 1)
+- §6.3 cookbook last corrected: 2026-09-08 (two rigor traps found in Phase 1's own suite)
 - AI-native tool references last verified: 2026-09-04
 
 Refresh (`/10x-test-plan --refresh`) when:

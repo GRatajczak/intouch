@@ -100,8 +100,13 @@ async function mintJar(baseUrl: string, credentials: Credentials, label: string)
  * and it made the default 5s timeout fire on a route that answers in 90ms warm.
  *
  * Paying it here keeps per-test timings meaningful and a genuine hang still fails
- * fast. Every request below is anonymous, so each route refuses it -- warming
- * cannot create or change data.
+ * fast. Every request below is anonymous and none carries a session cookie -- this
+ * runs before any jar is minted -- so warming cannot create or change data. The
+ * routes get there by different means, which is worth knowing before adding a
+ * target: most refuse on their `locals.user` guard, while /api/auth/signin has no
+ * guard to refuse on (sign-in is inherently anonymous) and instead throws on
+ * `request.formData()`, because the body below is JSON. Both outcomes are inert
+ * here; a new target that is neither would not be.
  */
 async function warmRoutes(baseUrl: string): Promise<void> {
   const json = { "Content-Type": "application/json" };
