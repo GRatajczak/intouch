@@ -846,32 +846,32 @@ requires. No backfill: every existing profile reads back `reminders_enabled = tr
 
 #### Automated
 
-- [x] 5.1 `npm test` — full suite green
-- [x] 5.2 `npx astro check` passes
-- [x] 5.3 `npm run lint` passes
-- [x] 5.4 `npm run build` succeeds
-- [x] 5.5 `npm run verify:reminders -- --dry-run` exits 0 with a plausible send set
+- [x] 5.1 `npm test` — full suite green — 76e810c
+- [x] 5.2 `npx astro check` passes — 76e810c
+- [x] 5.3 `npm run lint` passes — 76e810c
+- [x] 5.4 `npm run build` succeeds — 76e810c
+- [x] 5.5 `npm run verify:reminders -- --dry-run` exits 0 with a plausible send set — 76e810c
 
 #### Manual
 
 - [ ] 5.6 Dry-run hero matches the dashboard's top card
-- [x] 5.7 Two consecutive dry runs produce identical output
-- [x] 5.8 A user with `reminders_enabled = false` never appears
+- [x] 5.7 Two consecutive dry runs produce identical output — 76e810c
+- [x] 5.8 A user with `reminders_enabled = false` never appears — 76e810c
 
 ### Phase 6: Reminders toggle on `/settings`
 
 #### Automated
 
-- [ ] 6.1 `npm test tests/routes` green, extended for `/api/settings/reminders`
-- [ ] 6.2 `npx astro check` passes
-- [ ] 6.3 `npm run lint` passes
-- [ ] 6.4 `npm run build` succeeds
+- [x] 6.1 `npm test tests/routes` green, extended for `/api/settings/reminders`
+- [x] 6.2 `npx astro check` passes
+- [x] 6.3 `npm run lint` passes
+- [x] 6.4 `npm run build` succeeds
 
 #### Manual
 
-- [ ] 6.5 Toggling off survives a reload
-- [ ] 6.6 With the toggle off the dry run omits that user
-- [ ] 6.7 Toast appears on both success and failure
+- [x] 6.5 Toggling off survives a reload
+- [x] 6.6 With the toggle off the dry run omits that user
+- [x] 6.7 Toast appears on both success and failure
 
 ### Phase 7: Production verification
 

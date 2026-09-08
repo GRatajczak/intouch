@@ -1,14 +1,26 @@
 ---
 import AppShell from "@/components/layout/AppShell.astro";
 import DeleteDataSection from "@/components/settings/DeleteDataSection";
+import RemindersSection from "@/components/settings/RemindersSection";
 import EmailChangeForm from "@/components/settings/EmailChangeForm";
 import PasswordChangeForm from "@/components/settings/PasswordChangeForm";
 import { buttonVariants } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase";
 import { loadProfileName } from "@/lib/shell-summary";
 
 const { user } = Astro.locals;
 
 const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, user?.id);
+
+// Defaults to true so a profile row that predates the S-04 migration -- or a
+// signed-up user who never filled the profile form -- renders the switch in the
+// same state the sweep will actually read.
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+const reminderPrefs =
+  supabase && user
+    ? (await supabase.from("profiles").select("reminders_enabled").eq("owner_id", user.id).maybeSingle()).data
+    : null;
+const remindersEnabled = reminderPrefs?.reminders_enabled ?? true;
 ---
 
 <AppShell title="Ustawienia" profileName={profileName}>
@@ -40,10 +52,7 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
     <section>
       <h2 class="text-foreground mb-3 text-sm font-semibold">Przypomnienia</h2>
       <div class="border-border bg-card text-card-foreground shadow-card rounded-2xl border p-8">
-        <p class="text-muted-foreground">
-          Wkrótce znajdziesz tu ustawienia przypomnień — jak często i w jakiej formie chcesz dostawać podpowiedzi o
-          kontakcie.
-        </p>
+        <RemindersSection remindersEnabled={remindersEnabled} client:load />
       </div>
     </section>
 

@@ -39,3 +39,12 @@ export function parseEmailChangeForm(form: FormData) {
     newEmail: getString(form, "newEmail"),
   });
 }
+
+// S-04's reminder opt-out. A JSON body rather than form-encoded, matching
+// src/pages/api/rankings.ts: this is a toggle posted by a React island, not a
+// form submission, and `enabled` is a boolean the moment it leaves the switch.
+export const remindersToggleSchema = z.object({
+  enabled: z.boolean("Podaj wartość przełącznika"),
+});
+
+export type RemindersToggleValues = z.infer<typeof remindersToggleSchema>;
