@@ -3,7 +3,7 @@ change_id: testing-runner-and-access-boundary
 title: Testing runner and access boundary
 status: implementing
 created: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-08
 archived_at: null
 ---
 
@@ -43,3 +43,19 @@ Two surprises worth writing down, not one:
 ### Still unverified after Phase 2
 
 The stack-down path (`readLocalStatus`'s "run `supabase start`" message) has not been exercised — doing so means stopping the developer's local stack. It is manual testing step 4 in the plan's Testing Strategy.
+
+### Phase 3 divergences from the plan
+
+1. **The planned way to isolate the route layer does not work, and should not be forced.** Phase 3's manual item 3.9 needs the DB layer bypassed, so that a route's own `.eq("owner_id", …)` is the only thing refusing an attacker; the obvious instrument is a service-role client. It fails here: every migration grants table privileges to `anon` and `authenticated` only, so `service_role` gets `permission denied for table people` straight from PostgREST. That is a good property of the schema — widening the grant to make a test convenient would weaken production. The instrument used instead is a deliberate mismatch: the database connection carries user A's real session while `locals.user` says the caller is B, leaving the route's own filter as the only barrier. Verified working — deleting the filter from `PATCH /api/people/[id]` turns exactly its two cross-owner tests red.
+
+2. **`tests/routes/` is not prerequisite-free, contrary to the plan's layer table.** `unauthenticated.test.ts` and `recovery-token.test.ts` are fully hermetic. `cross-owner.test.ts` and `delete-data.test.ts` need the local Supabase stack — they reuse `tests/rls/fixture.ts` for two real users and real rows, because a stub would lie about exactly the thing under test. Phase 5's §6.1 cookbook entry must describe the prerequisite per file, not per directory.
+
+3. **`tests/routes/route-client.ts` is a shared module the plan did not name.** It holds the `@/lib/supabase` seam so a test can say "run this handler as user B" without hand-crafting Supabase's chunked auth cookie — an internal format the plan itself warns against imitating (Phase 4 §1). Proving that a real cookie becomes `locals.user` stays tests/http's job.
+
+4. **`unauthenticated.test.ts` stubs nothing at all.** Every guard on this surface runs before its handler builds a client or reads a body, so leaving the seam empty makes the file a check on guard _ordering_ as well as presence: if any handler started touching Supabase first, these tests would fail on a missing client rather than passing quietly.
+
+### For Phase 5's cookbook (§6.3)
+
+- The three unauthenticated response families on this surface, and why a uniform 401 expectation would be wrong.
+- Why route-layer cross-owner tests must not run under the attacker's own RLS session: the suite would prove one layer twice while claiming to prove two.
+- `service_role` has no table grants in this schema — worth stating before someone else reaches for it.

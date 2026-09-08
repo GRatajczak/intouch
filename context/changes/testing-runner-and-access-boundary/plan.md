@@ -482,41 +482,41 @@ No schema changes and no data migration. The only removal is `scripts/verify-rls
 
 - [x] 1.7 The `cloudflare:workers` decision is written into Phase 3's scope note, with the branch taken and why — 4ad8ae1
 - [x] 1.8 `.env.test` contains only local-stack values, with a header comment explaining why it is committed — 4ad8ae1
-- [x] 1.9 Both probe files are deleted before Phase 2 starts
+- [x] 1.9 Both probe files are deleted before Phase 2 starts — fdb59ab
 
 ### Phase 2: RLS Layer
 
 #### Automated
 
-- [x] 2.1 `npm test tests/rls` passes with the local stack running
-- [x] 2.2 All five tables have cross-user SELECT, UPDATE, DELETE, forged-owner INSERT, and anonymous read + write assertions
-- [x] 2.3 Each cross-user mutation test includes an independent victim-side read
-- [x] 2.4 `npm run lint` and `npx astro check` pass
-- [x] 2.5 `scripts/verify-rls.ts` no longer exists and `npm run verify:rls` is gone
+- [x] 2.1 `npm test tests/rls` passes with the local stack running — fdb59ab
+- [x] 2.2 All five tables have cross-user SELECT, UPDATE, DELETE, forged-owner INSERT, and anonymous read + write assertions — fdb59ab
+- [x] 2.3 Each cross-user mutation test includes an independent victim-side read — fdb59ab
+- [x] 2.4 `npm run lint` and `npx astro check` pass — fdb59ab
+- [x] 2.5 `scripts/verify-rls.ts` no longer exists and `npm run verify:rls` is gone — fdb59ab
 
 #### Manual
 
-- [x] 2.6 Inverting one RLS policy locally makes the corresponding test fail
-- [x] 2.7 No assertion path uses the service-role key
-- [x] 2.8 Teardown leaves no throwaway users behind
+- [x] 2.6 Inverting one RLS policy locally makes the corresponding test fail — fdb59ab
+- [x] 2.7 No assertion path uses the service-role key — fdb59ab
+- [x] 2.8 Teardown leaves no throwaway users behind — fdb59ab
 
 ### Phase 3: Route Layer
 
 #### Automated
 
-- [ ] 3.1 `npm test tests/routes` passes
-- [ ] 3.2 Every route has an unauthenticated assertion matching its real response family
-- [ ] 3.3 Every id-addressed route has a wrong-owner assertion plus a victim-side read
-- [ ] 3.4 "Nonexistent id" and "someone else's id" responses are asserted equal
-- [ ] 3.5 Both FK paths in `POST /api/contact-events` are covered
-- [ ] 3.6 The four recovery-token branches pass with the vendor error injected and no live auth call
-- [ ] 3.7 `npm run lint` and `npx astro check` pass
+- [x] 3.1 `npm test tests/routes` passes
+- [x] 3.2 Every route has an unauthenticated assertion matching its real response family
+- [x] 3.3 Every id-addressed route has a wrong-owner assertion plus a victim-side read
+- [x] 3.4 "Nonexistent id" and "someone else's id" responses are asserted equal
+- [x] 3.5 Both FK paths in `POST /api/contact-events` are covered
+- [x] 3.6 The four recovery-token branches pass with the vendor error injected and no live auth call
+- [x] 3.7 `npm run lint` and `npx astro check` pass
 
 #### Manual
 
-- [ ] 3.8 Removing one route's auth guard makes exactly that route's test fail
-- [ ] 3.9 Removing one `.eq("owner_id", …)` does not leave the suite silently green
-- [ ] 3.10 No test asserts on a Supabase-authored error string
+- [x] 3.8 Removing one route's auth guard makes exactly that route's test fail
+- [x] 3.9 Removing one `.eq("owner_id", …)` does not leave the suite silently green
+- [x] 3.10 No test asserts on a Supabase-authored error string
 
 ### Phase 4: HTTP Layer (opt-in)
 
