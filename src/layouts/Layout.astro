@@ -57,15 +57,23 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.site ?? Astro.url).href : un
         </>
       )
     }
+  </head>
+  <body>
     {
       /* Every page is a pageview, so this mounts on every page. The verdict is
          resolved once per document render by src/middleware.ts; it is absent
          for anonymous requests, which resolve to "unknown" — and "unknown"
-         means collect, since there is no consent banner. */
+         means collect, since there is no consent banner.
+
+         In <body>, not <head>, though the script is what matters and it is a
+         deferred module either way. AnalyticsRuntime renders a <div> alongside
+         it, and per the HTML parsing spec a <div> start tag in the "in head"
+         insertion mode closes <head> and opens <body>. That worked only while
+         this was the LAST thing in <head>: the first <meta> or <link> added
+         after it would have been silently relocated into the body, an
+         invisible SEO regression with every automated check green. */
     }
     <AnalyticsScript userId={Astro.locals.user?.id ?? null} consent={Astro.locals.analyticsConsent ?? "unknown"} />
-  </head>
-  <body>
     {
       missingConfigs.map((cfg) => (
         <Banner variant="error">

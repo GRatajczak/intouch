@@ -26,7 +26,7 @@
  * An allow-list, not a deny-list: a deny-list is a promise to have thought of
  * every parameter this app will ever put in a URL, and the two that matter
  * today (`token_hash`, `error`) were both found by reading routes rather than
- * by anticipating them. These seven are what PostHog's Web Analytics dashboard
+ * by anticipating them. These eight are what PostHog's Web Analytics dashboard
  * reads for its channels/referrers/campaigns breakdowns; everything else is
  * dropped whether or not it looks sensitive.
  */

@@ -1,6 +1,5 @@
 import posthog from "posthog-js";
-import type { CaptureResult } from "posthog-js";
-import { sanitizeUrl } from "./sanitize-url";
+import { scrubEvent } from "./scrub-event";
 
 /**
  * The only file in this app that imports `posthog-js`.
@@ -19,6 +18,13 @@ import { sanitizeUrl } from "./sanitize-url";
  * rather than taken from a doc, per the lessons.md rule about plans that are
  * right in intent and invented in detail. The two that changed the design are
  * called out at their call sites.
+ *
+ * `posthog-js` is PINNED to an exact version in package.json, not a caret
+ * range, and that is load-bearing rather than cautious. The privacy guarantee
+ * in ./scrub-event.ts is derived from THIS version's property names and request
+ * paths; a minor bump is exactly how the `$session_entry_*` family came to
+ * exist alongside `$initial_*`, and it leaked a person id for a whole session
+ * before a review caught it. Re-derive the property surface before bumping.
  */
 
 /** PostHog Cloud EU, matching src/lib/analytics/config.ts's one-way-door choice. */
@@ -32,30 +38,6 @@ const POSTHOG_HOST = "https://eu.i.posthog.com";
  * survive the SSR round trip an MPA does on every navigation.
  */
 const IDENTITY_KEY = "intouch.analytics.identified-as";
-
-/**
- * `$referrer`'s value for traffic that arrived with no referrer. It is a
- * sentinel, not a URL -- feeding it to `sanitizeUrl` would turn it into the
- * path `/$direct` and quietly break the channels breakdown.
- */
-const DIRECT_REFERRER = "$direct";
-
-/**
- * The properties `posthog-js` fills from `window.location` and `document.referrer`.
- *
- * The `$initial_*` ones are generated, not literal, in the SDK: persistence's
- * `get_initial_props()` prefixes stored referrer and campaign info with
- * `$initial_`, and the result is merged into `$set_once` on identify. So they
- * are listed here explicitly rather than discovered.
- */
-const URL_PROPERTIES = new Set([
-  "$current_url",
-  "$pathname",
-  "$referrer",
-  "$initial_current_url",
-  "$initial_pathname",
-  "$initial_referrer",
-]);
 
 /**
  * What the server knows about this visitor's analytics consent.
@@ -124,7 +106,15 @@ export function startAnalytics({ token, userId, consent }: StartAnalyticsOptions
     // ordering the whole privacy posture rests on.
     opt_out_capturing_by_default: true,
 
-    before_send: scrubUrls,
+    // `document.title` rides on every `$pageview` under the key `title` -- no
+    // `$` prefix, not a URL, so `before_send`'s URL pass would never look at
+    // it. On /people/[id] that title IS the contact's name (the page renders
+    // `<AppShell title={person.name}>`), which is the first thing
+    // ./events.ts forbids. Analytics has no use for page titles here; the path
+    // is what the dashboard reads.
+    property_denylist: ["title"],
+
+    before_send: scrubEvent,
   });
 
   const previousIdentity = readIdentity();
@@ -153,6 +143,12 @@ export function startAnalytics({ token, userId, consent }: StartAnalyticsOptions
 /**
  * `"denied"` mutes. Everything else unmutes.
  *
+ * A denied user does not normally reach this function at all --
+ * AnalyticsScript.astro declines to mount the SDK for them, because muting only
+ * stops `capture()` and not the SDK's own config and flags requests. This
+ * branch remains as the second gate for the case where a verdict arrives after
+ * init.
+ *
  * `"unknown"` -- an anonymous visitor -- collects. There is no consent banner:
  * anonymous traffic is exactly the traffic this channel exists to measure (the
  * landing page, referrers, UTMs, the path into signup), and none of it happens
@@ -178,58 +174,6 @@ function applyConsent(consent: ConsentVerdict): void {
     return;
   }
   posthog.opt_in_capturing({ captureEventName: false });
-}
-
-/**
- * Rewrite every URL-shaped property through the sanitizer, on the way out.
- *
- * `before_send` is the last hook before an event is queued, and it sees the
- * whole `CaptureResult`, so it is the one place that catches properties the SDK
- * wrote itself -- which is all of the ones that matter here, since none of them
- * come from our code.
- *
- * Returning `null` would drop the event; nothing here drops. The signature is
- * `(cr: CaptureResult | null) => CaptureResult | null`, so the null input case
- * is real and has to be handled.
- */
-function scrubUrls(result: CaptureResult | null): CaptureResult | null {
-  if (!result) {
-    return null;
-  }
-
-  scrubBag(result.properties);
-  // Person properties travel top-level on the CaptureResult and are merged into
-  // `properties` only later, when the request is built -- so they need their own
-  // pass. `$initial_current_url` and `$initial_referrer` land here.
-  scrubBag(result.$set);
-  scrubBag(result.$set_once);
-
-  return result;
-}
-
-function scrubBag(bag: Record<string, unknown> | undefined): void {
-  if (!bag) {
-    return;
-  }
-
-  for (const key of Object.keys(bag)) {
-    const value = bag[key];
-
-    if (URL_PROPERTIES.has(key)) {
-      if (typeof value === "string" && value !== DIRECT_REFERRER) {
-        bag[key] = sanitizeUrl(value);
-      }
-      continue;
-    }
-
-    if ((key === "$set" || key === "$set_once") && isBag(value)) {
-      scrubBag(value);
-    }
-  }
-}
-
-function isBag(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function readIdentity(): string | null {

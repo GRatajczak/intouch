@@ -27,4 +27,17 @@ const { userId, consent } = Astro.props;
 const token = POSTHOG_API_KEY;
 ---
 
-{token && <AnalyticsRuntime token={token} userId={userId} consent={consent} />}
+{
+  /*
+    Two gates, and the second one is not cosmetic.
+
+    A denied user must not merely be muted -- the SDK must not load at all.
+    `opt_out_capturing()` stops `capture()`, and nothing else: `posthog.init()`
+    also issues a remote-config GET and a `POST /flags/?v=2` whose body carries
+    `distinct_id`, `$device_id` and `person_properties` including
+    `$initial_current_url`. Neither request passes through `before_send`, so no
+    amount of scrubbing reaches them. Not mounting is the only fix that is also
+    robust to whatever request path the vendor adds next.
+  */
+}
+{token && consent !== "denied" && <AnalyticsRuntime token={token} userId={userId} consent={consent} />}

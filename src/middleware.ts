@@ -24,42 +24,48 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
-  if (supabase && context.locals.user && PROFILE_GATED_ROUTES.some((route) => context.url.pathname.startsWith(route))) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("owner_id")
-      .eq("owner_id", context.locals.user.id)
-      .maybeSingle();
-    if (!profile) {
-      return context.redirect("/profile");
-    }
-  }
-
-  // Analytics consent for the browser channel, resolved here because this is
-  // where the Supabase client and the user already exist -- a second client
-  // just to read one boolean would be a second round trip for nothing.
+  // Both the /people profile gate and the browser channel's consent verdict
+  // read the same row of `profiles`, so they share ONE query. They used to be
+  // two sequential round trips, which put a second serial hop on the request
+  // path of every /people/* and /settings render to serve a feature only
+  // analytics needed.
   //
   // Scoped to document requests with a user: /api/* never renders a layout, so
   // the value would be paid for and discarded, and an anonymous request has no
-  // row to read. Anonymous therefore stays undefined, which the layout turns
-  // into "unknown" -- and "unknown" means collect (see browser.ts).
-  if (supabase && context.locals.user && !context.url.pathname.startsWith("/api/")) {
+  // row to read. Anonymous therefore leaves `analyticsConsent` undefined, which
+  // the layout turns into "unknown" -- and "unknown" means collect (browser.ts).
+  const needsProfileGate =
+    supabase !== null &&
+    context.locals.user !== null &&
+    PROFILE_GATED_ROUTES.some((route) => context.url.pathname.startsWith(route));
+  const needsConsent = supabase !== null && context.locals.user !== null && !context.url.pathname.startsWith("/api/");
+
+  if (supabase && context.locals.user && (needsProfileGate || needsConsent)) {
     const { data, error } = await supabase
       .from("profiles")
-      .select("analytics_opt_out")
+      .select("owner_id, analytics_opt_out")
       .eq("owner_id", context.locals.user.id)
       .maybeSingle();
 
-    // A read failure resolves to "denied", NOT to "unknown". `consent.ts` calls
-    // this failing open to silence, and since this change made "unknown" mean
-    // collect, silence has to be spelled explicitly or a broken query would
-    // quietly start sending a user's pageviews against their own switch.
-    // An absent row means consented, matching consent.ts:16 and settings.astro.
-    if (error) {
-      console.error(`[analytics] consent read failed for owner ${context.locals.user.id}: ${error.message}`);
-      context.locals.analyticsConsent = "denied";
-    } else {
-      context.locals.analyticsConsent = consentFromOptOut(data?.analytics_opt_out) ? "granted" : "denied";
+    if (needsProfileGate && !data) {
+      return context.redirect("/profile");
+    }
+
+    if (needsConsent) {
+      // A read failure resolves to "denied", NOT to "unknown". `consent.ts`
+      // calls this failing open to silence, and since this change made
+      // "unknown" mean collect, silence has to be spelled explicitly or a
+      // broken query would quietly start sending a user's pageviews against
+      // their own switch. An absent row means consented, matching
+      // consent.ts:16 and settings.astro.
+      if (error) {
+        console.error(
+          `[middleware] analytics consent read failed for owner ${context.locals.user.id}: ${error.message}`,
+        );
+        context.locals.analyticsConsent = "denied";
+      } else {
+        context.locals.analyticsConsent = consentFromOptOut(data?.analytics_opt_out) ? "granted" : "denied";
+      }
     }
   }
 

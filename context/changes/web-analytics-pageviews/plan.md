@@ -680,10 +680,10 @@ data to a vendor and the reason phases 2 and 3 are separated.
 
 #### Automated
 
-- [x] 5.1 Full suite passes: `npm test`
-- [x] 5.2 Build succeeds: `npm run build`
+- [x] 5.1 Full suite passes: `npm test` — eebf5b9
+- [x] 5.2 Build succeeds: `npm run build` — eebf5b9
 - [ ] 5.3 Linting passes: `npm run lint`
-- [x] 5.4 Catalog exists at the path referenced by events.ts
+- [x] 5.4 Catalog exists at the path referenced by events.ts — eebf5b9
 
 #### Manual
 

@@ -154,7 +154,8 @@ Recorded here because the plan is frozen and this file is the living document.
 ### What it sends
 
 `posthog-js`, loaded from `src/components/analytics/AnalyticsRuntime.astro` on every page
-via `Layout.astro`. Two automatic events and nothing else:
+via `Layout.astro`. Two automatic events, plus `$identify` when a signed-in user is
+resolved (see Identity lifecycle below) — and nothing else:
 
 | Event        | When                    | What it carries that matters                                                              |
 | ------------ | ----------------------- | ----------------------------------------------------------------------------------------- |
@@ -183,7 +184,13 @@ properties itself, straight off `window.location`. **In this app a URL is a payl
 - `?error=<supabase message>` is rendered by signin, signup, forgot-password,
   reset-password and people/new.
 
-So `sanitizeUrl` rewrites every URL-shaped property before the event is queued:
+Two things leave on the way out. First, `title` — which is `document.title`, and on
+`/people/[id]` **is the contact's name**, because the page renders
+`<AppShell title={person.name}>`. It arrives under a bare key with no `$` prefix and is not
+a URL, so no amount of URL rewriting would have caught it. It is removed twice over: by
+`property_denylist: ["title"]` at init, and by `DROPPED_PROPERTIES` in the scrubber.
+
+Second, every URL-shaped property is rewritten by `sanitizeUrl`:
 
 1. **Every path segment shaped like a uuid becomes `:id`.** `/people/<uuid>` →
    `/people/:id`.
@@ -198,16 +205,36 @@ Anything that does not parse, and anything that is not `http(s)` — a `data:` o
 `javascript:` URL parses fine and hides its payload in the path — returns a fixed
 placeholder rather than the original string. Failing closed is the point.
 
-**Where it is enforced:** `before_send` in `src/lib/analytics/browser.ts`, the SDK's last
-hook before an event is queued. It walks `properties`, and separately `$set` and
+**Where it is enforced:** `src/lib/analytics/scrub-event.ts`, wired to `before_send` — the
+SDK's last hook before an event is queued. It walks `properties`, and separately `$set` and
 `$set_once`, because person properties travel top-level on the `CaptureResult` and are
-merged into `properties` only when the request is built — that is where
-`$initial_current_url` and `$initial_referrer` live. `$referrer`'s `"$direct"` sentinel is
-left alone; it is not a URL, and sanitizing it would turn it into the path `/$direct` and
-break the channels breakdown.
+merged into `properties` only when the request is built. `$referrer`'s `"$direct"` sentinel
+is left alone; it is not a URL, and sanitizing it would turn it into the path `/$direct`
+and break the channels breakdown.
 
-`tests/unit/sanitize-url.test.ts` pins all of it, with cases drawn from real routes in
-this repo.
+**Which keys count as URLs is matched by SHAPE, not enumerated,** and that distinction was
+bought the hard way. `posthog-js` does not write these names literally — it derives them by
+prefixing a small set of base names, in four places added at different times:
+
+| Where                                   | Names it produces                                          |
+| --------------------------------------- | ---------------------------------------------------------- |
+| bare, off `window.location`             | `$current_url`, `$pathname`, `$referrer`                   |
+| `persistence.get_initial_props()`       | `$initial_*`                                               |
+| `SessionPropsManager.getSessionProps()` | `$session_entry_*`, renaming `$current_url` to plain `url` |
+| `PageViewManager` on `$pageleave`       | `$prev_pageview_pathname`                                  |
+
+The first implementation enumerated the first two families and missed the other two. The
+`$session_entry_*` values are frozen at session start and re-emitted on **every** subsequent
+event, so a user arriving from a reminder email's `/people/<id>` deep link
+(`src/lib/reminders/email.ts`) carried a raw person id on every event for the rest of their
+session. Hostnames — `$referring_domain`, `$session_entry_host` — are deliberately NOT
+matched: they are not URLs, and sanitizing them would corrupt them into paths.
+
+**Two test tables, because there are two ways to get this wrong.**
+`tests/unit/sanitize-url.test.ts` pins what a URL may say. `tests/unit/scrub-event.test.ts`
+pins which properties are treated as URLs at all, and closes with an assertion over the
+whole serialized event — no person id and no contact name anywhere in it — so a property
+family added by a future SDK version fails the test even though no case names it.
 
 ### Consent — and how it differs from the plan
 
@@ -292,6 +319,20 @@ Recorded here because the plan is frozen and this file is the living document.
 4. **The bundle is larger than the plan estimated** — 299 kB raw, 97 kB gzipped, against
    the plan's "roughly 40 kB gzipped". One chunk, loaded on every page, not
    render-blocking.
+5. **Three privacy leaks were found by implementation review, after the phases were
+   committed**, and all three lived in the layer that decides which keys to sanitize
+   rather than in the sanitizer: `title` carrying a contact's name, the two unenumerated
+   URL families above, and the SDK loading at all for a user who had switched analytics
+   off. That last one matters beyond its own fix: `opt_out_capturing()` stops `capture()`
+   and nothing else — `init()` still issues a remote-config GET and a `POST /flags/?v=2`
+   carrying `distinct_id`, `$device_id` and `$initial_current_url`, and **neither request
+   passes through `before_send`**. So a denied user is no longer served the SDK at all
+   (`AnalyticsScript.astro` declines to mount), which is the only fix robust to whatever
+   request path the vendor adds next.
+6. **`posthog-js` is pinned to an exact version**, not a caret range, because the
+   guarantee is derived from that version's property names and request paths. A minor bump
+   is exactly how `$session_entry_*` came to exist alongside `$initial_*`. Re-derive the
+   property surface before bumping.
 
 ### What proves this
 
