@@ -1,0 +1,49 @@
+---
+import type { ConsentVerdict } from "@/lib/analytics/browser";
+
+interface Props {
+  /** The PostHog project token. Never empty: the caller has already checked. */
+  token: string;
+  /** The signed-in user's Supabase id, or `null` for anonymous traffic. */
+  userId: string | null;
+  /** What the server knows about consent before the browser gets a say. */
+  consent: ConsentVerdict;
+}
+
+const { token, userId, consent } = Astro.props;
+---
+
+{
+  /*
+    Split out of AnalyticsScript.astro so that this `<script>` sits at a
+    template top level rather than inside a `{token && ...}` expression.
+
+    Both parsers involved read a nested script differently: the Astro compiler
+    treats `<script>` as raw text wherever it appears and hoists it correctly,
+    while prettier's astro parser reads the same body as JSX children and
+    chokes on the first `{`. The build passed and the lint failed. Rather than
+    depend on which parser is right, the conditional moved one level up: this
+    component renders only when there is a token, so `renderScript` is reached
+    only then -- and `astro check`, `npm run build` and `npm run lint` all agree.
+  */
+}
+<div id="analytics-config" hidden data-token={token} data-user-id={userId ?? ""} data-consent={consent}></div>
+<script>
+  import { startAnalytics } from "@/lib/analytics/browser";
+  import type { ConsentVerdict } from "@/lib/analytics/browser";
+
+  // Read from the DOM rather than from a template literal: this file is
+  // bundled and cached across pages, so the per-request token cannot live in
+  // it. The element is rendered by AnalyticsRuntime.astro immediately above.
+  const el = document.getElementById("analytics-config");
+  const token = el?.dataset.token ?? "";
+  const userId = el?.dataset.userId ?? "";
+
+  if (token) {
+    startAnalytics({
+      token,
+      userId: userId === "" ? null : userId,
+      consent: (el?.dataset.consent ?? "unknown") as ConsentVerdict,
+    });
+  }
+</script>

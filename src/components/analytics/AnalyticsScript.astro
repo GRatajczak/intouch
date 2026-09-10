@@ -1,0 +1,30 @@
+---
+import { POSTHOG_API_KEY } from "astro:env/server";
+import AnalyticsRuntime from "./AnalyticsRuntime.astro";
+import type { ConsentVerdict } from "@/lib/analytics/browser";
+
+interface Props {
+  /** The signed-in user's Supabase id, or `null` for anonymous traffic. */
+  userId: string | null;
+  /** What the server knows about consent before the browser gets a say. */
+  consent: ConsentVerdict;
+}
+
+const { userId, consent } = Astro.props;
+
+// Same silent-disable posture as getAnalyticsConfig(): no key, no analytics,
+// no markup, no script, and nothing a user can see is broken by its absence.
+//
+// The token crosses into the browser as a data attribute rather than as a
+// client-context env var, and that is a deliberate trade. Astro inlines
+// client-context variables AT BUILD TIME, so registering the token that way
+// would move it out of Workers Secrets -- the documented source of truth for
+// production -- into GitHub Secrets, and make every rotation a rebuild.
+// Rendering the existing server secret into the response keeps one secret in
+// one place. A PostHog project token is public by design: it ships in the page
+// of every site using PostHog, authorizes writes to one project's ingest
+// endpoint, and reads nothing.
+const token = POSTHOG_API_KEY;
+---
+
+{token && <AnalyticsRuntime token={token} userId={userId} consent={consent} />}

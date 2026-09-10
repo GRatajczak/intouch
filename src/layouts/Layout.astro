@@ -4,6 +4,7 @@ import Banner from "@/components/Banner.astro";
 import { Toaster } from "@/components/layout/Toaster";
 import { ContactHistorySheet } from "@/components/contact-history/ContactHistorySheet";
 import { missingConfigs } from "@/lib/config-status";
+import AnalyticsScript from "@/components/analytics/AnalyticsScript.astro";
 
 interface Props {
   title?: string;
@@ -56,6 +57,13 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.site ?? Astro.url).href : un
         </>
       )
     }
+    {
+      /* Every page is a pageview, so this mounts on every page. The consent
+         verdict is hardcoded to "unknown" here for now: phase 4 replaces it
+         with the value the middleware resolves from `profiles`. Until then the
+         SDK stays muted for everyone. */
+    }
+    <AnalyticsScript userId={Astro.locals.user?.id ?? null} consent="unknown" />
   </head>
   <body>
     {

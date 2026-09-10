@@ -597,29 +597,29 @@ data to a vendor and the reason phases 2 and 3 are separated.
 
 #### Automated
 
-- [x] 1.1 Unit tests pass: `npm test tests/unit/sanitize-url.test.ts`
-- [x] 1.2 Full suite still passes: `npm test`
-- [x] 1.3 Type checking passes: `npx astro check`
-- [x] 1.4 Linting passes: `npm run lint`
+- [x] 1.1 Unit tests pass: `npm test tests/unit/sanitize-url.test.ts` — 4b75491
+- [x] 1.2 Full suite still passes: `npm test` — 4b75491
+- [x] 1.3 Type checking passes: `npx astro check` — 4b75491
+- [x] 1.4 Linting passes: `npm run lint` — 4b75491
 
 #### Manual
 
-- [x] 1.5 Test table names every stripped category without opening the implementation
+- [x] 1.5 Test table names every stripped category without opening the implementation — 4b75491
 
 ### Phase 2: PostHog browser client, muted by default
 
 #### Automated
 
-- [ ] 2.1 Build succeeds: `npm run build`
-- [ ] 2.2 Type checking passes: `npx astro check`
-- [ ] 2.3 Linting passes: `npm run lint`
-- [ ] 2.4 Full suite still passes: `npm test`
+- [x] 2.1 Build succeeds: `npm run build`
+- [x] 2.2 Type checking passes: `npx astro check`
+- [x] 2.3 Linting passes: `npm run lint`
+- [x] 2.4 Full suite still passes: `npm test`
 
 #### Manual
 
-- [ ] 2.5 Script present on every page, no console errors
-- [ ] 2.6 Zero requests to eu.i.posthog.com, signed in or out
-- [ ] 2.7 No analytics markup rendered when POSTHOG_API_KEY is unset
+- [x] 2.5 Script present on every page, no console errors
+- [x] 2.6 Zero requests to eu.i.posthog.com, signed in or out
+- [x] 2.7 No analytics markup rendered when POSTHOG_API_KEY is unset
 
 ### Phase 3: Consent banner for anonymous traffic
 
