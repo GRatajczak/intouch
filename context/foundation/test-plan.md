@@ -95,7 +95,7 @@ The classic test base for this project. AI-native tools (if any) carry a
 | Astro component rendering | Container API (`astro/container`)                               | ships with astro 6.3.1, experimental | Only where a React-level test will not do; prefer testing the route over the template                                                                                                                      |
 | DB / RLS integration      | Supabase CLI local stack                                        | 2.23.4 (devDependency)               | Two-real-user harness, now `tests/rls/fixture.ts`; `scripts/verify-rls.ts` was promoted and deleted in Phase 1                                                                                             |
 | provider stubbing         | none yet — see Phase 3                                          | —                                    | Stub at the network edge only; never mock internal modules                                                                                                                                                 |
-| e2e                       | not planned                                                     | —                                    | Integration against real routes plus the local Supabase stack covers the critical flows more cheaply — see §7                                                                                              |
+| e2e                       | Playwright                                                      | 1.63.0 (devDependency)               | **Two risks only** (#4, #5) — see §7. Chromium only, `tests/e2e/`, run by `npm run test:e2e`. The suite never starts a server: it addresses one the developer started, via `E2E_BASE_URL` (default `http://localhost:4321`) |
 | accessibility             | eslint-plugin-jsx-a11y                                          | 6.10.2                               | Already enforced through `npm run lint`; no runtime pass planned                                                                                                                                           |
 | (optional) AI-native      | LLM-as-judge over frozen ranking fixtures — checked: 2026-09-04 | n/a                                  | **When NOT to use:** anything a schema or contract assertion already catches (shape, missing time window, empty result), and never inside the blocking CI gate — it runs on demand when the prompt changes |
 
@@ -103,7 +103,7 @@ The classic test base for this project. AI-native tools (if any) carry a
 
 - Docs: Context7 via the `ctx7` CLI — confirmed Astro's Vitest integration (`getViteConfig`, the v6 `environment: "node"` requirement, the Container API); checked: 2026-09-04
 - Search: WebSearch / WebFetch available — not needed, the docs source answered directly; checked: 2026-09-04
-- Runtime/browser: Claude-in-Chrome MCP available; no Playwright MCP in session — not used, since no e2e layer is planned; checked: 2026-09-04
+- Runtime/browser: Playwright 1.63.0 (test runner, Chromium) drives the two-risk e2e layer; the Playwright CLI is installed globally for exploration. Claude-in-Chrome MCP available, unused. Playwright MCP deliberately not added — the CLI costs roughly a quarter of the tokens for the same job; checked: 2026-09-10
 - Provider/platform: Linear MCP authenticated (roadmap status mirroring); Supabase and PostHog MCPs present but **not authenticated in this session**, so local Supabase CLI is the integration surface; checked: 2026-09-04
 
 ## 5. Quality Gates
@@ -121,6 +121,15 @@ phase lands; before that, the gate is planned.
 | post-edit hook on the test suite                   | local (agent loop)         | wired for Risk #1 only    | cross-user access-boundary regressions at edit time, before CI                               |
 | manual human look at any visible UI change         | before merge               | required (convention)     | rendering failures every automated check passes — see `lessons.md` on `.astro` link-buttons  |
 | pre-prod smoke against a `versions upload` preview | between merge and prod     | optional                  | Workers-runtime-only failures that `astro dev` cannot show                                   |
+| e2e (`npm run test:e2e`)                           | local, on demand           | **not required**          | Risk #4's polling bound and Risk #5's cookie chain — neither is visible to any cheaper layer  |
+
+**Why e2e is not a blocking gate (decided 2026-09-10).** The layer needs two
+processes the other gates do not — a running app and the local Supabase stack —
+and it is the slowest and most flake-prone thing in the project. It gets a soak
+period on demand first. When it is promoted, the CI shape is already known: a job
+that starts the stack, starts a preview server, and runs `npm run test:e2e`
+against it with `E2E_BASE_URL` pointed at that server. Deliberately not wired yet;
+a layer that has not proven it stays green has no business blocking a deploy.
 
 Local layering (wired 2026-09-08, `.claude/hooks/` + `.husky/pre-commit`):
 
@@ -233,6 +242,61 @@ here capturing anything surprising the phase taught.)
 - **`service_role` holds no table grants in this schema.** Anything reaching for it to bypass RLS will get `permission denied`, and that is the schema being right.
 - A route-layer test that runs under the attacker's own RLS session **cannot fail** when a route's owner filter is deleted. Always verify a boundary test by removing the thing it claims to protect.
 
+### 6.7 Adding an E2E (browser) test
+
+**Before writing one, read `tests/e2e/E2E_RULES.md`.** It is the rules lever the
+agent and the human both work from, and `tests/e2e/seed.spec.ts` is the worked
+exemplar every new spec is modelled on. This section is the operating manual; the
+rules file is the standard.
+
+**Where they live and how to run them.** `tests/e2e/`, one spec per risk, run by
+`npm run test:e2e` (or `npm run test:e2e:ui`). The suite never starts a server —
+same rule as `tests/http`. Start the local stack and the app yourself, then run.
+`E2E_BASE_URL` overrides the default `http://localhost:4321`. Unlike `tests/http`,
+this layer does **not** skip when it cannot reach the app: it is opt-in by
+invocation, so an unreachable base URL is a failure.
+
+**How auth arrives.** The `setup` project signs in once through the real form and
+writes `playwright/.auth/user.json`; every spec starts signed in. A spec that
+needs the signed-out case opts out per test with
+`test.use({ storageState: { cookies: [], origins: [] } })`. Never sign in inside a
+spec — `supabase/config.toml` caps sign-ins at 30 per 5 minutes per IP and the
+Vitest suite already spends about 18.
+
+**The run's user is seeded, and that is load-bearing.** `tests/e2e/fixtures/test-user.ts`
+creates one throwaway user with a profile and two people, because a bare account
+never reaches the screens under test — `dashboard.astro` renders an empty state
+without a profile or people, and middleware bounces `/people` to `/profile`. It
+seeds **no** ranking on purpose, which is what puts `HierarchyView` on the
+first-ever-run polling path. Service-role creates and deletes the user and does
+nothing else; the rows are written through that user's own session (§6.2 rule 1).
+A `cleanup` teardown project deletes the user, and `ON DELETE CASCADE` takes the
+rest.
+
+**Three traps this project has already paid for:**
+
+- **Hydration.** Every interactive surface is an Astro island. Before React
+  attaches its handlers the button is visible and enabled, so Playwright clicks
+  it and *nothing happens* — silently, intermittently. Use `gotoHydrated()` /
+  `waitForHydration()` from `tests/e2e/fixtures/hydration.ts` before any
+  interaction. Assertions do not need it; interactions do.
+- **The substring trap.** Accessible-name matching is a case-insensitive
+  substring. `getByRole("button", { name: "Aktywuj" })` matches **"Dezaktywuj"**,
+  so a status-flip assertion passes against the button that never changed. Pass
+  `{ exact: true }` whenever one name nests inside another.
+- **`/api/rankings` must never reach the server unmocked.** `/dashboard` POSTs it
+  on mount, and the dev server holds a real `OPENAI_API_KEY` — an unguarded visit
+  is a paid model call on every run. `abort()` it when the ranking is incidental,
+  `fulfill()` it when it is the thing under test.
+
+**A spec ships only after a deliberate break.** Invert the production behaviour
+the risk names, confirm the spec goes red, revert, and record which behaviour you
+broke in the change folder. Green alone is also what a naive assertion looks like.
+**`src/middleware.ts` does not hot-reload** — pages and islands do, middleware is
+loaded once into the dev server's SSR manifest. Restart `npm run dev` around any
+middleware break, or the check reports a false all-clear.
+
+
 ## 7. What We Deliberately Don't Test
 
 Exclusions agreed during the rollout (Phase 2 interview, Q5). Future
@@ -241,15 +305,18 @@ contributors should respect these unless the underlying assumption changes.
 - **The landing page** — static marketing copy with nothing downstream depending on it; assertions would break on every copy edit and catch nothing. Re-evaluate if it gains a form, a signup path, or dynamic content. (Source: Phase 2 interview Q5.)
 - **Visual and CSS regression** — no screenshot baselines, no vision review of screens. The substitute is the human-look convention in §5, which `lessons.md` shows is what actually caught the one real rendering failure. Re-evaluate if a design system change touches many screens at once. (Source: Phase 2 interview Q5.)
 - **The vendors themselves** — no test asserts that Supabase auth or Postgres works, and none judges OpenAI's model quality. No test makes a live call to either. Our own code around them is fully in scope: our policies, our validation of provider responses. (Source: Phase 2 interview Q5, clarified.)
-- **End-to-end browser flows** — no Playwright layer. Every risk in §2 is reachable at the integration layer against real routes plus the local Supabase stack, which is cheaper to run and to keep green. Re-evaluate if a risk surfaces that only the deployed shape can reproduce (a cookie/session crossing the Workers boundary is the likeliest candidate). (Source: §1 principle 1, cost × signal.)
+- **End-to-end browser flows beyond Risks #4 and #5** — this exclusion was re-evaluated on 2026-09-10 (`context/changes/e2e-browser-layer/`) under the clause it already carried, and a deliberately narrow Playwright layer now exists. Two risks earned it and no others: **#4**, whose entire protective behaviour is the polling state machine inside `HierarchyView` and exists only once the island is mounted, and **#5**, whose remaining gap is a real browser cookie jar crossing real middleware on a real SSR page load — the "cookie/session crossing the Workers boundary" case this entry named. Everything else in §2 stays at the integration layer, which is cheaper to run and to keep green. A third spec requires the same argument in a change folder first: why the cheaper layer would lie. (Source: §1 principle 1, cost × signal.)
+  - Still excluded inside that layer: **Risk #3.** The provider call happens server-side inside `runRanking()` behind `waitUntil`, so a browser route mock cannot reach it; the only interception point left is `/api/rankings`, which is the seam Risk #4's spec already owns. It stays on the contract layer — §3 Phase 3.
 - **`src/components/ui/`** — shadcn-generated primitives; the generator is the test. Re-evaluate for any primitive that gets hand-modified. (Source: tech-stack.md convention.)
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-09-04
-- Stack versions last verified: 2026-09-08 (Vitest 5.0.0 added by §3 Phase 1)
+- Strategy (§1–§5) last reviewed: 2026-09-10 (§4 e2e row, §5 gate row and the CI paragraph rewritten by `context/changes/e2e-browser-layer/`)
+- Stack versions last verified: 2026-09-10 (Playwright 1.63.0 added; Vitest 5.0.0 added by §3 Phase 1)
 - §6.3 cookbook last corrected: 2026-09-08 (two rigor traps found in Phase 1's own suite)
-- AI-native tool references last verified: 2026-09-04
+- §6.7 cookbook added: 2026-09-10 (e2e layer, with the three traps it cost to find)
+- §7 e2e exclusion re-evaluated: 2026-09-10 — narrowed from "no Playwright layer" to "Risks #4 and #5 only"
+- AI-native tool references last verified: 2026-09-10
 
 Refresh (`/10x-test-plan --refresh`) when:
 

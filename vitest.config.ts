@@ -39,6 +39,8 @@ export default defineConfig(async (env) => {
       //   tests/http   -- a server the developer starts, addressed by TEST_BASE_URL
       // Listing them separately keeps `npm test tests/<layer>` meaningful.
       // tests/stubs/ is deliberately absent: it holds helpers, not tests.
+      // tests/e2e/ is deliberately absent too: those are Playwright specs
+      // (`*.spec.ts`), run by `npm run test:e2e`, never by Vitest.
       include: [
         "tests/unit/**/*.test.ts",
         "tests/rls/**/*.test.ts",

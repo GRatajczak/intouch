@@ -36,3 +36,8 @@ pnpm-debug.log*
 
 # design bundle duplicates stale copies of context/foundation/ docs here
 .ai/intouch-design-preparation/project/uploads/
+
+# playwright (E2E layer)
+playwright/.auth/
+test-results/
+playwright-report/
