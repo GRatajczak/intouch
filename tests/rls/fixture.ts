@@ -166,14 +166,36 @@ export function createServiceClient(): TestClient {
   return createClient<Database>(API_URL, SERVICE_ROLE_KEY, NO_PERSIST);
 }
 
+/**
+ * Two paths, both closed by default.
+ *
+ * CI opt-in: all three `SUPABASE_STAGE_*` vars set -> use them directly. This
+ * is the only way to point this suite at a hosted project, and it takes three
+ * simultaneous, explicitly-named CI secrets to trigger -- nothing local or
+ * accidental can set all three at once, and `.env.test` never carries them
+ * (see its own header comment on why a hosted key must never land there).
+ *
+ * Local stack (default, unchanged): shell out to `supabase status -o json`
+ * and refuse anything whose API_URL is not 127.0.0.1/localhost.
+ */
 function readLocalStatus(): LocalStatus {
+  const stageUrl = process.env.SUPABASE_STAGE_URL;
+  const stageAnonKey = process.env.SUPABASE_STAGE_ANON_KEY;
+  const stageServiceRoleKey = process.env.SUPABASE_STAGE_SERVICE_ROLE_KEY;
+
+  if (stageUrl && stageAnonKey && stageServiceRoleKey) {
+    return { API_URL: stageUrl, ANON_KEY: stageAnonKey, SERVICE_ROLE_KEY: stageServiceRoleKey };
+  }
+
   let raw: string;
   try {
     raw = execSync("supabase status -o json", { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] });
   } catch {
     throw new Error(
       "The local Supabase stack is not running, so tests/rls cannot prove anything about the real policies. " +
-        "Run `supabase start` and try again. (Only tests/rls needs the stack; tests/routes does not.)",
+        "Run `supabase start` and try again, or set SUPABASE_STAGE_URL / SUPABASE_STAGE_ANON_KEY / " +
+        "SUPABASE_STAGE_SERVICE_ROLE_KEY (all three) to point this suite at a hosted stage project instead. " +
+        "(Only tests/rls needs the stack; tests/routes does not.)",
     );
   }
 
