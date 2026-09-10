@@ -18,6 +18,14 @@ import type { AnalyticsSectionProps } from "./types";
  * the whole product promise is that a third party's details never leave the
  * app — a vague "we collect anonymous usage data" would be the sentence that
  * quietly erodes it.
+ *
+ * This switch governs two channels, not one. Since `web-analytics-pageviews` it
+ * also gates the browser channel — pageviews, sessions and traffic source — so
+ * the copy names those too, and names the URL sanitizer, because "we send the
+ * addresses of the pages you visit" is a claim a user is entitled to weigh
+ * against "we never send anything about your people". The two are reconciled by
+ * src/lib/analytics/sanitize-url.ts, and saying so is cheaper than leaving the
+ * reader to assume the worse reading.
  */
 export default function AnalyticsSection({ analyticsEnabled }: AnalyticsSectionProps) {
   const [enabled, setEnabled] = useState(analyticsEnabled);
@@ -64,9 +72,10 @@ export default function AnalyticsSection({ analyticsEnabled }: AnalyticsSectionP
       <div>
         <p className="text-foreground text-sm font-medium">Anonimowa analityka produktu</p>
         <p className="text-muted-foreground mt-1 text-sm">
-          Zapisujemy tylko to, które kroki w aplikacji przechodzisz — że wypełniłeś profil, że dodałeś pierwszą osobę,
-          że potwierdziłeś kontakt. Nigdy imion, opisów ani notatek o Twoich ludziach. Pomaga nam to zobaczyć, gdzie
-          aplikacja gubi ludzi po drodze.
+          Zapisujemy to, które kroki w aplikacji przechodzisz — że wypełniłeś profil, że dodałeś pierwszą osobę, że
+          potwierdziłeś kontakt — a także które strony odwiedzasz i skąd trafiłeś do InTouch. Adresy stron czyścimy,
+          zanim je wyślemy: nie ma w nich identyfikatorów Twoich ludzi. Nigdy imion, opisów ani notatek o Twoich
+          ludziach. Pomaga nam to zobaczyć, gdzie aplikacja gubi ludzi po drodze.
         </p>
       </div>
 

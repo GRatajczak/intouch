@@ -646,21 +646,26 @@ data to a vendor and the reason phases 2 and 3 are separated.
 
 ### Phase 4: Signed-in consent and identity
 
+> **Note on 4.6 and 4.9.** Both mention the consent banner, which was dropped
+> on 2026-09-10 (see the Phase 3 note). 4.9 holds vacuously — there is no banner
+> for anyone to see — and 4.6 was verified on its substantive half, that the
+> switch stops pageviews on the next navigation.
+
 #### Automated
 
-- [ ] 4.1 Build succeeds: `npm run build`
-- [ ] 4.2 Type checking passes: `npx astro check`
-- [ ] 4.3 Linting passes: `npm run lint`
-- [ ] 4.4 Full suite still passes: `npm test`
+- [x] 4.1 Build succeeds: `npm run build`
+- [x] 4.2 Type checking passes: `npx astro check`
+- [x] 4.3 Linting passes: `npm run lint`
+- [x] 4.4 Full suite still passes: `npm test`
 
 #### Manual
 
-- [ ] 4.5 Signed-in pageviews carry the Supabase user id as distinct id
-- [ ] 4.6 Switch off stops pageviews on the next navigation, with no banner
-- [ ] 4.7 Switch back on resumes them
-- [ ] 4.8 Sign out then browse anonymously yields a fresh anonymous id
-- [ ] 4.9 Signed-in user never sees the banner
-- [ ] 4.10 No visible slowdown on /dashboard from the added profiles query
+- [x] 4.5 Signed-in pageviews carry the Supabase user id as distinct id
+- [x] 4.6 Switch off stops pageviews on the next navigation, with no banner
+- [x] 4.7 Switch back on resumes them
+- [x] 4.8 Sign out then browse anonymously yields a fresh anonymous id
+- [x] 4.9 Signed-in user never sees the banner
+- [x] 4.10 No visible slowdown on /dashboard from the added profiles query
 
 ### Phase 5: Catalog, dashboard and production proof
 
