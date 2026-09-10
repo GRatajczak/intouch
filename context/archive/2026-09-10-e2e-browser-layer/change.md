@@ -1,10 +1,10 @@
 ---
 change_id: e2e-browser-layer
 title: Wąska warstwa E2E (Playwright) dla ryzyk #4 i #5
-status: impl_reviewed
+status: archived
 created: 2026-09-10
 updated: 2026-09-10
-archived_at: null
+archived_at: 2026-09-10T09:37:45Z
 ---
 
 ## Notes
