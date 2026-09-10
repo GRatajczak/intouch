@@ -438,31 +438,31 @@ renumbered, that config breaks silently.
 
 #### Automated
 
-- [x] 1.1 §2 risk table has exactly 7 data rows
-- [x] 1.2 Risk ids correspond one-to-one between the risk table and the guidance table
-- [x] 1.3 No `file:line` pattern in any §2 Source cell
-- [x] 1.4 `npm run lint` passes
+- [x] 1.1 §2 risk table has exactly 7 data rows — 034ca6f
+- [x] 1.2 Risk ids correspond one-to-one between the risk table and the guidance table — 034ca6f
+- [x] 1.3 No `file:line` pattern in any §2 Source cell — 034ca6f
+- [x] 1.4 `npm run lint` passes — 034ca6f
 
 #### Manual
 
-- [x] 1.5 Merged #1 reads as one failure scenario
-- [x] 1.6 Widened #3 still names the malformed-response case
-- [x] 1.7 #6's scenario is distinguishable from the declined resource-abuse case, and the distinction is stated
-- [x] 1.8 New Source cells cite locatable evidence, naming no function or schema
+- [x] 1.5 Merged #1 reads as one failure scenario — 034ca6f
+- [x] 1.6 Widened #3 still names the malformed-response case — 034ca6f
+- [x] 1.7 #6's scenario is distinguishable from the declined resource-abuse case, and the distinction is stated — 034ca6f
+- [x] 1.8 New Source cells cite locatable evidence, naming no function or schema — 034ca6f
 
 ### Phase 2: Reconcile §3 with what actually shipped
 
 #### Automated
 
-- [ ] 2.1 No `#5` or `#2` risk reference survives anywhere in the file
-- [ ] 2.2 Every §2 risk id appears in at least one §3 "Risks covered" cell
-- [ ] 2.3 `npm run lint` passes
+- [x] 2.1 No `#5` or `#2` risk reference survives anywhere in the file
+- [x] 2.2 Every §2 risk id appears in at least one §3 "Risks covered" cell
+- [x] 2.3 `npm run lint` passes
 
 #### Manual
 
-- [ ] 2.4 The rollout table answers "what is left?" on its own
-- [ ] 2.5 Phase 5's remaining scope is unambiguously the CI gate
-- [ ] 2.6 Phase 4's three concerns read as one phase
+- [x] 2.4 The rollout table answers "what is left?" on its own
+- [x] 2.5 Phase 5's remaining scope is unambiguously the CI gate
+- [x] 2.6 Phase 4's three concerns read as one phase
 
 ### Phase 3: Ripple into §5, §7 and §8
 
