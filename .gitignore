@@ -41,3 +41,10 @@ pnpm-debug.log*
 playwright/.auth/
 test-results/
 playwright-report/
+
+# Agent worktrees. A git worktree checked out inside the repo is a second copy
+# of the whole source tree: never track it, and never let eslint walk it. Left
+# unignored, its src/db/database.types.ts escapes the root-relative ignore in
+# eslint.config.js and `npm run lint` reports hundreds of errors from a
+# directory nobody is working in.
+.claude/worktrees/
