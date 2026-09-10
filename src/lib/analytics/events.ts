@@ -21,7 +21,10 @@
 // user did, not who anyone is.
 //
 // The full catalog, with each event's emission point and gating condition, is
-// documented in context/changes/product-analytics-posthog/event-catalog.md.
+// documented in context/foundation/event-catalog.md. That file covers TWO channels:
+// this union governs the server one only. The browser channel (posthog-js,
+// $pageview/$pageleave) is governed instead by the absence of autocapture plus the
+// URL sanitizer in ./sanitize-url.ts -- its events are written by the SDK, not here.
 
 /**
  * Step 1 of the PRD's primary funnel: an account was created.

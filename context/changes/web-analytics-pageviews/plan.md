@@ -653,28 +653,37 @@ data to a vendor and the reason phases 2 and 3 are separated.
 
 #### Automated
 
-- [x] 4.1 Build succeeds: `npm run build`
-- [x] 4.2 Type checking passes: `npx astro check`
-- [x] 4.3 Linting passes: `npm run lint`
-- [x] 4.4 Full suite still passes: `npm test`
+- [x] 4.1 Build succeeds: `npm run build` — 0c65cad
+- [x] 4.2 Type checking passes: `npx astro check` — 0c65cad
+- [x] 4.3 Linting passes: `npm run lint` — 0c65cad
+- [x] 4.4 Full suite still passes: `npm test` — 0c65cad
 
 #### Manual
 
-- [x] 4.5 Signed-in pageviews carry the Supabase user id as distinct id
-- [x] 4.6 Switch off stops pageviews on the next navigation, with no banner
-- [x] 4.7 Switch back on resumes them
-- [x] 4.8 Sign out then browse anonymously yields a fresh anonymous id
-- [x] 4.9 Signed-in user never sees the banner
-- [x] 4.10 No visible slowdown on /dashboard from the added profiles query
+- [x] 4.5 Signed-in pageviews carry the Supabase user id as distinct id — 0c65cad
+- [x] 4.6 Switch off stops pageviews on the next navigation, with no banner — 0c65cad
+- [x] 4.7 Switch back on resumes them — 0c65cad
+- [x] 4.8 Sign out then browse anonymously yields a fresh anonymous id — 0c65cad
+- [x] 4.9 Signed-in user never sees the banner — 0c65cad
+- [x] 4.10 No visible slowdown on /dashboard from the added profiles query — 0c65cad
 
 ### Phase 5: Catalog, dashboard and production proof
 
+> **5.3 is blocked, not failed by this change.** `npm run lint` reports 303 errors,
+> every one of them inside `.claude/worktrees/ci-e2e-stage-supabase/` — a git worktree
+> another session created during this run (`git worktree list`). Most come from that
+> worktree's copy of `src/db/database.types.ts`, which `eslint.config.js` ignores by a
+> root-relative path that does not match the nested copy. `npx eslint src scripts tests`
+> is clean: 0 errors, 113 warnings, all pre-existing `no-console`. Fix is either removing
+> the worktree or adding `.claude/worktrees/**` to the config's `ignores`; both belong to
+> whoever owns that worktree.
+
 #### Automated
 
-- [ ] 5.1 Full suite passes: `npm test`
-- [ ] 5.2 Build succeeds: `npm run build`
+- [x] 5.1 Full suite passes: `npm test`
+- [x] 5.2 Build succeeds: `npm run build`
 - [ ] 5.3 Linting passes: `npm run lint`
-- [ ] 5.4 Catalog exists at the path referenced by events.ts
+- [x] 5.4 Catalog exists at the path referenced by events.ts
 
 #### Manual
 
