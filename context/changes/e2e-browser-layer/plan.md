@@ -482,60 +482,60 @@ green through its own break goes back to GENERATE.
 
 #### Automated
 
-- [x] 1.1 `npm run test:e2e` runs the setup project and `seed.spec.ts` and exits 0
-- [x] 1.2 A second consecutive run also exits 0 (four consecutive runs green)
-- [x] 1.3 `npm run lint` passes with the new files present (0 errors; only the repo's pre-existing `no-console` warnings)
-- [x] 1.4 `npx astro check` passes (0 errors, 0 warnings)
-- [x] 1.5 `npm run build` still passes
+- [x] 1.1 `npm run test:e2e` runs the setup project and `seed.spec.ts` and exits 0 — 067f526
+- [x] 1.2 A second consecutive run also exits 0 (four consecutive runs green) — 067f526
+- [x] 1.3 `npm run lint` passes with the new files present (0 errors; only the repo's pre-existing `no-console` warnings) — 067f526
+- [x] 1.4 `npx astro check` passes (0 errors, 0 warnings) — 067f526
+- [x] 1.5 `npm run build` still passes — 067f526
 
 #### Manual
 
-- [x] 1.6 `playwright/.auth/user.json` written and git-ignored; no `test-results/` noise
-- [x] 1.7 Seed test carries no CSS selector, no `waitForTimeout`, no non-unique test data
-- [x] 1.8 Throwaway user removed from the local stack after the run (teardown project)
+- [x] 1.6 `playwright/.auth/user.json` written and git-ignored; no `test-results/` noise — 067f526
+- [x] 1.7 Seed test carries no CSS selector, no `waitForTimeout`, no non-unique test data — 067f526
+- [x] 1.8 Throwaway user removed from the local stack after the run (teardown project) — 067f526
 
 ### Phase 2: Risk #4 — A Ranking Job Must Reach a Terminal State
 
 #### Automated
 
-- [x] 2.1 `ranking-job-terminal-state.spec.ts` passes
-- [x] 2.2 Both tests pass in isolation and in either order
-- [x] 2.3 Neither test takes more than a few seconds despite covering a 120s bound (~3s each)
-- [x] 2.4 `npm run test:e2e` passes as a whole
+- [x] 2.1 `ranking-job-terminal-state.spec.ts` passes — 067f526
+- [x] 2.2 Both tests pass in isolation and in either order — 067f526
+- [x] 2.3 Neither test takes more than a few seconds despite covering a 120s bound (~3s each) — 067f526
+- [x] 2.4 `npm run test:e2e` passes as a whole — 067f526
 
 #### Manual
 
-- [x] 2.5 Deliberate break A — dropped `setStatus("failed")` from the `body.status === "failed"` branch in `HierarchyView.tsx`, keeping `clearInterval` so the bound could not cover for it. Test 1 red. Reverted.
-- [x] 2.6 Deliberate break B — removed the `attempts >= MAX_POLL_ATTEMPTS` guard from the success path. Test 2 red. Reverted.
-- [x] 2.7 Five-anti-pattern review recorded (see Review Notes below)
+- [x] 2.5 Deliberate break A — dropped `setStatus("failed")` from the `body.status === "failed"` branch in `HierarchyView.tsx`, keeping `clearInterval` so the bound could not cover for it. Test 1 red. Reverted. — 067f526
+- [x] 2.6 Deliberate break B — removed the `attempts >= MAX_POLL_ATTEMPTS` guard from the success path. Test 2 red. Reverted. — 067f526
+- [x] 2.7 Five-anti-pattern review recorded (see Review Notes below) — 067f526
 
 ### Phase 3: Risk #5 — No Session Reaches No Relationship Data
 
 #### Automated
 
-- [x] 3.1 `auth-gate.spec.ts` passes
-- [x] 3.2 Both tests pass in isolation and in either order across mixed `storageState`
-- [x] 3.3 `npm run test:e2e` passes twice in a row
+- [x] 3.1 `auth-gate.spec.ts` passes — 067f526
+- [x] 3.2 Both tests pass in isolation and in either order across mixed `storageState` — 067f526
+- [x] 3.3 `npm run test:e2e` passes twice in a row — 067f526
 
 #### Manual
 
-- [x] 3.4 Deliberate break — `/dashboard` removed from `PROTECTED_ROUTES`, dev server restarted so the change actually loaded (`curl` confirmed: anonymous `/dashboard` went 302→200 while `/people` still redirected). The signed-out test went red on the `/dashboard` case: expected `/auth/signin`, received `/dashboard`. Break reverted, dev server restarted again. First attempt reported a false all-clear because `src/middleware.ts` does not hot-reload — see Findings.
-- [x] 3.5 Data-absence assertion examined, and the honest answer is that **a single-layer break cannot exercise it**. With the middleware gate gone, an anonymous `/dashboard` renders `HierarchyEmptyState` and an anonymous `/people` renders `EmptyState`, because both pages guard on `Astro.locals.user` themselves; and even past that guard the sessionless Supabase client is filtered to zero rows by RLS. Three layers stand between "no session" and "a person's name on screen", so the break landed on the URL assertion instead. The data-absence assertion stays as the net that catches a future regression in any one of the three — it is not decorative, it is just not reachable by breaking only the outermost layer.
-- [x] 3.6 Five-anti-pattern review recorded (see Review Notes below)
+- [x] 3.4 Deliberate break — `/dashboard` removed from `PROTECTED_ROUTES`, dev server restarted so the change actually loaded (`curl` confirmed: anonymous `/dashboard` went 302→200 while `/people` still redirected). The signed-out test went red on the `/dashboard` case: expected `/auth/signin`, received `/dashboard`. Break reverted, dev server restarted again. First attempt reported a false all-clear because `src/middleware.ts` does not hot-reload — see Findings. — 067f526
+- [x] 3.5 Data-absence assertion examined, and the honest answer is that **a single-layer break cannot exercise it**. With the middleware gate gone, an anonymous `/dashboard` renders `HierarchyEmptyState` and an anonymous `/people` renders `EmptyState`, because both pages guard on `Astro.locals.user` themselves; and even past that guard the sessionless Supabase client is filtered to zero rows by RLS. Three layers stand between "no session" and "a person's name on screen", so the break landed on the URL assertion instead. The data-absence assertion stays as the net that catches a future regression in any one of the three — it is not decorative, it is just not reachable by breaking only the outermost layer. — 067f526
+- [x] 3.6 Five-anti-pattern review recorded (see Review Notes below) — 067f526
 
 ### Phase 4: Reconcile the Test Plan and Record the Layer
 
 #### Automated
 
-- [x] 4.1 No sentence in `test-plan.md` claims there is no Playwright layer
-- [x] 4.2 `npm test` (Vitest) still passes — 174 passed, 14 skipped
-- [x] 4.3 `npm run lint`, `npx astro check`, `npm run build` pass
+- [x] 4.1 No sentence in `test-plan.md` claims there is no Playwright layer — 067f526
+- [x] 4.2 `npm test` (Vitest) still passes — 174 passed, 14 skipped — 067f526
+- [x] 4.3 `npm run lint`, `npx astro check`, `npm run build` pass — 067f526
 
 #### Manual
 
-- [x] 4.4 §6.7 cookbook added, carrying the three traps this change paid to find
-- [x] 4.5 Two-risk scope and its reasoning survive in §7
-- [x] 4.6 §8 ledger stamped; `change.md` advanced
+- [x] 4.4 §6.7 cookbook added, carrying the three traps this change paid to find — 067f526
+- [x] 4.5 Two-risk scope and its reasoning survive in §7 — 067f526
+- [x] 4.6 §8 ledger stamped; `change.md` advanced — 067f526
 
 
 ---
