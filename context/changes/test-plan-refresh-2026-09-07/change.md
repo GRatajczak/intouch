@@ -1,9 +1,9 @@
 ---
 change_id: test-plan-refresh-2026-09-07
 title: "Test plan refresh: add-person write-path risk and stale likelihood weighting"
-status: preparing
+status: implementing
 created: 2026-09-07
-updated: 2026-09-08
+updated: 2026-09-10
 archived_at: null
 ---
 
