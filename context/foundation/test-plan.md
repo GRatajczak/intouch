@@ -81,8 +81,9 @@ orchestrator updates Status as artifacts appear on disk.
 | 4   | Input boundary and prompt composition        | The server enforces the same bounds as the form, and free text cannot change the ranking output contract                      | #6                | integration + unit                                                   | not started | —                                                     |
 | 5   | Quality-gates wiring and scheduled delivery  | The suite blocks CI and deploy, and the sweep's once-per-day and recipient invariants hold under an injected clock            | #7, cross-cutting | gates + integration                                                  | not started | —                                                     |
 
-Phase 5's delivery half is gated on roadmap `S-04` leaving `blocked`; its
-gates half does not wait on anything and can land regardless.
+Phase 5's delivery half was gated on roadmap `S-04` leaving `blocked`; **that
+gate is lifted** — `S-04` shipped 2026-09-08 (`4cebfee`…`f72b686`, production-verified),
+so both halves of Phase 5 are now free to run.
 
 ## 4. Stack
 

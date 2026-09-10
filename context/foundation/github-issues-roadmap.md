@@ -3,9 +3,9 @@ project: "InTouch"
 version: 1
 status: active
 created: 2026-08-17
-updated: 2026-08-17
+updated: 2026-09-08
 source: context/foundation/roadmap.md
-source_version: 1
+source_version: 2
 repo: GRatajczak/intouch
 issues_url: https://github.com/GRatajczak/intouch/issues
 linear_workspace: https://linear.app/gratajczak
@@ -58,6 +58,43 @@ i linkami do `roadmap.md` oraz GitHub Issues.
 | S-05 | `person-lifecycle-and-erasure` | [#8](https://github.com/GRatajczak/intouch/issues/8) | [GRA-11](https://linear.app/gratajczak/issue/GRA-11) | `[S-05] Edit, deactivate and irreversibly delete a person` |
 
 Wszystkie 7 są w milestone `MVP v1` (GitHub) i projekcie `InTouch MVP v1` (Linear).
+
+### Pozycje dodane po migracji (sync 2026-09-08)
+
+Roadmapa urosła z 11 do 24 pozycji. Poniższe powstały **po** migracji z 2026-08-17
+i mają reprezentację **wyłącznie w Linear** — na GitHubie ich nie ma.
+
+| Roadmap ID | Change ID | GitHub | Linear | Status |
+| ---------- | --------- | ------ | ------ | ------ |
+| F-05 | `design-alignment-pass` | — | [GRA-18](https://linear.app/gratajczak/issue/GRA-18) | Done |
+| F-06 | `product-analytics-posthog` | — | [GRA-22](https://linear.app/gratajczak/issue/GRA-22) | Done |
+| F-07 | `automated-test-harness` | — | [GRA-26](https://linear.app/gratajczak/issue/GRA-26) | In Progress (faza 1/5) |
+| F-08 | `access-boundary-followups` | — | [GRA-27](https://linear.app/gratajczak/issue/GRA-27) | 🅿️ Parked |
+| S-06 | `landing-page` | — | [GRA-19](https://linear.app/gratajczak/issue/GRA-19) | Done |
+| S-07 | `account-and-profile-settings` | — | [GRA-23](https://linear.app/gratajczak/issue/GRA-23) | Done |
+| S-08 | `password-recovery` | — | [GRA-24](https://linear.app/gratajczak/issue/GRA-24) | Done |
+| S-09 | `self-profile-rhythm-fields` | — | [GRA-20](https://linear.app/gratajczak/issue/GRA-20) | Done |
+| S-10 | `add-person-context-fields` | — | [GRA-21](https://linear.app/gratajczak/issue/GRA-21) | Done |
+| S-11 | `ranking-recency-floor` | — | [GRA-25](https://linear.app/gratajczak/issue/GRA-25) | Done |
+| S-12 | `signout-placement` | — | [GRA-28](https://linear.app/gratajczak/issue/GRA-28) | 🅿️ Parked |
+| S-13 | `stale-reason-marking` | — | [GRA-29](https://linear.app/gratajczak/issue/GRA-29) | 🅿️ Parked |
+| S-14 | `ranking-observability` | — | [GRA-30](https://linear.app/gratajczak/issue/GRA-30) | 🅿️ Parked |
+| S-15 | `ranking-invalidation-on-mark` | — | [GRA-31](https://linear.app/gratajczak/issue/GRA-31) | 🅿️ Parked (blocked by GRA-30) |
+| S-16 | `contact-event-backdating` | — | [GRA-32](https://linear.app/gratajczak/issue/GRA-32) | 🅿️ Parked |
+
+**🅿️ Parked = w Linear `Backlog`, bez `plan-ready`, priorytet `No priority`.** Sześć
+pozycji przeniesionych do `roadmap.md` → `## Parked` decyzją użytkownika 2026-09-08;
+opis każdego issue zaczyna się od bloku z powodem parkowania i warunkiem odparkowania.
+Zdjęte z tabel „At a glance" i „Backlog Handoff" w roadmapie — pełna diagnoza pięciu
+pozycji z triage'u zostaje w `context/changes/feedback-triage-2026-09-08/triage.md`.
+
+**Wniosek do decyzji:** przewidziany w `## Znane ograniczenia` rozjazd nastąpił, i to
+jednostronnie — GitHub Issues zatrzymał się na 11 pozycjach z 2026-08-17, Linear ma 24.
+Zgodnie z zapisaną wtedy regułą („jeśli utrzymywanie dwóch trackerów okaże się kosztem
+bez zwrotu, **usuń GitHub Issues, nie Linear**") warto to formalnie domknąć: albo
+odtworzyć 13 brakujących issues na GitHubie, albo uznać GitHub Issues za wycofany
+i usunąć go z tego dokumentu. Do czasu decyzji **GitHub jest nieaktualny; Linear i
+`roadmap.md` są prawdą.**
 Każde zadanie w Linear ma link-attachment do swojego odpowiednika na GitHubie.
 
 ## Mapa: Open Roadmap Questions → issue
