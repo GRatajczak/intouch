@@ -75,6 +75,19 @@ export default defineConfig({
       // Deliberately NOT registered in src/lib/config-status.ts; the reasoning
       // is recorded in that factory.
       POSTHOG_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+      // S-17's bring-your-own-key encryption secret. A base64-encoded 32-byte
+      // random value (`openssl rand -base64 32`), imported as an AES-GCM key
+      // by src/lib/crypto/api-key.ts to encrypt/decrypt a user's stored
+      // OpenAI key. Optional for the same reason as every secret above: a
+      // missing value disables one feature (BYOK) rather than failing the
+      // Worker -- src/lib/crypto/api-key.ts returns null and every caller
+      // falls back to the app key and the free tier. Deliberately NOT
+      // registered in src/lib/config-status.ts; the reasoning is the same as
+      // POSTHOG_API_KEY's, recorded in src/lib/analytics/config.ts:31-36 --
+      // an absent BYOK secret breaks nothing a user can see, so surfacing it
+      // on the missing-config banner would advertise an internal ops gap to
+      // the wrong audience.
+      OPENAI_KEY_ENCRYPTION_KEY: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
 });

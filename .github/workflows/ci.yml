@@ -26,6 +26,7 @@ jobs:
           REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
           APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          OPENAI_KEY_ENCRYPTION_KEY: ${{ secrets.OPENAI_KEY_ENCRYPTION_KEY }}
       - run: npm run lint
       - run: npm run build
         env:
@@ -37,6 +38,7 @@ jobs:
           REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
           APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          OPENAI_KEY_ENCRYPTION_KEY: ${{ secrets.OPENAI_KEY_ENCRYPTION_KEY }}
       # tests/unit and tests/routes are hermetic (.env.test supplies the schema-
       # required vars); tests/rls needs a real Postgres with the real RLS
       # policies, which the SUPABASE_STAGE_* opt-in in tests/rls/fixture.ts

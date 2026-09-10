@@ -30,6 +30,7 @@ jobs:
           REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
           APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          OPENAI_KEY_ENCRYPTION_KEY: ${{ secrets.OPENAI_KEY_ENCRYPTION_KEY }}
       - run: npm run lint
       - run: npm run build
         env:
@@ -41,6 +42,7 @@ jobs:
           REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
           APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          OPENAI_KEY_ENCRYPTION_KEY: ${{ secrets.OPENAI_KEY_ENCRYPTION_KEY }}
       # Blocks the deploy on a red suite (test-plan.md §5 "suite blocks deploy").
       # e2e is deliberately not run here -- it needs a running app + more time
       # than a deploy gate should cost; ci.yml's e2e job is the signal for that

@@ -132,8 +132,11 @@ export type Database = {
           analytics_opt_out: boolean
           availability_windows: string[]
           birth_date: string
+          free_recompute_claimed_on: string | null
           life_context: string
           name: string
+          openai_api_key_ciphertext: string | null
+          openai_api_key_hint: string | null
           owner_id: string
           preferred_channels: string[]
           reminders_enabled: boolean
@@ -144,8 +147,11 @@ export type Database = {
           analytics_opt_out?: boolean
           availability_windows?: string[]
           birth_date: string
+          free_recompute_claimed_on?: string | null
           life_context: string
           name: string
+          openai_api_key_ciphertext?: string | null
+          openai_api_key_hint?: string | null
           owner_id: string
           preferred_channels?: string[]
           reminders_enabled?: boolean
@@ -156,8 +162,11 @@ export type Database = {
           analytics_opt_out?: boolean
           availability_windows?: string[]
           birth_date?: string
+          free_recompute_claimed_on?: string | null
           life_context?: string
           name?: string
+          openai_api_key_ciphertext?: string | null
+          openai_api_key_hint?: string | null
           owner_id?: string
           preferred_channels?: string[]
           reminders_enabled?: boolean
