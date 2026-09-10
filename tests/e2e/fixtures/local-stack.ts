@@ -25,11 +25,12 @@ interface LocalStatus {
 const NO_PERSIST = { auth: { autoRefreshToken: false, persistSession: false } };
 
 /**
- * Reads the running local stack's coordinates.
+ * Reads the stack's coordinates.
  *
  * Mirrors `readLocalStatus()` in tests/rls/fixture.ts, including its refusal to
- * run against anything but a local URL -- this module creates and deletes real
- * users, and pointed at a hosted project it would do that to production.
+ * run against anything but a local URL, or an explicit `SUPABASE_STAGE_*`
+ * opt-in -- this module creates and deletes real users, and pointed at the
+ * wrong project it would do that to production.
  *
  * It is duplicated rather than imported for one reason only: the original is not
  * exported. Nothing about it is Vitest-specific, and this file imports the `@/`
@@ -37,15 +38,30 @@ const NO_PERSIST = { auth: { autoRefreshToken: false, persistSession: false } };
  * tooling. That makes the duplication a liability rather than a necessity: this
  * copy is a safety guard, so **harden the two together or not at all** -- a check
  * tightened in one file and missed in the other leaves the weaker path open.
+ *
+ * CI opt-in: all three `SUPABASE_STAGE_*` vars set -> use them directly, no
+ * `supabase status` call at all. Nothing local or accidental sets all three at
+ * once. Local stack (default, unchanged): shell out to `supabase status -o
+ * json` and refuse anything whose API_URL is not 127.0.0.1/localhost.
  */
 export function readLocalStatus(): LocalStatus {
+  const stageUrl = process.env.SUPABASE_STAGE_URL;
+  const stageAnonKey = process.env.SUPABASE_STAGE_ANON_KEY;
+  const stageServiceRoleKey = process.env.SUPABASE_STAGE_SERVICE_ROLE_KEY;
+
+  if (stageUrl && stageAnonKey && stageServiceRoleKey) {
+    return { API_URL: stageUrl, ANON_KEY: stageAnonKey, SERVICE_ROLE_KEY: stageServiceRoleKey };
+  }
+
   let raw: string;
   try {
     raw = execSync("supabase status -o json", { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] });
   } catch {
     throw new Error(
       "The local Supabase stack is not running, so the E2E layer has no database to drive. " +
-        "Run `supabase start`, start the app (`npm run dev`), and try again.",
+        "Run `supabase start`, start the app (`npm run dev`), and try again, or set SUPABASE_STAGE_URL / " +
+        "SUPABASE_STAGE_ANON_KEY / SUPABASE_STAGE_SERVICE_ROLE_KEY (all three) to point this layer at a " +
+        "hosted stage project instead.",
     );
   }
 

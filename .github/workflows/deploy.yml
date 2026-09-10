@@ -41,6 +41,15 @@ jobs:
           REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
           APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+      # Blocks the deploy on a red suite (test-plan.md §5 "suite blocks deploy").
+      # e2e is deliberately not run here -- it needs a running app + more time
+      # than a deploy gate should cost; ci.yml's e2e job is the signal for that
+      # layer, on pull requests.
+      - run: npm run test
+        env:
+          SUPABASE_STAGE_URL: ${{ secrets.SUPABASE_STAGE_URL }}
+          SUPABASE_STAGE_ANON_KEY: ${{ secrets.SUPABASE_STAGE_ANON_KEY }}
+          SUPABASE_STAGE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_STAGE_SERVICE_ROLE_KEY }}
       - name: Upload preview version
         if: github.event_name == 'pull_request'
         uses: cloudflare/wrangler-action@v4

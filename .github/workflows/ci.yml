@@ -37,3 +37,69 @@ jobs:
           REMINDER_FROM: ${{ secrets.REMINDER_FROM }}
           APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+      # tests/unit and tests/routes are hermetic (.env.test supplies the schema-
+      # required vars); tests/rls needs a real Postgres with the real RLS
+      # policies, which the SUPABASE_STAGE_* opt-in in tests/rls/fixture.ts
+      # points at the stage project instead of `supabase status`. tests/http
+      # self-skips (no TEST_BASE_URL here).
+      - run: npm run test
+        env:
+          SUPABASE_STAGE_URL: ${{ secrets.SUPABASE_STAGE_URL }}
+          SUPABASE_STAGE_ANON_KEY: ${{ secrets.SUPABASE_STAGE_ANON_KEY }}
+          SUPABASE_STAGE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_STAGE_SERVICE_ROLE_KEY }}
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # Same convention as local dev: this suite never starts its own server
+      # (see playwright.config.ts and tests/e2e/fixtures/local-stack.ts), so CI
+      # starts the app itself. SUPABASE_URL/SUPABASE_KEY here are the app's own
+      # env (astro:env/server) -- deliberately pointed at the stage project so
+      # the running app and the fixture that seeds the throwaway user agree on
+      # which database they're both talking to. OPENAI_API_KEY is deliberately
+      # left unset: every spec mocks /api/rankings (tests/e2e/E2E_RULES.md), and
+      # an unset key turns any accidental unmocked hit into a loud failure
+      # instead of a paid model call.
+      - name: Start the app against the stage Supabase project
+        run: npm run dev > dev-server.log 2>&1 &
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_STAGE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_STAGE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_STAGE_SERVICE_ROLE_KEY }}
+      - name: Wait for the dev server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:4321 > /dev/null && exit 0
+            sleep 2
+          done
+          echo "Dev server did not come up within 60s:" >&2
+          cat dev-server.log >&2
+          exit 1
+      - run: npm run test:e2e
+        env:
+          E2E_BASE_URL: http://localhost:4321
+          SUPABASE_STAGE_URL: ${{ secrets.SUPABASE_STAGE_URL }}
+          SUPABASE_STAGE_ANON_KEY: ${{ secrets.SUPABASE_STAGE_ANON_KEY }}
+          SUPABASE_STAGE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_STAGE_SERVICE_ROLE_KEY }}
+      - name: Upload dev server log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-dev-server-log
+          path: dev-server.log
+          retention-days: 5
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 5
