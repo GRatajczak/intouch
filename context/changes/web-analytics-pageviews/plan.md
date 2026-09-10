@@ -610,18 +610,24 @@ data to a vendor and the reason phases 2 and 3 are separated.
 
 #### Automated
 
-- [x] 2.1 Build succeeds: `npm run build`
-- [x] 2.2 Type checking passes: `npx astro check`
-- [x] 2.3 Linting passes: `npm run lint`
-- [x] 2.4 Full suite still passes: `npm test`
+- [x] 2.1 Build succeeds: `npm run build` — f3a34b4
+- [x] 2.2 Type checking passes: `npx astro check` — f3a34b4
+- [x] 2.3 Linting passes: `npm run lint` — f3a34b4
+- [x] 2.4 Full suite still passes: `npm test` — f3a34b4
 
 #### Manual
 
-- [x] 2.5 Script present on every page, no console errors
-- [x] 2.6 Zero requests to eu.i.posthog.com, signed in or out
-- [x] 2.7 No analytics markup rendered when POSTHOG_API_KEY is unset
+- [x] 2.5 Script present on every page, no console errors — f3a34b4
+- [x] 2.6 Zero requests to eu.i.posthog.com, signed in or out — f3a34b4
+- [x] 2.7 No analytics markup rendered when POSTHOG_API_KEY is unset — f3a34b4
 
 ### Phase 3: Consent banner for anonymous traffic
+
+> **Dropped 2026-09-10 by decision — not implemented.** The switch under
+> Ustawienia → Prywatność is the only consent control; anonymous traffic is
+> collected by default. Rationale and the rejected alternatives are in this
+> change's `change.md`. The rows below are void and stay unchecked; the phase
+> block above is kept as the record of what was considered.
 
 #### Automated
 

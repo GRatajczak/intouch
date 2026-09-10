@@ -57,6 +57,13 @@ const URL_PROPERTIES = new Set([
   "$initial_referrer",
 ]);
 
+/**
+ * What the server knows about this visitor's analytics consent.
+ *
+ * `"unknown"` is not a refusal and not a pending question -- it means nobody is
+ * signed in, so there is no `profiles` row to read a verdict from. Anonymous
+ * traffic is collected by default; see `applyConsent`.
+ */
 export type ConsentVerdict = "granted" | "denied" | "unknown";
 
 export interface StartAnalyticsOptions {
@@ -64,7 +71,12 @@ export interface StartAnalyticsOptions {
   token: string;
   /** The signed-in user's Supabase id, or `null` for anonymous traffic. */
   userId: string | null;
-  /** What the server knows about consent. `"unknown"` leaves the SDK muted. */
+  /**
+   * What the server knows about consent.
+   *
+   * `"granted"` / `"denied"` come from `profiles.analytics_opt_out`.
+   * `"unknown"` means anonymous, which resolves to collecting.
+   */
   consent: ConsentVerdict;
 }
 
@@ -139,7 +151,15 @@ export function startAnalytics({ token, userId, consent }: StartAnalyticsOptions
 }
 
 /**
- * `"granted"` unmutes, `"denied"` mutes, `"unknown"` leaves the decision open.
+ * `"denied"` mutes. Everything else unmutes.
+ *
+ * `"unknown"` -- an anonymous visitor -- collects. There is no consent banner:
+ * anonymous traffic is exactly the traffic this channel exists to measure (the
+ * landing page, referrers, UTMs, the path into signup), and none of it happens
+ * after a `profiles` row exists to carry a verdict. The control is the switch
+ * under Ustawienia -> Prywatnosc, which governs from the moment there is an
+ * account to attach it to. Dropping the banner was a deliberate scope decision
+ * on 2026-09-10, recorded in this change's change.md.
  *
  * `opt_in_capturing()` captures an `$opt_in` event by default; suppressed here
  * because this runs on EVERY page load for a consenting visitor, and one
@@ -149,16 +169,15 @@ export function startAnalytics({ token, userId, consent }: StartAnalyticsOptions
  * `opt_in_capturing` tail is `this.config.capture_pageview && this.Bu()`, and
  * `Bu()` carries a once-per-load flag. So the pageview suppressed at init is
  * not lost, and nothing else should capture one to "recover" it: that would
- * double-count. (The plan assumed the opposite; see the phase 3 note.)
+ * double-count. The plan assumed the opposite and was checked against the
+ * installed package instead.
  */
 function applyConsent(consent: ConsentVerdict): void {
-  if (consent === "granted") {
-    posthog.opt_in_capturing({ captureEventName: false });
-    return;
-  }
   if (consent === "denied") {
     posthog.opt_out_capturing();
+    return;
   }
+  posthog.opt_in_capturing({ captureEventName: false });
 }
 
 /**
