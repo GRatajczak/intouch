@@ -24,6 +24,13 @@ test.describe("signed out", () => {
   test("a browser with no session reaches no protected route and no relationship data", async ({ page }) => {
     const { peopleNames } = readTestUser();
 
+    // Unconditional, even though a redirect should make it unreachable: if the
+    // gate ever regresses -- the exact thing this test exists to catch -- the
+    // dashboard island would mount and POST /api/rankings for real, spending
+    // OpenAI budget during the run that is supposed to be reporting the bug.
+    // The invariant in E2E_RULES.md must not depend on the code under test.
+    await page.route("**/api/rankings*", (route) => route.abort());
+
     for (const route of PROTECTED_ROUTES) {
       await page.goto(route);
 

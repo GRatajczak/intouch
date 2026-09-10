@@ -52,7 +52,9 @@ export default defineConfig({
 
   use: {
     baseURL: BASE_URL,
-    trace: "on-first-retry",
+    // Not "on-first-retry": `retries` is 0 above and stays 0, so there is never
+    // a first retry and that mode would silently record nothing at all.
+    trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
 

@@ -29,9 +29,14 @@ const NO_PERSIST = { auth: { autoRefreshToken: false, persistSession: false } };
  *
  * Mirrors `readLocalStatus()` in tests/rls/fixture.ts, including its refusal to
  * run against anything but a local URL -- this module creates and deletes real
- * users, and pointed at a hosted project it would do that to production. It is
- * duplicated rather than imported because tests/rls is a Vitest module tree and
- * this one runs under Playwright's own transform; keep the two in sync.
+ * users, and pointed at a hosted project it would do that to production.
+ *
+ * It is duplicated rather than imported for one reason only: the original is not
+ * exported. Nothing about it is Vitest-specific, and this file imports the `@/`
+ * alias fine under Playwright's transform, so the barrier is visibility, not
+ * tooling. That makes the duplication a liability rather than a necessity: this
+ * copy is a safety guard, so **harden the two together or not at all** -- a check
+ * tightened in one file and missed in the other leaves the weaker path open.
  */
 export function readLocalStatus(): LocalStatus {
   let raw: string;

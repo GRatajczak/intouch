@@ -1,7 +1,7 @@
 ---
 change_id: e2e-browser-layer
 title: Wąska warstwa E2E (Playwright) dla ryzyk #4 i #5
-status: implementing
+status: impl_reviewed
 created: 2026-09-10
 updated: 2026-09-10
 archived_at: null
@@ -64,4 +64,7 @@ none was committed. The Risk #5 break needed a dev server restart on either side
 of it, because `src/middleware.ts` does not hot-reload — its first run reported a
 false all-clear, which is now written into `E2E_RULES.md` and test-plan §6.7.
 
-Not committed. The phase-end commit ritual is still open.
+Committed as `067f526` (the layer) and `a23c1ed` (commit SHAs written back into
+Progress). Implementation review run 2026-09-10 -- see
+`reviews/impl-review.md`; verdict NEEDS ATTENTION, three warnings fixed, one
+(F1, user-leak-on-partial-seed) deliberately skipped.
