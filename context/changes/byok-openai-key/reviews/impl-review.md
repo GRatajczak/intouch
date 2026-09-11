@@ -28,7 +28,7 @@
 - **Location**: src/pages/api/settings/openai-key.ts:117-120 (DELETE handler)
 - **Detail**: POST's save path clears `openai_api_key_failed_at`/`openai_api_key_failure_reason` alongside the ciphertext (lines 84-91), but DELETE only nulls `openai_api_key_ciphertext`/`openai_api_key_hint`. Currently harmless — `ApiKeySection` only renders `failure` inside the "key stored" branch, so a key-less row's stale mark is invisible today — but it is a real data-integrity gap: removing a key does not fully reset its row, and any future read of those columns (an admin view, a different UI branch) could misreport a removed key as still failing.
 - **Fix**: Add `openai_api_key_failed_at: null, openai_api_key_failure_reason: null` to DELETE's update payload, mirroring POST's save path.
-- **Decision**: FIXED
+- **Decision**: FIXED — `c7b5266`
 
 ### F2 — No cross-owner test for the DELETE handler
 
@@ -38,7 +38,7 @@
 - **Location**: tests/routes/openai-key.test.ts:183-204
 - **Detail**: The established convention in this test layer (`reminders-toggle.test.ts`, `delete-data.test.ts`, and this same file's own POST tests at lines 113-128) verifies an owner filter via the A-session/B-identity mismatch instrument. DELETE's `.eq("owner_id", user.id)` guard — the same shape of filter the POST test explicitly instruments — has no such test; DELETE is only covered for "anonymous caller" and "clears the caller's own key".
 - **Fix**: Add a DELETE cross-owner test mirroring the existing POST one (A's session, B's identity in `locals.user`), asserting neither owner's row is touched.
-- **Decision**: FIXED (verified it goes red when the owner filter is removed, then restored)
+- **Decision**: FIXED — `c7b5266` (verified it goes red when the owner filter is removed, then restored)
 
 ### F3 — OpenAI validation runs before the Supabase-configured check
 
@@ -48,7 +48,7 @@
 - **Location**: src/pages/api/settings/openai-key.ts:52-76
 - **Detail**: `reminders.ts` (the established sibling route) checks `createClient(...)` right after body validation, before any further work. `openai-key.ts`'s POST instead spends the billable, rate-limited `probe.models.list()` call first and only builds the Supabase client afterward — so a misconfigured-Supabase environment burns an OpenAI call for a request that could never have been saved anyway.
 - **Fix**: Move the `createClient` / null-check ahead of the `probe.models.list()` call, matching `reminders.ts`'s ordering.
-- **Decision**: FIXED
+- **Decision**: FIXED — `c7b5266`
 
 ### F4 — No CHECK constraint on `openai_api_key_failure_reason`
 
@@ -58,7 +58,7 @@
 - **Location**: supabase/migrations/20260911151726_add_profiles_openai_key_health.sql:15-17
 - **Detail**: The column is documented (comment) and only ever written as `"auth" | "quota" | null` by application code, but the database column is unconstrained `text`. A future bug or manual edit could write an arbitrary string that `settings.astro`'s ternary would then silently treat as "no failure" (neither `"auth"` nor `"quota"` matches, so `apiKeyFailure` resolves to `null`) — a silent-data-drift risk, not a security hole.
 - **Fix**: A new additive migration adding `check (openai_api_key_failure_reason is null or openai_api_key_failure_reason in ('auth', 'quota'))` — a fresh migration, not an edit to the shipped one, since it is already applied locally and pushed to stage.
-- **Decision**: FIXED — `supabase/migrations/20260911155533_add_profiles_openai_key_failure_reason_check.sql`, applied locally and pushed to stage
+- **Decision**: FIXED — `c7b5266`, `supabase/migrations/20260911155533_add_profiles_openai_key_failure_reason_check.sql`, applied locally and pushed to stage
 
 ### F5 — tests/stubs/ files outside the plan's file list
 
