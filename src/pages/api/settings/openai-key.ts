@@ -32,6 +32,14 @@ export const POST: APIRoute = async (context) => {
     return jsonResponse({ error: "Musisz być zalogowany" }, 401);
   }
 
+  // Checked before the OpenAI probe below, matching reminders.ts's ordering:
+  // a misconfigured Supabase must fail before this route spends a billable,
+  // rate-limited call on a request that could never have been saved anyway.
+  const supabase = createClient(context.request.headers, context.cookies);
+  if (!supabase) {
+    return jsonResponse({ error: "Supabase nie jest skonfigurowany" }, 500);
+  }
+
   let body: unknown;
   try {
     body = await context.request.json();
@@ -69,11 +77,6 @@ export const POST: APIRoute = async (context) => {
   }
 
   const hint = apiKey.slice(-HINT_LENGTH);
-
-  const supabase = createClient(context.request.headers, context.cookies);
-  if (!supabase) {
-    return jsonResponse({ error: "Supabase nie jest skonfigurowany" }, 500);
-  }
 
   // `.select().maybeSingle()` rather than a bare update, matching
   // reminders.ts: an UPDATE that matches zero rows reports `error: null`, so
@@ -124,7 +127,12 @@ export const DELETE: APIRoute = async (context) => {
 
   const { data: updated, error } = await supabase
     .from("profiles")
-    .update({ openai_api_key_ciphertext: null, openai_api_key_hint: null })
+    .update({
+      openai_api_key_ciphertext: null,
+      openai_api_key_hint: null,
+      openai_api_key_failed_at: null,
+      openai_api_key_failure_reason: null,
+    })
     .eq("owner_id", user.id)
     .select("openai_api_key_hint")
     .maybeSingle();

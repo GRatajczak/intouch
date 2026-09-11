@@ -190,6 +190,20 @@ describe("DELETE /api/settings/openai-key", () => {
     expect(await jsonBody(response)).toEqual({ error: "Musisz być zalogowany" });
   });
 
+  it("clears only the row the handler was told to, never the connection's owner", async () => {
+    // A's session, B's identity -- same mismatch instrument as POST's cross-owner
+    // test. Depends on the previous describe block's final test having saved a
+    // key for A: if this DELETE reached A's row, that key would be gone.
+    setRouteClient(fx.clientA);
+    expect(await ciphertextFor("A")).not.toBeNull();
+
+    const response = await deleteKey(createContext({ user: { id: fx.userBId }, method: "DELETE" }));
+
+    expect(response.status).toBe(404);
+    expect(await ciphertextFor("A")).not.toBeNull();
+    expect(await ciphertextFor("B")).toBeNull();
+  });
+
   it("clears the caller's own stored key", async () => {
     // Depends on the previous describe block's final test having saved a key for A.
     setRouteClient(fx.clientA);

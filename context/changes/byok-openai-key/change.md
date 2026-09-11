@@ -1,7 +1,7 @@
 ---
 change_id: byok-openai-key
 title: Own OpenAI key unlocks unlimited recomputes; without one, one manual recompute a day
-status: implemented
+status: impl_reviewed
 created: 2026-09-09
 updated: 2026-09-11
 archived_at: null
