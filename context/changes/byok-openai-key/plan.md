@@ -732,33 +732,33 @@ which is the behaviour Phase 2 and Phase 3 implement together.
 
 #### Automated
 
-- [x] 2.1 Unit tests pass
-- [x] 2.2 Type checking passes
-- [x] 2.3 Linting passes
-- [x] 2.4 Build passes
-- [x] 2.5 No new supabase-admin import outside the reminders module
+- [x] 2.1 Unit tests pass — e3f2d42
+- [x] 2.2 Type checking passes — e3f2d42
+- [x] 2.3 Linting passes — e3f2d42
+- [x] 2.4 Build passes — e3f2d42
+- [x] 2.5 No new supabase-admin import outside the reminders module — e3f2d42
 
 #### Manual
 
-- [x] 2.6 A recompute with a hand-seeded valid key is attributed to the user key in wrangler tail
-- [x] 2.7 A hand-seeded invalid key fails the job rather than falling back
+- [x] 2.6 A recompute with a hand-seeded valid key is attributed to the user key in wrangler tail — e3f2d42
+- [x] 2.7 A hand-seeded invalid key fails the job rather than falling back — e3f2d42
 
 ### Phase 3: The settings section
 
 #### Automated
 
-- [ ] 3.1 Route tests pass
-- [ ] 3.2 Type checking passes
-- [ ] 3.3 Linting passes
-- [ ] 3.4 Build passes
-- [ ] 3.5 Cross-owner test goes red when the owner filter is deleted
+- [x] 3.1 Route tests pass
+- [x] 3.2 Type checking passes
+- [x] 3.3 Linting passes
+- [x] 3.4 Build passes
+- [x] 3.5 Cross-owner test goes red when the owner filter is deleted
 
 #### Manual
 
-- [ ] 3.6 Saving a real key shows the mask and survives a reload
-- [ ] 3.7 A wrong key is rejected and stores nothing
-- [ ] 3.8 Removing the key returns the section to its empty state
-- [ ] 3.9 The section reads correctly on a narrow viewport
+- [x] 3.6 Saving a real key shows the mask and survives a reload
+- [x] 3.7 A wrong key is rejected and stores nothing
+- [x] 3.8 Removing the key returns the section to its empty state
+- [x] 3.9 The section reads correctly on a narrow viewport
 
 ### Phase 4: The daily gate
 

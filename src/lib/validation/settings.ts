@@ -60,3 +60,21 @@ export const analyticsToggleSchema = z.object({
 });
 
 export type AnalyticsToggleValues = z.infer<typeof analyticsToggleSchema>;
+
+// S-17's bring-your-own-key. A plausible-shape check, not a real validation --
+// the only thing that actually proves a key works is calling OpenAI with it,
+// which POST /api/settings/openai-key does itself before ever writing a row.
+// This just stops an obviously-wrong paste (empty, no "sk-" prefix, a handful
+// of characters) from spending that network call.
+const MIN_OPENAI_KEY_LENGTH = 20;
+
+export const openAiKeySchema = z.object({
+  apiKey: z
+    .string()
+    .trim()
+    .min(1, "Podaj klucz OpenAI")
+    .startsWith("sk-", "Klucz OpenAI powinien zaczynać się od „sk-”")
+    .min(MIN_OPENAI_KEY_LENGTH, "Ten klucz wygląda na zbyt krótki"),
+});
+
+export type OpenAiKeyValues = z.infer<typeof openAiKeySchema>;

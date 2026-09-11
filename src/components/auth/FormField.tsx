@@ -17,6 +17,7 @@ interface FormFieldProps {
   hint?: ReactNode;
   icon: ReactNode;
   endContent?: ReactNode;
+  autoComplete?: string;
 }
 
 export function FormField({
@@ -31,6 +32,7 @@ export function FormField({
   hint,
   icon,
   endContent,
+  autoComplete,
 }: FormFieldProps) {
   return (
     <div>
@@ -48,6 +50,7 @@ export function FormField({
             onChange(e.target.value);
           }}
           placeholder={placeholder}
+          autoComplete={autoComplete}
           className={cn(inputBase, error && "border-destructive focus:ring-destructive")}
         />
         {endContent}

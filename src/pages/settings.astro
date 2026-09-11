@@ -3,11 +3,13 @@ import AppShell from "@/components/layout/AppShell.astro";
 import DeleteDataSection from "@/components/settings/DeleteDataSection";
 import RemindersSection from "@/components/settings/RemindersSection";
 import AnalyticsSection from "@/components/settings/AnalyticsSection";
+import ApiKeySection from "@/components/settings/ApiKeySection";
 import EmailChangeForm from "@/components/settings/EmailChangeForm";
 import PasswordChangeForm from "@/components/settings/PasswordChangeForm";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase";
 import { loadProfileName } from "@/lib/shell-summary";
+import { resolveOwnerKey } from "@/lib/openai-key";
 
 const { user } = Astro.locals;
 
@@ -23,7 +25,7 @@ const settingsPrefs =
     ? (
         await supabase
           .from("profiles")
-          .select("reminders_enabled, analytics_opt_out")
+          .select("reminders_enabled, analytics_opt_out, openai_api_key_ciphertext, openai_api_key_hint")
           .eq("owner_id", user.id)
           .maybeSingle()
       ).data
@@ -33,6 +35,12 @@ const remindersEnabled = settingsPrefs?.reminders_enabled ?? true;
 // profile row, or a row predating F-06, means analytics are on -- the same
 // default the wrapper's consent read applies.
 const analyticsEnabled = !(settingsPrefs?.analytics_opt_out ?? false);
+// S-17: no profile row reads as no key on file, same as an absent ciphertext.
+const ownerKey = await resolveOwnerKey({
+  openai_api_key_ciphertext: settingsPrefs?.openai_api_key_ciphertext ?? null,
+});
+const apiKeyHint = settingsPrefs?.openai_api_key_hint ?? null;
+const apiKeyUnreadable = ownerKey.source === "app" && "unreadable" in ownerKey;
 ---
 
 <AppShell title="Ustawienia" profileName={profileName}>
@@ -65,6 +73,13 @@ const analyticsEnabled = !(settingsPrefs?.analytics_opt_out ?? false);
       <h2 class="text-foreground mb-3 text-sm font-semibold">Przypomnienia</h2>
       <div class="border-border bg-card text-card-foreground shadow-card rounded-2xl border p-8">
         <RemindersSection remindersEnabled={remindersEnabled} client:load />
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-foreground mb-3 text-sm font-semibold">Klucz OpenAI</h2>
+      <div class="border-border bg-card text-card-foreground shadow-card rounded-2xl border p-8">
+        <ApiKeySection hint={apiKeyHint} unreadable={apiKeyUnreadable} client:load />
       </div>
     </section>
 

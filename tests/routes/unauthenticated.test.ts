@@ -26,6 +26,7 @@ import { POST as profilePost } from "@/pages/api/profile";
 import { POST as deleteDataPost } from "@/pages/api/settings/delete-data";
 import { POST as settingsEmailPost } from "@/pages/api/settings/email";
 import { POST as settingsPasswordPost } from "@/pages/api/settings/password";
+import { POST as openaiKeyPost, DELETE as openaiKeyDelete } from "@/pages/api/settings/openai-key";
 import { POST as peoplePost } from "@/pages/api/people";
 import { POST as resetPasswordPost } from "@/pages/api/auth/reset-password";
 
@@ -107,6 +108,19 @@ const JSON_ROUTES: JsonRouteCase[] = [
     name: "POST /api/settings/password",
     handler: settingsPasswordPost,
     method: "POST",
+    message: "Musisz być zalogowany",
+  },
+  {
+    name: "POST /api/settings/openai-key",
+    handler: openaiKeyPost,
+    method: "POST",
+    message: "Musisz być zalogowany",
+    json: { apiKey: "sk-anything" },
+  },
+  {
+    name: "DELETE /api/settings/openai-key",
+    handler: openaiKeyDelete,
+    method: "DELETE",
     message: "Musisz być zalogowany",
   },
 ];
