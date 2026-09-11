@@ -32,6 +32,18 @@ export default defineConfig(async (env) => {
       // Astro 6 requires an explicit environment, and this whole test surface is
       // server-side: RLS policies, API route handlers, HTTP requests.
       environment: "node",
+      // tests/rls and tests/routes drive real Postgres round trips -- locally
+      // against `supabase start` (single-digit ms), but in CI (fixture.ts's
+      // SUPABASE_STAGE_* opt-in) against a hosted stage project shared across
+      // every test file running concurrently. Individual queries there have been
+      // observed to occasionally take several seconds under that concurrent load
+      // (2026-09-11 CI run: unrelated RLS assertions in erasure.test.ts,
+      // isolation.test.ts and reminder-rpc.test.ts each timed out right at
+      // Vitest's 5000ms default with no error, just a slow round trip). 20s gives
+      // those queries room to actually finish instead of reporting a false
+      // failure; tests/unit's pure functions are unaffected since they never
+      // approach either bound.
+      testTimeout: 20_000,
       // One directory per layer, each with exactly one prerequisite:
       //   tests/unit   -- none; pure functions, no clock, no network, no database
       //   tests/rls    -- the local Supabase stack must be up (`supabase start`)

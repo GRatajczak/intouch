@@ -85,13 +85,21 @@ function yesterday(): string {
  * request is gated, not reused" an observation about the gate rather than a
  * race with the background job.
  */
+// 50 * 10ms was calibrated against `supabase start`'s local stack, where every
+// runRanking read/write round-trips in single-digit ms. In CI, fixture.ts's
+// SUPABASE_STAGE_* opt-in points this same fixture at a hosted stage project
+// instead -- real network round trips for runRanking's profile/people/facts
+// reads routinely blow past a 500ms total budget, which read as "job never
+// left pending" (a false failure) rather than an actual stuck job. 60 * 100ms
+// = 6s tolerates that network latency while still bounding a genuinely wedged
+// job to a finite wait.
 async function waitForJobSettled(jobId: string): Promise<void> {
-  for (let attempt = 0; attempt < 50; attempt++) {
+  for (let attempt = 0; attempt < 60; attempt++) {
     const job = await readJob(jobId);
     if (job && job.status !== "pending") {
       return;
     }
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
   throw new Error(`job ${jobId} never left "pending"`);
 }
