@@ -1,7 +1,9 @@
 import { zodTextFormat } from "openai/helpers/zod";
+import { AuthenticationError, RateLimitError } from "openai";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/db/database.types";
 import { createOpenAIClient } from "@/lib/openai";
+import { resolveOwnerKey, type OwnerKey } from "@/lib/openai-key";
 import { writeJob } from "@/lib/ai-jobs";
 import { loadContactFacts, type ContactFacts } from "@/lib/contact-history/facts";
 import { buildRankingPrompt } from "@/lib/ranking/prompt";
@@ -113,6 +115,28 @@ function reconcileEntries(
 }
 
 /**
+ * Turns a caught error into the message written to the failed job.
+ *
+ * A rejection of the OWNER'S OWN key is the user's problem, not ours: name
+ * which of the two OpenAI raised (rejected key vs. exhausted quota) so
+ * /settings and the dashboard banner can say something actionable, in
+ * Polish, and never quote the key itself. Every other error -- including a
+ * user-key failure that is neither of those two classes -- falls through to
+ * the vendor message unchanged, exactly as before S-17.
+ */
+function classifyRankingError(err: unknown, ownerKey: OwnerKey | undefined): string {
+  if (ownerKey?.source === "user") {
+    if (err instanceof AuthenticationError) {
+      return "OpenAI odrzucił Twój klucz — sprawdź go w Ustawieniach i wklej ponownie.";
+    }
+    if (err instanceof RateLimitError) {
+      return "Przekroczono limit Twojego klucza OpenAI — sprawdź swój plan i limity w OpenAI.";
+    }
+  }
+  return err instanceof Error ? err.message : String(err);
+}
+
+/**
  * The background task: fetch inputs, call the model, reconcile, persist, and
  * report terminal status. Kept out of the route so the route stays a thin
  * auth-and-dispatch shell like ai-ping.ts. Every failure path is caught,
@@ -134,12 +158,15 @@ export async function runRanking(
   jobId: string,
 ): Promise<"done" | "failed"> {
   const startedAt = Date.now();
+  // Set before the OpenAI client exists, so the catch block below can tell a
+  // user-key rejection apart from an app-key misconfiguration even when the
+  // failure happens before ownerKey would otherwise be in scope.
+  let ownerKey: OwnerKey | undefined;
   try {
-    const openai = createOpenAIClient();
-    if (!openai) {
-      throw new Error("OPENAI_API_KEY is not configured");
-    }
-
+    // Profile loads BEFORE the client is built -- S-17 inverted this order on
+    // purpose, because the client now depends on the profile's key, not the
+    // other way around. The "No profile found" throw below still fires before
+    // any OpenAI call is attempted.
     const [{ data: profile }, people, facts] = await Promise.all([
       supabase.from("profiles").select("*").eq("owner_id", ownerId).maybeSingle(),
       loadRankingPeople(supabase, ownerId),
@@ -157,13 +184,26 @@ export async function runRanking(
       throw new Error("No people found for this account");
     }
 
+    ownerKey = await resolveOwnerKey(profile);
+    const openai = createOpenAIClient(ownerKey.source === "user" ? ownerKey.apiKey : undefined);
+    if (!openai) {
+      throw new Error("OPENAI_API_KEY is not configured");
+    }
+
     const { messages, peopleIncluded } = buildRankingPrompt(profile, people, facts);
 
-    const response = await openai.responses.parse({
-      model: RANKING_MODEL,
-      input: messages,
-      text: { format: zodTextFormat(rankingOutputSchema, "ranking") },
-    });
+    // maxRetries: 0 -- a rejected or exhausted USER key must fail outright, on
+    // the first call, never masked by the SDK's own retry-on-429 default. That
+    // is what makes "no second call follows a user-key rejection" true rather
+    // than merely likely.
+    const response = await openai.responses.parse(
+      {
+        model: RANKING_MODEL,
+        input: messages,
+        text: { format: zodTextFormat(rankingOutputSchema, "ranking") },
+      },
+      { maxRetries: 0 },
+    );
 
     const parsed = response.output_parsed;
     if (!parsed) {
@@ -215,13 +255,14 @@ export async function runRanking(
 
     // Without this the happy path is invisible in `wrangler tail` -- mirrors
     // ai-ping.ts's own completion log. Shares `durationMs` with the event above
-    // so the two never disagree.
+    // so the two never disagree. Key source is here too, so `wrangler tail`
+    // shows whose key paid for the run.
     console.log(
-      `[ranking] job ${jobId} done in ${String(durationMs)}ms, recency floor applied to ${String(flooredCount)} entries`,
+      `[ranking] job ${jobId} done in ${String(durationMs)}ms, source=${ownerKey.source}, recency floor applied to ${String(flooredCount)} entries`,
     );
     return "done";
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
+    const message = classifyRankingError(err, ownerKey);
     console.error(`[ranking] job ${jobId} failed: ${message}`);
     await writeJob(jobId, { status: "failed", error: message });
     return "failed";

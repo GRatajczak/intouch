@@ -716,32 +716,32 @@ which is the behaviour Phase 2 and Phase 3 implement together.
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly against the local stack
-- [x] 1.2 Generated types include the three new columns
-- [x] 1.3 Unit tests pass
-- [x] 1.4 Type checking passes
-- [x] 1.5 Linting passes
+- [x] 1.1 Migration applies cleanly against the local stack — aa0af08
+- [x] 1.2 Generated types include the three new columns — aa0af08
+- [x] 1.3 Unit tests pass — aa0af08
+- [x] 1.4 Type checking passes — aa0af08
+- [x] 1.5 Linting passes — aa0af08
 
 #### Manual
 
-- [x] 1.6 Encryption secret set in Workers Secrets via printf
-- [x] 1.7 Same value added to GitHub Secrets
-- [x] 1.8 `wrangler secret list` shows the name present
+- [x] 1.6 Encryption secret set in Workers Secrets via printf — aa0af08
+- [x] 1.7 Same value added to GitHub Secrets — aa0af08
+- [x] 1.8 `wrangler secret list` shows the name present — aa0af08
 
 ### Phase 2: The owner's key reaches the model
 
 #### Automated
 
-- [ ] 2.1 Unit tests pass
-- [ ] 2.2 Type checking passes
-- [ ] 2.3 Linting passes
-- [ ] 2.4 Build passes
-- [ ] 2.5 No new supabase-admin import outside the reminders module
+- [x] 2.1 Unit tests pass
+- [x] 2.2 Type checking passes
+- [x] 2.3 Linting passes
+- [x] 2.4 Build passes
+- [x] 2.5 No new supabase-admin import outside the reminders module
 
 #### Manual
 
-- [ ] 2.6 A recompute with a hand-seeded valid key is attributed to the user key in wrangler tail
-- [ ] 2.7 A hand-seeded invalid key fails the job rather than falling back
+- [x] 2.6 A recompute with a hand-seeded valid key is attributed to the user key in wrangler tail
+- [x] 2.7 A hand-seeded invalid key fails the job rather than falling back
 
 ### Phase 3: The settings section
 
