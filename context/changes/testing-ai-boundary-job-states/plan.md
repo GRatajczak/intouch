@@ -318,13 +318,15 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 1.1 npm test tests/unit/ranking-key-source.test.ts passes with all three original tests unchanged
-- [x] 1.2 npm run lint passes
-- [x] 1.3 tsc --noEmit passes
+- [x] 1.1 npm test tests/unit/ranking-key-source.test.ts passes with all three original tests unchanged — 8278213
+- [x] 1.2 npm run lint passes — 8278213
+- [x] 1.3 tsc --noEmit passes — 8278213
 
 #### Manual
 
-- [ ] 1.4 Diff of ranking-key-source.test.ts shows only import changes and the one successResponse() call-site update
+- [x] 1.4 Diff of ranking-key-source.test.ts shows only import changes and the one successResponse() call-site update — 8278213
+
+> Note on 8278213: this phase's files (`tests/stubs/fake-ranking-supabase.ts`, `tests/stubs/openai-responses-fetch.ts`, the `ranking-key-source.test.ts` refactor) landed via a concurrent session's unrelated commit (`feat(byok-openai-key): marking a key that stopped working (p5)`), which independently needed the same extraction and found these files already on disk, uncommitted, from this phase's work. Its own commit message credits the concurrent origin. Content was verified byte-identical between what this phase wrote and what that commit captured — no work was lost or altered. No separate commit was made for this phase since the working tree held nothing left to stage.
 
 ### Phase 2: Reconciliation fix and terminal-state test coverage (Risks #3 and #4)
 
