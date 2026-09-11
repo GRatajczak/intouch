@@ -90,7 +90,7 @@ orchestrator updates Status as artifacts appear on disk.
 | --- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------- | -------------------------------------------------------------------- | ----------- | ----------------------------------------------------- |
 | 1   | Runner bootstrap and access boundary         | Vitest exists and runs, and neither a second user nor an anonymous caller can reach the first user's data through real routes | #1                 | unit + integration                                                   | complete    | `context/changes/testing-runner-and-access-boundary/` |
 | 2   | Erasure and lifecycle                        | Deletion is complete across every table, and deactivate retains history while leaving the ranking input                       | —                  | integration                                                          | complete    | `context/archive/2026-09-04-person-lifecycle-and-erasure/` (delivered outside the rollout, by S-05) |
-| 3   | AI boundary contract and job terminal states | Bad provider output becomes a visible error instead of a rendered order, no job can strand the polling view, and a schema-valid response that contradicts a held fact — or drifts run-to-run on identical input — is caught rather than rendered as authoritative | #3, #4             | unit/contract on fixtures + integration + one AI-native sanity judge | not started | —                                                     |
+| 3   | AI boundary contract and job terminal states | Bad provider output becomes a visible error instead of a rendered order, no job can strand the polling view, and a schema-valid response that contradicts a held fact — or drifts run-to-run on identical input — is caught rather than rendered as authoritative | #3, #4             | unit/contract on fixtures + integration + one AI-native sanity judge | change opened | `context/changes/testing-ai-boundary-job-states/`     |
 | 4   | Input boundary and prompt composition        | The server enforces the same bounds as the form, free text cannot change the ranking output contract, and a rejected add-person submit does not discard what the user typed | #6, #8             | integration + unit                                                   | not started | —                                                     |
 | 5   | Quality-gates wiring                         | The suite blocks CI and deploy — the local pre-commit and hook layers are already wired; only the CI gate itself remains       | #7, cross-cutting | gates                                                                 | not started | local layer complete (`.husky/pre-commit` + `.claude/hooks/`); delivery half complete via `context/archive/2026-09-08-decay-driven-reminders/` (S-04); CI gate not started |
 | 6   | Analytics privacy boundary                   | No event payload carries a person's name, description, context, tags or the user's email, and an opt-out actually suppresses sending | #9                 | unit + integration with the transport stubbed at the network edge    | not started | —                                                     |
@@ -164,6 +164,13 @@ no local Postgres. `tests/http` needs no exclusion — it self-skips on an unset
 The suite is deliberately not gated until Phase 5: gating a suite of one
 phase's tests buys nothing and blocks the rollout on flakiness before there
 is anything worth protecting.
+
+**What CI actually runs today.** The Local layering table's "CI" row above
+describes the target shape, not the current one. `.github/workflows/ci.yml`
+and `deploy.yml` run `npm run lint` and `npm run build` only — no `vitest`
+step exists in either workflow. A regression in the suite currently blocks
+nothing in CI or deploy; that gap is exactly what Phase 5's remaining scope
+closes.
 
 ## 6. Cookbook Patterns
 
@@ -327,12 +334,38 @@ contributors should respect these unless the underlying assumption changes.
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-09-10 (§4 e2e row, §5 gate row and the CI paragraph rewritten by `context/changes/e2e-browser-layer/`)
+- Strategy (§1–§5) last reviewed: 2026-09-10 (§2 risk map rebuilt and §3 rollout reconciled by
+  `context/changes/test-plan-refresh-2026-09-07/`, on top of the §4 e2e row, §5 gate row and the
+  CI paragraph rewritten by `context/changes/e2e-browser-layer/`)
 - Stack versions last verified: 2026-09-10 (Playwright 1.63.0 added; Vitest 5.0.0 added by §3 Phase 1)
 - §6.3 cookbook last corrected: 2026-09-08 (two rigor traps found in Phase 1's own suite)
 - §6.7 cookbook added: 2026-09-10 (e2e layer, with the three traps it cost to find)
-- §7 e2e exclusion re-evaluated: 2026-09-10 — narrowed from "no Playwright layer" to "Risk #4 and #1's no-valid-session half only"
+- §7 e2e exclusion re-evaluated: 2026-09-10 — narrowed from "no Playwright layer" to "Risk #4 and
+  #1's no-valid-session half only"; re-read again 2026-09-10 against the newly admitted #8 and #9 —
+  both are reachable at the component/route and unit/stubbed-transport layers respectively, neither
+  needs a browser, so the exclusion stands unchanged
 - AI-native tool references last verified: 2026-09-10
+
+### Retirements
+
+- **Risk #2** (erasure) retired from the map 2026-09-08. Full end-to-end coverage exists —
+  `tests/routes/erasure.test.ts` (5 tests: deactivate → history → ranking-input → delete → 404),
+  delivered by S-05, `context/archive/2026-09-04-person-lifecycle-and-erasure/`. §3 Phase 2 is
+  `complete`.
+
+### Retirement threshold
+
+A risk row may leave the map only when **both** hold:
+
+1. A test covers the entire end-to-end scenario named in that risk's "what would prove
+   protection" cell in the Risk Response Guidance table — not a fragment of it.
+2. The corresponding §3 phase is `complete`.
+
+Partial coverage leaves the row on the map, even if it feels well-tested. Applying this today to
+**#7** (the scheduled sweep) illustrates the bar: coverage is unit tests over `applyRecencyFloor`
+and the sweep's cadence/recipient/failure-recording logic, not an end-to-end run against a real
+multi-user dataset — and the roadmap's open question about RLS for an absent-user sweep read is
+still unresolved. #7 does not meet the bar and **stays on the map**.
 
 Refresh (`/10x-test-plan --refresh`) when:
 

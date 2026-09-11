@@ -454,24 +454,24 @@ renumbered, that config breaks silently.
 
 #### Automated
 
-- [x] 2.1 No `#5` or `#2` risk reference survives anywhere in the file
-- [x] 2.2 Every §2 risk id appears in at least one §3 "Risks covered" cell
-- [x] 2.3 `npm run lint` passes
+- [x] 2.1 No `#5` or `#2` risk reference survives anywhere in the file — d58814f
+- [x] 2.2 Every §2 risk id appears in at least one §3 "Risks covered" cell — d58814f
+- [x] 2.3 `npm run lint` passes — d58814f
 
 #### Manual
 
-- [x] 2.4 The rollout table answers "what is left?" on its own
-- [x] 2.5 Phase 5's remaining scope is unambiguously the CI gate
-- [x] 2.6 Phase 4's three concerns read as one phase
+- [x] 2.4 The rollout table answers "what is left?" on its own — d58814f
+- [x] 2.5 Phase 5's remaining scope is unambiguously the CI gate — d58814f
+- [x] 2.6 Phase 4's three concerns read as one phase — d58814f
 
 ### Phase 3: Ripple into §5, §7 and §8
 
 #### Automated
 
-- [ ] 3.1 No cited §3 phase number points at a phase that no longer exists
-- [ ] 3.2 §8 contains the retirement threshold as a stated rule
-- [ ] 3.3 `npm run lint` passes
-- [ ] 3.4 `npm test` still green (control — nothing outside `context/` changed)
+- [x] 3.1 No cited §3 phase number points at a phase that no longer exists
+- [x] 3.2 §8 contains the retirement threshold as a stated rule
+- [x] 3.3 `npm run lint` passes
+- [x] 3.4 `npm test` still green (control — nothing outside `context/` changed)
 
 #### Manual
 
