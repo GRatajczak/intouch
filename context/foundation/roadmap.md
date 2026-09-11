@@ -3,7 +3,7 @@ project: "InTouch"
 version: 2
 status: active
 created: 2026-08-15
-updated: 2026-09-08
+updated: 2026-09-11
 prd_version: 2
 main_goal: speed
 top_blocker: time
@@ -59,6 +59,7 @@ successfully done").
 | S-09 | `self-profile-rhythm-fields`  | tell the app their own contact rhythm (time budget, channels, slots) so suggestions land in it | S-01          | FR-002, FR-007                 | done |
 | S-10 | `add-person-context-fields`   | add a person through a form inside the app shell, with richer per-person context (who they are, freeform tags, roughly when last in touch) | S-01, S-03, F-05 | FR-003, Open Q2         | done |
 | S-11 | `ranking-recency-floor`       | trust that marking a contact actually moves the suggested time window, and that the same input gives the same answer | S-03, S-10 | US-01, FR-007, FR-009 | done |
+| S-17 | `byok-openai-key`             | paste their own OpenAI key in `/settings` for unlimited manual recomputes; without one, "Przelicz teraz" is capped at once per calendar day | F-02, S-07 | FR-001 (amended), FR-007 | done |
 
 ## Streams
 
@@ -73,7 +74,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 | E      | Visual foundation         | `F-03` → `F-05`                      | Runs in parallel with `F-01`/`F-02`; joins Stream A at `S-01`, the first slice that renders product screens. `F-05` follows once `S-01` ships, since its shell needs real people/profile data to show. |
 | F      | Public landing page       | `F-03` → `S-06`                      | Parallel with everything else once `F-03` lands. A leaf outcome — nothing downstream depends on it; it's the first thing a visitor meets, not a foundation for anything. |
 | H      | Product measurement       | `S-03` → `F-06`                      | Starts once the funnel it measures exists. A leaf track — nothing depends on it structurally; it feeds the *decisions* still open on `S-04` (Open Questions 3 and 5) rather than any slice's code. |
-| G      | Account & credentials     | `F-05` → `S-07`; `F-03` → `S-08`     | Two independent branches on the same theme. `S-07` fills the `/settings` stub `F-05` created — its account half; the reminder half of that page belongs to `S-04`, so those two meet on one route without depending on each other. `S-08` is unauthenticated and shares nothing but Supabase Auth, so it needs neither `S-01` nor the shell. |
+| G      | Account & credentials     | `F-05` → `S-07`; `F-03` → `S-08`; `F-02`, `S-07` → `S-17` | Three branches on the same theme. `S-07` fills the `/settings` stub `F-05` created — its account half; the reminder half of that page belongs to `S-04`, so those two meet on one route without depending on each other. `S-08` is unauthenticated and shares nothing but Supabase Auth, so it needs neither `S-01` nor the shell. `S-17` adds a fourth `/settings` section and reuses `F-02`'s OpenAI call path per-owner instead of app-wide. |
 | I      | Tester feedback (2026-09-08) | `S-11`                               | Opened by real production feedback, triaged in `context/changes/feedback-triage-2026-09-08/triage.md`. `S-11` (the P0 — the ranking bug the tester actually hit) is shipped and closes the stream on the board. The triage's five remaining findings are **parked**, not sequenced — see `## Parked`. |
 | J      | Test harness & rigour     | `F-07`                               | Phase-level tracking lives in `context/foundation/test-plan.md` §3, not here — this roadmap carries the outcome, that document carries the five rollout phases. The follow-on list Phase 1 pinned is **parked** (see `## Parked`), so this stream is `F-07` alone. |
 
@@ -353,6 +354,21 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** The diagnosis mattered more than the fix. The tester's own hypothesis ("you've got some increment without checking the date") was wrong — nothing in the code increments a time window; it is chosen wholesale by the model. The screenshot proved the real cause: the prompt handed the model two contradictory facts about the same person three lines apart (`last_contact_bucket`, written only by the person forms and never updated by a `contact_event`, saying "2–6 months ago"; the facts block saying zero days) and the model quoted the stale one. Three of the four fixes only improve the odds — cutting the stale field, and inverting the prompt's hierarchy so recency outranks weight. **Only the deterministic floor applied after the model answers makes the behaviour repeatable**, which is the general lesson: an LLM's output is an input to validate, not a result to store.
 - **Status:** done — archived 2026-09-08 → `context/archive/2026-09-08-ranking-recency-floor/`
 
+### S-17: Bring-your-own OpenAI key
+
+- **Outcome:** A signed-in user pastes their own OpenAI API key into `/settings`. From that point every ranking computed for them — including the one behind their reminder emails — is billed to their key, and "Przelicz teraz" has no cap. A user with no key keeps the free tier: the automatic 24-hour refresh stays unlimited, and the manual recompute button is allowed once per calendar day in `Europe/Warsaw`.
+- **Change ID:** `byok-openai-key`
+- **PRD refs:** FR-001 (amended — cost control now has a second mechanism alongside mandatory login; see the dated note under FR-001), FR-007
+- **Unlocks:** — (leaf outcome; no downstream slice currently depends on it)
+- **Prerequisites:** F-02 (the OpenAI call path this threads a per-owner key through), S-07 (the `/settings` page this section lands on)
+- **Parallel with:** — nothing outstanding on the board at the time this shipped.
+- **Blockers:** —
+- **Unknowns:** — resolved during this slice's research and at the change's opening (`context/changes/byok-openai-key/change.md`):
+  - ~~Where does the ciphertext live, and what encrypts it?~~ AES-GCM in a versioned envelope (`v1:<iv>:<ciphertext>`), keyed by a new Worker secret (`OPENAI_KEY_ENCRYPTION_KEY`), on nullable `profiles` columns — not a new table.
+  - ~~What happens on a decryption failure versus a provider rejection?~~ Deliberately asymmetric: a decryption failure (our fault) falls back silently to the app key and the free tier; a provider rejection (the user's key being bad) fails the run outright, with no fallback — collapsing the two would turn a bad key into an unlimited free tier billed to the app.
+- **Risk:** Low technical risk, additive migrations throughout (`CLAUDE.md` §Rollback). The real risk this unparks: this is the repo's first cryptographic secret and its first user-submitted credential storage, so the asymmetric-failure design above is what stands between BYOK and quietly reopening the cost-control gap FR-001's mandatory login exists to close.
+- **Status:** done — shipped `aa0af08`…`8278213`, five phases. Linear GRA-33.
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                      | Suggested issue title                                         | Ready for `/10x-plan` | Notes                                                       |
@@ -375,6 +391,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | F-06       | `product-analytics-posthog`    | PostHog funnel instrumentation for the primary success flow    | done                  | Shipped `5e55410`…`e5cc8b2`; archived 2026-09-08. Linear GRA-22 |
 | F-07       | `automated-test-harness`       | Test runner that gates CI + an access boundary proven by tests | in progress           | Phase 1 of 5 shipped (`2026-09-07-testing-runner-and-access-boundary`). Phase tracking lives in `test-plan.md` §3, not here. Linear GRA-26 |
 | S-11       | `ranking-recency-floor`        | Time window reacts to a recorded contact, deterministically    | done                  | Triage F-1 (P0). Shipped `b9374ca`…`44fe61b`; archived 2026-09-08. Linear GRA-25 |
+| S-17       | `byok-openai-key`              | Own OpenAI key unlocks unlimited recomputes; a daily cap on manual recomputes without one | done | Unparked from `## Parked` → Other. Shipped `aa0af08`…`8278213`, five phases. Linear GRA-33 |
 
 ## Open Roadmap Questions
 
@@ -427,7 +444,6 @@ because that document is the real source and it is not going anywhere.
 - **Access-boundary hardening (`access-boundary-followups`)** — The three gaps `F-07`'s Phase 1 found and deliberately left alone: `AiJob` records carry no owner (`src/lib/ai-jobs.ts:10-16`), the two FK lookups in `POST /api/contact-events` have no owner filter, and the four protected page routes have no assertions on their own data reads. Why parked: **neither code gap breaches the privacy NFR today** — RLS covers both — so this is missing *redundancy*, not a hole, and Phase 1's suite already pins the current behaviour so nothing can change silently. A change folder is open at `context/changes/access-boundary-followups/` with the full write-up. Two things for whoever unparks it: the `AiJob` owner field must ship forward-compatibly (KV records in flight carry a one-hour TTL, and `CLAUDE.md`'s rollback rule applies to them as it does to migrations), and the comment in `tests/routes/cross-owner.test.ts` explaining why those two FK paths skip the mismatch instrument must be revisited once the filter lands.
 - **Categories / tabs for organizing people (FR-006)** — Why parked: nice-to-have in the PRD, purely organizational, does not touch the AI logic. Under `main_goal: speed` it is not on the must-have path.
 - **Application-level error tracking / logging library** — Why parked: Workers platform observability is already enabled; adding a vendor is maintenance cost the 3-week after-hours budget does not have. Revisit if `S-02`'s ranking quality becomes hard to debug from platform logs alone. Note `F-06` brings a vendor (PostHog) into the app for *product analytics*; whether its error-tracking or session-replay products are also switched on stays parked here and is explicitly out of `F-06`'s scope — session replay in particular would record screens full of third-party personal data.
-- **User-supplied OpenAI API key ("bring your own key")** — Why parked: the MVP runs on the author's single key in Workers Secrets (`F-02`), and that is also what keeps AI spend under the app's control — the exact reason the PRD makes login mandatory in FR-001. Accepting a user's own key turns a secret the app owns into user-submitted credential storage: encryption at rest, rotation, revocation, and a real error path for the day someone's key hits its quota — none of which buys anything while the only user is the author. Revisit if AI cost per user becomes the thing limiting who can be invited; `S-07`'s settings page is where it would land.
 - **Calendar integration** — Why parked: PRD §Non-Goals, deferred to v2. Reminders concern weakening relationships, not same-day events.
 - **Native mobile app** — Why parked: PRD §Non-Goals; the MVP is web-only.
 - **Event / meeting scheduling** — Why parked: PRD §Non-Goals. The app suggests a time window; the user initiates contact themselves.

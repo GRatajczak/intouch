@@ -100,7 +100,17 @@ Do produkcji ustaw sekrety Workera:
 ```bash
 wrangler secret put SUPABASE_URL
 wrangler secret put SUPABASE_KEY
+# S-17 (BYOK): klucz szyfrujący zapisane klucze OpenAI użytkowników, wartość
+# z `openssl rand -base64 32` (base64, 32 losowe bajty). Podawaj przez printf,
+# nie interaktywnie -- zob. context/deployment/deploy-plan.md.
+printf '%s' "$(openssl rand -base64 32)" | wrangler secret put OPENAI_KEY_ENCRYPTION_KEY
 ```
+
+> Ta lista jest już niepełna względem ośmiu sekretów faktycznie używanych
+> (`OPENAI_API_KEY`, `RESEND_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+> `REMINDER_FROM`, `APP_BASE_URL`, `POSTHOG_API_KEY` też trzeba ustawić) —
+> pełne dopełnienie zostaje poza zakresem tej zmiany, `OPENAI_KEY_ENCRYPTION_KEY`
+> dopisany tu celowo jako jedyny nowy sekret S-17.
 
 ## CI/CD
 
@@ -117,6 +127,7 @@ Wymagane GitHub Secrets:
 - `SUPABASE_KEY`
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
+- `OPENAI_KEY_ENCRYPTION_KEY` (S-17, ta sama wartość co w Workers Secrets)
 
 ## Struktura repo
 

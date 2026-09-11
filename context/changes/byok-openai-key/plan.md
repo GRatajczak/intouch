@@ -780,25 +780,25 @@ which is the behaviour Phase 2 and Phase 3 implement together.
 
 #### Automated
 
-- [x] 5.1 Migration applies cleanly
-- [x] 5.2 Types regenerate clean
-- [x] 5.3 Tests pass
-- [x] 5.4 Type checking passes
-- [x] 5.5 Linting passes
+- [x] 5.1 Migration applies cleanly — 8278213
+- [x] 5.2 Types regenerate clean — 8278213
+- [x] 5.3 Tests pass — 8278213
+- [x] 5.4 Type checking passes — 8278213
+- [x] 5.5 Linting passes — 8278213
 
 #### Manual
 
-- [x] 5.6 A revoked key is marked and explained in settings
-- [x] 5.7 Saving a working key clears the warning
+- [x] 5.6 A revoked key is marked and explained in settings — 8278213
+- [x] 5.7 Saving a working key clears the warning — 8278213
 
 ### Phase 6: Documents, roadmap and tracker
 
 #### Automated
 
-- [ ] 6.1 Linting passes
-- [ ] 6.2 No roadmap item contradicts change.md
+- [x] 6.1 Linting passes
+- [x] 6.2 No roadmap item contradicts change.md
 
 #### Manual
 
-- [ ] 6.3 The parked bullet is gone and S-17 reads consistently with its neighbours
-- [ ] 6.4 The Linear issue exists with the right title prefix and status
+- [x] 6.3 The parked bullet is gone and S-17 reads consistently with its neighbours
+- [x] 6.4 The Linear issue exists with the right title prefix and status

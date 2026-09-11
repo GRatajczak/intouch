@@ -81,6 +81,7 @@ i mają reprezentację **wyłącznie w Linear** — na GitHubie ich nie ma.
 | S-14 | `ranking-observability` | — | [GRA-30](https://linear.app/gratajczak/issue/GRA-30) | 🅿️ Parked |
 | S-15 | `ranking-invalidation-on-mark` | — | [GRA-31](https://linear.app/gratajczak/issue/GRA-31) | 🅿️ Parked (blocked by GRA-30) |
 | S-16 | `contact-event-backdating` | — | [GRA-32](https://linear.app/gratajczak/issue/GRA-32) | 🅿️ Parked |
+| S-17 | `byok-openai-key` | — | [GRA-33](https://linear.app/gratajczak/issue/GRA-33) | Done |
 
 **🅿️ Parked = w Linear `Backlog`, bez `plan-ready`, priorytet `No priority`.** Sześć
 pozycji przeniesionych do `roadmap.md` → `## Parked` decyzją użytkownika 2026-09-08;
