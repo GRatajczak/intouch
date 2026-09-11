@@ -16,7 +16,7 @@
 // `globalThis.fetch` stands in for the wire, so the real OpenAI SDK request
 // path runs unmodified against a canned response.
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
-import { createRlsFixture, destroyRlsFixture, mintExtraSession, type RlsFixture } from "../rls/fixture";
+import { createRlsFixture, destroyRlsFixture, type RlsFixture } from "../rls/fixture";
 import { createContext, jsonBody } from "./context";
 import { clearRouteClient, setRouteClient } from "./route-client";
 import { decryptApiKey } from "@/lib/crypto/api-key";
@@ -74,8 +74,12 @@ function stubOpenAiValidationSuccess(): void {
   );
 }
 
+// fx.clientA / fx.clientB directly, never mintExtraSession: this route never
+// calls auth.signOut() (unlike delete-data.test.ts's route), so a fresh
+// session per read would only spend the stage project's sign-in rate limit
+// for nothing.
 async function ciphertextFor(which: "A" | "B"): Promise<string | null> {
-  const client = await mintExtraSession(fx, which);
+  const client = which === "A" ? fx.clientA : fx.clientB;
   const ownerId = which === "A" ? fx.userAId : fx.userBId;
   const { data } = await client
     .from("profiles")

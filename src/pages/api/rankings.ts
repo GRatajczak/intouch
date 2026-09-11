@@ -3,6 +3,8 @@ import { readJob, writeJob, readLatestRankingJobId, writeLatestRankingJobId } fr
 import { createClient } from "@/lib/supabase";
 import { loadLatestRanking, isStale } from "@/lib/ranking/store";
 import { runRanking } from "@/lib/ranking/run";
+import { claimFreeRecompute } from "@/lib/ranking/free-tier";
+import { hasUsableOwnerKey } from "@/lib/openai-key";
 
 // Mirrors src/pages/api/internal/ai-ping.ts's json() helper -- this is a JSON
 // contract for both the browser island and machine callers, never a redirect.
@@ -59,6 +61,33 @@ export const POST: APIRoute = async (context) => {
     const latestJob = await readJob(latestJobId);
     if (latestJob?.status === "pending") {
       return json({ jobId: latestJobId }, 202);
+    }
+  }
+
+  // S-17's daily gate: only a manual (`force`) recompute is capped, only for an
+  // owner with no usable OpenAI key of their own, and only after the in-flight
+  // guard above -- so a duplicate click that reuses a running job never spends
+  // today's claim for nothing.
+  if (force) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("openai_api_key_ciphertext")
+      .eq("owner_id", ownerId)
+      .maybeSingle();
+
+    if (!(await hasUsableOwnerKey({ openai_api_key_ciphertext: profile?.openai_api_key_ciphertext ?? null }))) {
+      const claim = await claimFreeRecompute(supabase, ownerId);
+      if (claim === "spent") {
+        return json(
+          {
+            jobId: null,
+            reason: "daily_limit",
+            error:
+              "Dzisiejsze ręczne przeliczenie zostało już wykorzystane. Własny klucz OpenAI w Ustawieniach znosi ten limit.",
+          },
+          429,
+        );
+      }
     }
   }
 

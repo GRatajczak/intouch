@@ -747,34 +747,34 @@ which is the behaviour Phase 2 and Phase 3 implement together.
 
 #### Automated
 
-- [x] 3.1 Route tests pass
-- [x] 3.2 Type checking passes
-- [x] 3.3 Linting passes
-- [x] 3.4 Build passes
-- [x] 3.5 Cross-owner test goes red when the owner filter is deleted
+- [x] 3.1 Route tests pass — e7cdfc4
+- [x] 3.2 Type checking passes — e7cdfc4
+- [x] 3.3 Linting passes — e7cdfc4
+- [x] 3.4 Build passes — e7cdfc4
+- [x] 3.5 Cross-owner test goes red when the owner filter is deleted — e7cdfc4
 
 #### Manual
 
-- [x] 3.6 Saving a real key shows the mask and survives a reload
-- [x] 3.7 A wrong key is rejected and stores nothing
-- [x] 3.8 Removing the key returns the section to its empty state
-- [x] 3.9 The section reads correctly on a narrow viewport
+- [x] 3.6 Saving a real key shows the mask and survives a reload — e7cdfc4
+- [x] 3.7 A wrong key is rejected and stores nothing — e7cdfc4
+- [x] 3.8 Removing the key returns the section to its empty state — e7cdfc4
+- [x] 3.9 The section reads correctly on a narrow viewport — e7cdfc4
 
 ### Phase 4: The daily gate
 
 #### Automated
 
-- [ ] 4.1 Route tests pass
-- [ ] 4.2 Type checking passes
-- [ ] 4.3 Linting passes
-- [ ] 4.4 Build passes
-- [ ] 4.5 Cross-owner claim test goes red when the owner filter is deleted
+- [x] 4.1 Route tests pass
+- [x] 4.2 Type checking passes
+- [x] 4.3 Linting passes
+- [x] 4.4 Build passes
+- [x] 4.5 Cross-owner claim test goes red when the owner filter is deleted
 
 #### Manual
 
-- [ ] 4.6 Second same-day manual recompute is refused with the ranking still visible
-- [ ] 4.7 The automatic refresh still runs after the limit is hit
-- [ ] 4.8 An account with a stored key is never refused
+- [x] 4.6 Second same-day manual recompute is refused with the ranking still visible
+- [x] 4.7 The automatic refresh still runs after the limit is hit
+- [x] 4.8 An account with a stored key is never refused
 
 ### Phase 5: Marking a key that stopped working
 

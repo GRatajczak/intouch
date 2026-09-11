@@ -1,4 +1,4 @@
-export type RefreshBannerStatus = "fresh" | "refreshing" | "failed";
+export type RefreshBannerStatus = "fresh" | "refreshing" | "failed" | "limited";
 
 export interface RefreshBannerProps {
   status: RefreshBannerStatus;

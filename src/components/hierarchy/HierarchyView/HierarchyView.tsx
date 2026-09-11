@@ -16,7 +16,7 @@ import type { HierarchyViewProps } from "./types";
 const POLL_INTERVAL_MS = 2000;
 const MAX_POLL_ATTEMPTS = 60;
 
-type Status = "fresh" | "refreshing" | "failed";
+type Status = "fresh" | "refreshing" | "failed" | "limited";
 
 interface PostRankingsResponse {
   jobId: string | null;
@@ -170,6 +170,10 @@ export function HierarchyView({ initialRanking, staleOnLoad, initialFacts, hasPe
 
           if (body.reason === "fresh") {
             setStatus("fresh");
+            return;
+          }
+          if (body.reason === "daily_limit") {
+            setStatus("limited");
             return;
           }
           if (body.jobId) {

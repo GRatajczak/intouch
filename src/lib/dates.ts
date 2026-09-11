@@ -41,3 +41,18 @@ export function calendarDaysBetween(earlier: Date, later: Date): number {
   const msPerDay = 24 * 60 * 60 * 1000;
   return Math.round((toZonedMidnight(later) - toZonedMidnight(earlier)) / msPerDay);
 }
+
+/**
+ * The calendar date an instant falls on in APP_TIME_ZONE, as `YYYY-MM-DD`.
+ *
+ * S-17's free-tier claim (src/lib/ranking/free-tier.ts) compares this against
+ * `profiles.free_recompute_claimed_on`, encoding the same rule
+ * `reminder_candidates` (20260908090338_create_reminder_sends.sql) enforces in
+ * SQL: a calendar-day boundary in Europe/Warsaw, never an elapsed interval.
+ * Deliberately a DIFFERENT clock from `STALE_AFTER_MS`: the free claim resets
+ * at local midnight regardless of when it was last spent, while the automatic
+ * refresh is a rolling 24-hour window from its own last run.
+ */
+export function appCalendarDate(at: Date = new Date()): string {
+  return dayFormatter.format(at);
+}

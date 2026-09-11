@@ -74,6 +74,18 @@ export function RefreshBanner({
               )}
             </>
           )}
+          {status === "limited" && (
+            <>
+              <div className="text-foreground text-sm font-semibold">Dzisiejszy limit wykorzystany</div>
+              <div className="text-muted-foreground text-xs">
+                Ręczne przeliczenie znów będzie dostępne jutro.{" "}
+                <a href="/settings" className="underline">
+                  Dodaj własny klucz OpenAI
+                </a>
+                , żeby limit zniknął.
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -81,7 +93,7 @@ export function RefreshBanner({
         size="sm"
         variant="outline"
         onClick={onRefresh}
-        disabled={status === "refreshing"}
+        disabled={status === "refreshing" || status === "limited"}
         className="flex-shrink-0"
       >
         {status === "failed" ? "Spróbuj ponownie" : "Przelicz teraz"}
