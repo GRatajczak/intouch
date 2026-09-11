@@ -31,9 +31,14 @@ async function unwrapError(response: Response, fallback: string): Promise<string
  * ciphertext exists but decryption failed -- OUR fault, not the owner's, so
  * this asks for it again rather than pretending nothing is stored).
  */
-export default function ApiKeySection({ hint: initialHint, unreadable: initialUnreadable }: ApiKeySectionProps) {
+export default function ApiKeySection({
+  hint: initialHint,
+  unreadable: initialUnreadable,
+  failure: initialFailure,
+}: ApiKeySectionProps) {
   const [hint, setHint] = useState(initialHint);
   const [unreadable, setUnreadable] = useState(initialUnreadable);
+  const [failure, setFailure] = useState(initialFailure);
   const [apiKey, setApiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
   const [fieldError, setFieldError] = useState<string | undefined>();
@@ -63,6 +68,7 @@ export default function ApiKeySection({ hint: initialHint, unreadable: initialUn
       const body: { hint: string | null } = await response.json();
       setHint(body.hint);
       setUnreadable(false);
+      setFailure(null);
       setApiKey("");
       showToast("success", "Klucz OpenAI zapisany");
     } catch (err: unknown) {
@@ -105,6 +111,16 @@ export default function ApiKeySection({ hint: initialHint, unreadable: initialUn
           <p className="text-muted-foreground mt-1 text-sm">
             Rankingi liczone tym kluczem nie mają dziennego limitu ręcznych przeliczeń.
           </p>
+          {failure === "auth" && (
+            <p className="text-destructive mt-1 text-sm">
+              OpenAI odrzucił ten klucz przy ostatnim przeliczeniu. Wklej go ponownie.
+            </p>
+          )}
+          {failure === "quota" && (
+            <p className="text-destructive mt-1 text-sm">
+              Limit tego klucza został wyczerpany przy ostatnim przeliczeniu. Sprawdź swój plan w OpenAI.
+            </p>
+          )}
         </div>
 
         <AlertDialog open={removeDialogOpen} onOpenChange={setRemoveDialogOpen}>

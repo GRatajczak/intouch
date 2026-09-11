@@ -136,6 +136,8 @@ export type Database = {
           life_context: string
           name: string
           openai_api_key_ciphertext: string | null
+          openai_api_key_failed_at: string | null
+          openai_api_key_failure_reason: string | null
           openai_api_key_hint: string | null
           owner_id: string
           preferred_channels: string[]
@@ -151,6 +153,8 @@ export type Database = {
           life_context: string
           name: string
           openai_api_key_ciphertext?: string | null
+          openai_api_key_failed_at?: string | null
+          openai_api_key_failure_reason?: string | null
           openai_api_key_hint?: string | null
           owner_id: string
           preferred_channels?: string[]
@@ -166,6 +170,8 @@ export type Database = {
           life_context?: string
           name?: string
           openai_api_key_ciphertext?: string | null
+          openai_api_key_failed_at?: string | null
+          openai_api_key_failure_reason?: string | null
           openai_api_key_hint?: string | null
           owner_id?: string
           preferred_channels?: string[]

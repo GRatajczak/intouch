@@ -764,32 +764,32 @@ which is the behaviour Phase 2 and Phase 3 implement together.
 
 #### Automated
 
-- [x] 4.1 Route tests pass
-- [x] 4.2 Type checking passes
-- [x] 4.3 Linting passes
-- [x] 4.4 Build passes
-- [x] 4.5 Cross-owner claim test goes red when the owner filter is deleted
+- [x] 4.1 Route tests pass — 3e51b26
+- [x] 4.2 Type checking passes — 3e51b26
+- [x] 4.3 Linting passes — 3e51b26
+- [x] 4.4 Build passes — 3e51b26
+- [x] 4.5 Cross-owner claim test goes red when the owner filter is deleted — 3e51b26
 
 #### Manual
 
-- [x] 4.6 Second same-day manual recompute is refused with the ranking still visible
-- [x] 4.7 The automatic refresh still runs after the limit is hit
-- [x] 4.8 An account with a stored key is never refused
+- [x] 4.6 Second same-day manual recompute is refused with the ranking still visible — 3e51b26
+- [x] 4.7 The automatic refresh still runs after the limit is hit — 3e51b26
+- [x] 4.8 An account with a stored key is never refused — 3e51b26
 
 ### Phase 5: Marking a key that stopped working
 
 #### Automated
 
-- [ ] 5.1 Migration applies cleanly
-- [ ] 5.2 Types regenerate clean
-- [ ] 5.3 Tests pass
-- [ ] 5.4 Type checking passes
-- [ ] 5.5 Linting passes
+- [x] 5.1 Migration applies cleanly
+- [x] 5.2 Types regenerate clean
+- [x] 5.3 Tests pass
+- [x] 5.4 Type checking passes
+- [x] 5.5 Linting passes
 
 #### Manual
 
-- [ ] 5.6 A revoked key is marked and explained in settings
-- [ ] 5.7 Saving a working key clears the warning
+- [x] 5.6 A revoked key is marked and explained in settings
+- [x] 5.7 Saving a working key clears the warning
 
 ### Phase 6: Documents, roadmap and tracker
 

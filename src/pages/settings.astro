@@ -25,7 +25,9 @@ const settingsPrefs =
     ? (
         await supabase
           .from("profiles")
-          .select("reminders_enabled, analytics_opt_out, openai_api_key_ciphertext, openai_api_key_hint")
+          .select(
+            "reminders_enabled, analytics_opt_out, openai_api_key_ciphertext, openai_api_key_hint, openai_api_key_failure_reason",
+          )
           .eq("owner_id", user.id)
           .maybeSingle()
       ).data
@@ -41,6 +43,13 @@ const ownerKey = await resolveOwnerKey({
 });
 const apiKeyHint = settingsPrefs?.openai_api_key_hint ?? null;
 const apiKeyUnreadable = ownerKey.source === "app" && "unreadable" in ownerKey;
+// Phase 5: written only by src/lib/ranking/run.ts, inside a background job
+// nobody is watching -- this is what surfaces a key that stopped working
+// (revoked, or ran out of quota) after it was saved.
+const apiKeyFailure =
+  settingsPrefs?.openai_api_key_failure_reason === "auth" || settingsPrefs?.openai_api_key_failure_reason === "quota"
+    ? settingsPrefs.openai_api_key_failure_reason
+    : null;
 ---
 
 <AppShell title="Ustawienia" profileName={profileName}>
@@ -79,7 +88,7 @@ const apiKeyUnreadable = ownerKey.source === "app" && "unreadable" in ownerKey;
     <section>
       <h2 class="text-foreground mb-3 text-sm font-semibold">Klucz OpenAI</h2>
       <div class="border-border bg-card text-card-foreground shadow-card rounded-2xl border p-8">
-        <ApiKeySection hint={apiKeyHint} unreadable={apiKeyUnreadable} client:load />
+        <ApiKeySection hint={apiKeyHint} unreadable={apiKeyUnreadable} failure={apiKeyFailure} client:load />
       </div>
     </section>
 

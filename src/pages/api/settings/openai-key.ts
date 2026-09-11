@@ -81,7 +81,15 @@ export const POST: APIRoute = async (context) => {
   // and write nothing.
   const { data: updated, error } = await supabase
     .from("profiles")
-    .update({ openai_api_key_ciphertext: ciphertext, openai_api_key_hint: hint })
+    .update({
+      openai_api_key_ciphertext: ciphertext,
+      openai_api_key_hint: hint,
+      // A freshly saved key just passed the models.list() probe above, so any
+      // earlier "rejected" / "exhausted" mark (src/lib/ranking/run.ts) is
+      // stale -- Phase 5's contract that saving a new key clears the state.
+      openai_api_key_failed_at: null,
+      openai_api_key_failure_reason: null,
+    })
     .eq("owner_id", user.id)
     .select("openai_api_key_hint")
     .maybeSingle();

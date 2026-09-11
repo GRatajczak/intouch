@@ -137,6 +137,37 @@ function classifyRankingError(err: unknown, ownerKey: OwnerKey | undefined): str
 }
 
 /**
+ * Records or clears whether the owner's OWN key is currently working.
+ *
+ * Never throws: a health-write failure must not turn a job that already
+ * reached its terminal state (writeJob has already run by the time this is
+ * called, in both branches) into an uncaught rejection in the background
+ * task nothing is awaiting.
+ */
+async function writeKeyHealth(
+  supabase: SupabaseClient<Database>,
+  ownerId: string,
+  health: { failedAt: string; reason: "auth" | "quota" } | null,
+): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        openai_api_key_failed_at: health?.failedAt ?? null,
+        openai_api_key_failure_reason: health?.reason ?? null,
+      })
+      .eq("owner_id", ownerId);
+    if (error) {
+      console.error(`[ranking] failed to write key health for owner ${ownerId}: ${error.message}`);
+    }
+  } catch (err: unknown) {
+    console.error(
+      `[ranking] failed to write key health for owner ${ownerId}: ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
+}
+
+/**
  * The background task: fetch inputs, call the model, reconcile, persist, and
  * report terminal status. Kept out of the route so the route stays a thin
  * auth-and-dispatch shell like ai-ping.ts. Every failure path is caught,
@@ -222,6 +253,14 @@ export async function runRanking(
 
     await writeJob(jobId, { status: "done", rankingId });
 
+    // A successful run made with the owner's own key clears any earlier
+    // rejection/quota mark -- the key works now, whatever it did before.
+    // Sits after writeJob for the same reason the analytics capture below
+    // does: never able to stop the job reaching "done".
+    if (ownerKey.source === "user") {
+      await writeKeyHealth(supabase, ownerId, null);
+    }
+
     const durationMs = Date.now() - startedAt;
 
     // F-06 funnel step 4, at the point the hierarchy is TRUTHFULLY generated:
@@ -265,6 +304,20 @@ export async function runRanking(
     const message = classifyRankingError(err, ownerKey);
     console.error(`[ranking] job ${jobId} failed: ${message}`);
     await writeJob(jobId, { status: "failed", error: message });
+
+    // Marks the owner's OWN key as needing attention -- OUR fault getting a
+    // decryption failure wrong is Phase 2's concern (silent app-key fallback,
+    // no mark); this is the user's key genuinely being rejected or exhausted.
+    // Sits after writeJob for the same never-block-the-terminal-state reason
+    // as the success branch's clear above.
+    if (ownerKey?.source === "user") {
+      if (err instanceof AuthenticationError) {
+        await writeKeyHealth(supabase, ownerId, { failedAt: new Date().toISOString(), reason: "auth" });
+      } else if (err instanceof RateLimitError) {
+        await writeKeyHealth(supabase, ownerId, { failedAt: new Date().toISOString(), reason: "quota" });
+      }
+    }
+
     return "failed";
   }
 }
