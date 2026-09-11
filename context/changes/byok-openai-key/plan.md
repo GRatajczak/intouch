@@ -795,10 +795,10 @@ which is the behaviour Phase 2 and Phase 3 implement together.
 
 #### Automated
 
-- [x] 6.1 Linting passes
-- [x] 6.2 No roadmap item contradicts change.md
+- [x] 6.1 Linting passes — 3d40c0a
+- [x] 6.2 No roadmap item contradicts change.md — 3d40c0a
 
 #### Manual
 
-- [x] 6.3 The parked bullet is gone and S-17 reads consistently with its neighbours
-- [x] 6.4 The Linear issue exists with the right title prefix and status
+- [x] 6.3 The parked bullet is gone and S-17 reads consistently with its neighbours — 3d40c0a
+- [x] 6.4 The Linear issue exists with the right title prefix and status — 3d40c0a
