@@ -65,6 +65,21 @@ const profileName = await loadProfileName(Astro.request.headers, Astro.cookies, 
 </AppShell>
 
 <script>
+  // The only place that trusts a real, server-confirmed success -- clears the
+  // add-person draft when (and only when) POST /api/people's own redirect
+  // carries ?added=1 (test-plan Phase 4, Risk #8). PersonForm's client-side
+  // validation passing is deliberately NOT this signal.
+  import { clearDraftRows } from "@/lib/people/draft-store";
+
+  const url = new URL(window.location.href);
+  if (url.searchParams.has("added")) {
+    clearDraftRows();
+    url.searchParams.delete("added");
+    history.replaceState(null, "", url.pathname + url.search);
+  }
+</script>
+
+<script>
   // Delegated so the grid stays server-rendered static HTML with zero React
   // islands -- PersonCard's "Historia" button carries data attributes only,
   // no onClick, since it never hydrates (plan.md Phase 4 §5).

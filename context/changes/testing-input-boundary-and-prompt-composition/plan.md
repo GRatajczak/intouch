@@ -320,28 +320,28 @@ None — no schema or data changes. `PEOPLE_PER_SUBMIT_MAX` and the `.limit()` c
 
 #### Automated
 
-- [x] 1.1 npm test tests/routes/people.test.ts passes, all three cases green
-- [x] 1.2 npm run lint passes
-- [x] 1.3 astro check passes
+- [x] 1.1 npm test tests/routes/people.test.ts passes, all three cases green — b4ad64a
+- [x] 1.2 npm run lint passes — b4ad64a
+- [x] 1.3 astro check passes — b4ad64a
 
 #### Manual
 
-- [x] 1.4 Removing the .max() bound makes the 21-row test case go red, then restored
-- [x] 1.5 Removing the try/catch makes the crash-path test case go red, then restored
+- [x] 1.4 Removing the .max() bound makes the 21-row test case go red, then restored — b4ad64a
+- [x] 1.5 Removing the try/catch makes the crash-path test case go red, then restored — b4ad64a
 
 ### Phase 2: Fix the draft-clear race
 
 #### Automated
 
-- [ ] 2.1 npm test tests/unit/draft-store.test.ts passes
-- [ ] 2.2 npm test tests/routes/people.test.ts still passes, extended with the redirect-signal case
-- [ ] 2.3 npm run lint passes
-- [ ] 2.4 astro check passes
+- [x] 2.1 npm test tests/unit/draft-store.test.ts passes
+- [x] 2.2 npm test tests/routes/people.test.ts still passes, extended with the redirect-signal case
+- [x] 2.3 npm run lint passes
+- [x] 2.4 astro check passes
 
 #### Manual
 
-- [ ] 2.5 A server-side rejection leaves the localStorage draft intact
-- [ ] 2.6 A real success lands on /people?added=1, clears the draft, and cleans the URL
+- [x] 2.5 A server-side rejection leaves the localStorage draft intact
+- [x] 2.6 A real success lands on /people?added=1, clears the draft, and cleans the URL
 
 ### Phase 3: Bound loadRankingPeople to match the ranking's own selection
 

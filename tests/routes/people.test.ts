@@ -1,5 +1,7 @@
-// test-plan Phase 4, Risk #6a: POST /api/people must bound how many rows one
-// request can insert, and must never crash unhandled on a pre-insert failure.
+// test-plan Phase 4: POST /api/people must bound how many rows one request
+// can insert and never crash unhandled on a pre-insert failure (Risk #6a),
+// and its success redirect must carry the ?added=1 signal PersonForm's
+// draft-clear trusts -- never present on any rejection path (Risk #8).
 //
 // Cap cases run against the real RLS fixture (tests/rls/fixture.ts) so the
 // assertion is about the actual enforced boundary at the real route, not a
@@ -96,12 +98,14 @@ describe("POST /api/people row-count cap and crash guard", () => {
       createContext({ user: { id: fx.userAId }, method: "POST", form: formForRows(PEOPLE_PER_SUBMIT_MAX + 1) }),
     );
 
+    const location = response.headers.get("Location");
     expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).toContain("/people/new?error=");
+    expect(location).toContain("/people/new?error=");
+    expect(location).not.toContain("added=1");
     expect(await countPeople(fx.userAId)).toBe(before);
   });
 
-  it(`accepts exactly ${String(PEOPLE_PER_SUBMIT_MAX)} rows`, async () => {
+  it(`accepts exactly ${String(PEOPLE_PER_SUBMIT_MAX)} rows and signals real success`, async () => {
     setRouteClient(fx.clientA);
     const before = await countPeople(fx.userAId);
 
@@ -110,18 +114,20 @@ describe("POST /api/people row-count cap and crash guard", () => {
     );
 
     expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).not.toContain("error=");
+    expect(response.headers.get("Location")).toBe("/people?added=1");
     expect(await countPeople(fx.userAId)).toBe(before + PEOPLE_PER_SUBMIT_MAX);
   });
 
-  it("redirects with an error instead of throwing when the pre-insert check rejects", async () => {
+  it("redirects with an error instead of throwing when the pre-insert check rejects, without the success signal", async () => {
     setRouteClient(crashingClient());
 
     const response = await peoplePost(
       createContext({ user: { id: fx.userAId }, method: "POST", form: formForRows(1) }),
     );
 
+    const location = response.headers.get("Location");
     expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).toContain("/people/new?error=");
+    expect(location).toContain("/people/new?error=");
+    expect(location).not.toContain("added=1");
   });
 });

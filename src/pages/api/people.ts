@@ -66,7 +66,10 @@ export const POST: APIRoute = async (context) => {
     });
   }
 
-  const response = context.redirect("/people");
+  // ?added=1 is the only signal PersonForm's draft-clear (people/index.astro)
+  // trusts -- a confirmed insert, never a client-side validation pass. See
+  // test-plan Phase 4, Risk #8.
+  const response = context.redirect("/people?added=1");
   authCookieHeaders.forEach((value, key) => {
     response.headers.set(key, value);
   });

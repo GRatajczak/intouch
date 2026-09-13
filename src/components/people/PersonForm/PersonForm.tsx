@@ -18,6 +18,7 @@ import {
   LAST_CONTACT_BUCKET_LABELS,
   CONTEXT_TAGS_MAX,
 } from "@/lib/validation/person";
+import { loadDraftRows, saveDraftRows } from "@/lib/people/draft-store";
 import type { PersonFormProps, PersonRowState } from "./types";
 
 const RELATIONSHIP_TYPE_OPTIONS = RELATIONSHIP_TYPES.map((value) => ({
@@ -60,41 +61,6 @@ function createEmptyRow(): PersonRowState {
   };
 }
 
-const DRAFT_STORAGE_KEY = "intouch:add-person-draft";
-
-// A draft is per-viewer convenience, not durable state -- any read/write
-// failure (private browsing, storage disabled, corrupt JSON) is swallowed
-// and simply falls back to no draft, never surfaced to the user.
-function loadDraftRows(): PersonRowState[] | null {
-  try {
-    const raw = window.localStorage.getItem(DRAFT_STORAGE_KEY);
-    if (!raw) return null;
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) return null;
-    const rows = parsed as PersonRowState[];
-    nextRowId = Math.max(...rows.map((row) => row.id), -1) + 1;
-    return rows;
-  } catch {
-    return null;
-  }
-}
-
-function saveDraftRows(rows: PersonRowState[]) {
-  try {
-    window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(rows));
-  } catch {
-    // ignore -- see loadDraftRows
-  }
-}
-
-function clearDraftRows() {
-  try {
-    window.localStorage.removeItem(DRAFT_STORAGE_KEY);
-  } catch {
-    // ignore -- see loadDraftRows
-  }
-}
-
 // `window` is undefined during Astro's server render pass of this
 // client:load island; the lazy useState initializer below only actually
 // reads localStorage once the same code runs again on the client during
@@ -105,7 +71,12 @@ function clearDraftRows() {
 // on the exact first-paint markup.
 function getInitialRows(): PersonRowState[] {
   if (typeof window === "undefined") return [createEmptyRow()];
-  return loadDraftRows() ?? [createEmptyRow()];
+  const draft = loadDraftRows();
+  if (!draft) return [createEmptyRow()];
+  // Resume row-id generation above whatever the restored draft already used,
+  // so a newly-added row never collides with a restored one.
+  nextRowId = Math.max(...draft.map((row) => row.id), -1) + 1;
+  return draft;
 }
 
 export default function PersonForm({ serverError }: PersonFormProps) {
@@ -184,16 +155,15 @@ export default function PersonForm({ serverError }: PersonFormProps) {
     return false;
   }
 
+  // Deliberately does NOT clear the draft on a valid submit -- passing
+  // client-side validation is not the same as the server confirming success
+  // (test-plan Phase 4, Risk #8). The draft is cleared only by the /people
+  // page itself, and only when it sees the server's own success signal
+  // (?added=1) -- see src/pages/api/people.ts and src/pages/people/index.astro.
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     if (!validate()) {
       e.preventDefault();
-      return;
     }
-    // This is a native form POST (full-page navigation), not fetch -- there
-    // is no client-side "request succeeded" moment to hook after the
-    // redirect. Clearing here, right as a validated submission is let
-    // through, is the last point this component is still mounted.
-    clearDraftRows();
   }
 
   return (
