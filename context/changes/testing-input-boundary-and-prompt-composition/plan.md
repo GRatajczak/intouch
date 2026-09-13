@@ -333,28 +333,28 @@ None — no schema or data changes. `PEOPLE_PER_SUBMIT_MAX` and the `.limit()` c
 
 #### Automated
 
-- [x] 2.1 npm test tests/unit/draft-store.test.ts passes
-- [x] 2.2 npm test tests/routes/people.test.ts still passes, extended with the redirect-signal case
-- [x] 2.3 npm run lint passes
-- [x] 2.4 astro check passes
+- [x] 2.1 npm test tests/unit/draft-store.test.ts passes — f609e6f
+- [x] 2.2 npm test tests/routes/people.test.ts still passes, extended with the redirect-signal case — f609e6f
+- [x] 2.3 npm run lint passes — f609e6f
+- [x] 2.4 astro check passes — f609e6f
 
 #### Manual
 
-- [x] 2.5 A server-side rejection leaves the localStorage draft intact
-- [x] 2.6 A real success lands on /people?added=1, clears the draft, and cleans the URL
+- [x] 2.5 A server-side rejection leaves the localStorage draft intact — f609e6f
+- [x] 2.6 A real success lands on /people?added=1, clears the draft, and cleans the URL — f609e6f
 
 ### Phase 3: Bound loadRankingPeople to match the ranking's own selection
 
 #### Automated
 
-- [ ] 3.1 npm test tests/unit/ranking-people-cap.test.ts passes
-- [ ] 3.2 npm test tests/unit passes in full
-- [ ] 3.3 npm run lint passes
-- [ ] 3.4 astro check passes
+- [x] 3.1 npm test tests/unit/ranking-people-cap.test.ts passes
+- [x] 3.2 npm test tests/unit passes in full
+- [x] 3.3 npm run lint passes
+- [x] 3.4 astro check passes
 
 #### Manual
 
-- [ ] 3.5 Removing .order() (keeping .limit()) makes the call-order assertion go red, then restored
+- [x] 3.5 Removing .order() (keeping .limit()) makes the call-order assertion go red, then restored
 
 ### Phase 4: Prompt framing and adversarial-input contract test
 

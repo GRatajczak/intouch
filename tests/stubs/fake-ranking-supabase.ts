@@ -86,7 +86,7 @@ export function fakeSupabase(profile: Tables<"profiles"> | null, people: Tables<
                   })();
 
     const builder: Record<string, unknown> = {};
-    for (const method of ["select", "eq", "order", "insert"]) {
+    for (const method of ["select", "eq", "order", "limit", "insert"]) {
       builder[method] = () => builder;
     }
     // Mutates rows[0] in place -- for "profiles" that is the exact `profile`

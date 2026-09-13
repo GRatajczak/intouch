@@ -6,7 +6,7 @@ import { createOpenAIClient } from "@/lib/openai";
 import { resolveOwnerKey, type OwnerKey } from "@/lib/openai-key";
 import { writeJob } from "@/lib/ai-jobs";
 import { loadContactFacts, type ContactFacts } from "@/lib/contact-history/facts";
-import { buildRankingPrompt } from "@/lib/ranking/prompt";
+import { buildRankingPrompt, PEOPLE_CAP } from "@/lib/ranking/prompt";
 import { applyRecencyFloor, sortByUrgency } from "@/lib/ranking/recency-floor";
 import { persistRanking, type PersistRankingEntry } from "@/lib/ranking/store";
 import { rankingOutputSchema, type RankingOutputEntry, type TimeWindow } from "@/lib/validation/ranking";
@@ -27,12 +27,26 @@ export const RANKING_MODEL = "gpt-5.4-mini";
  * without re-stating the filter -- i.e. without writing a test that stays green
  * when the filter is deleted -- is to call the app's own query. runRanking itself
  * cannot serve as that oracle here: it needs a live OpenAI client.
+ *
+ * Ordered and capped at PEOPLE_CAP so this query never loads (and, on a
+ * successful run, never inserts into ranking_entries) more rows than
+ * buildRankingPrompt will ever use -- test-plan Phase 4's second-order
+ * amplification fix. The order MUST match buildRankingPrompt's own
+ * highest-weight-first sort (prompt.ts), or an owner with more than
+ * PEOPLE_CAP people would be ranked over an arbitrary top-N instead of the
+ * true highest-weight one.
  */
 export async function loadRankingPeople(
   supabase: SupabaseClient<Database>,
   ownerId: string,
 ): Promise<Tables<"people">[] | null> {
-  const { data } = await supabase.from("people").select("*").eq("owner_id", ownerId).eq("status", "active");
+  const { data } = await supabase
+    .from("people")
+    .select("*")
+    .eq("owner_id", ownerId)
+    .eq("status", "active")
+    .order("weight", { ascending: false })
+    .limit(PEOPLE_CAP);
   return data;
 }
 
