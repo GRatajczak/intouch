@@ -1,0 +1,9 @@
+{
+  "id": "fabricated-fallback",
+  "description": "The code-authored placeholder run.ts writes for a person the model never addressed at all (reconcileEntries' tail fallback loop). Grounded in nothing -- should read as generic filler.",
+  "facts": null,
+  "timeWindow": "no_rush",
+  "reason": "Nie udało się wygenerować uzasadnienia dla tej osoby w tym przebiegu.",
+  "expectContradicts": false,
+  "expectGenuine": false
+}

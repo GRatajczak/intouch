@@ -1,0 +1,9 @@
+{
+  "id": "plausible",
+  "description": "A normal, plausible model-authored entry consistent with its own facts -- the negative control. Nothing here should trip either check.",
+  "facts": { "daysSinceLastHappened": 95, "lastAttemptFailed": false, "failedAttemptsSinceLastHappened": 0 },
+  "timeWindow": "this_month",
+  "reason": "Minęło już ponad trzy miesiące od Waszej ostatniej rozmowy, a wspominałeś, że planuje przeprowadzkę -- to dobry moment, żeby zapytać, jak idą przygotowania.",
+  "expectContradicts": false,
+  "expectGenuine": true
+}

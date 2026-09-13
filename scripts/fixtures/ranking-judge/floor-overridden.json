@@ -1,0 +1,9 @@
+{
+  "id": "floor-overridden",
+  "description": "The code-authored sentence recency-floor.ts substitutes when it cools an over-eager model call down to no_rush. Grounded in real facts (contacted yesterday, no failed attempt since) -- should NOT be flagged, even though it is templated rather than model-authored.",
+  "facts": { "daysSinceLastHappened": 1, "lastAttemptFailed": false, "failedAttemptsSinceLastHappened": 0 },
+  "timeWindow": "no_rush",
+  "reason": "Ostatni udany kontakt masz odnotowany wczoraj, bez nieudanej próby od tego czasu. Ta relacja jest na bieżąco, więc nie ma pośpiechu. Odezwij się, kiedy pojawi się naturalny powód.",
+  "expectContradicts": false,
+  "expectGenuine": true
+}

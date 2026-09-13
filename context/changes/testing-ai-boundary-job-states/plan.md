@@ -346,25 +346,25 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 3.1 npm test tests/unit/ranking-prompt-facts.test.ts passes, all three cases green
-- [x] 3.2 npm run lint passes
-- [x] 3.3 tsc --noEmit passes
+- [x] 3.1 npm test tests/unit/ranking-prompt-facts.test.ts passes, all three cases green — 12dd15a
+- [x] 3.2 npm run lint passes — 12dd15a
+- [x] 3.3 tsc --noEmit passes — 12dd15a
 
 #### Manual
 
-- [x] 3.4 Reverting the prompt.ts:156 condition makes the first test case go red
+- [x] 3.4 Reverting the prompt.ts:156 condition makes the first test case go red — 12dd15a
 
 ### Phase 4: On-demand AI-native sanity judge script
 
 #### Automated
 
-- [ ] 4.1 npm run lint passes
-- [ ] 4.2 tsc --noEmit passes
+- [x] 4.1 npm run lint passes
+- [x] 4.2 tsc --noEmit passes
 
 #### Manual
 
-- [ ] 4.3 npm run judge:ranking run once by hand, correctly flags the generic fixture and passes the plausible one
-- [ ] 4.4 npm test and every CI workflow file remain untouched by this phase
+- [x] 4.3 npm run judge:ranking run once by hand, correctly flags the generic fixture and passes the plausible one
+- [x] 4.4 npm test and every CI workflow file remain untouched by this phase
 
 ### Phase 5: Documentation
 

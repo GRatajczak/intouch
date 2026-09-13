@@ -23,7 +23,8 @@
     "verify:feedback-loop": "tsx scripts/verify-feedback-loop.ts",
     "verify:reminders": "tsx --env-file-if-exists=.dev.vars scripts/verify-reminders.ts",
     "verify:analytics": "tsx --env-file-if-exists=.dev.vars scripts/verify-analytics.ts",
-    "render:email-preview": "tsx scripts/render-email-preview.ts"
+    "render:email-preview": "tsx scripts/render-email-preview.ts",
+    "judge:ranking": "tsx --env-file-if-exists=.dev.vars scripts/judge-ranking-fixtures.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
