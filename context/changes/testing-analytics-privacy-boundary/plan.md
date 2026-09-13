@@ -207,13 +207,13 @@ None — no schema or data changes. `.env.test`'s new placeholder key is test-on
 
 #### Automated
 
-- [ ] 1.1 npm test tests/unit/analytics-capture.test.ts tests/unit/analytics-consent.test.ts passes
-- [ ] 1.2 npm run lint passes
-- [ ] 1.3 astro check passes
+- [x] 1.1 npm test tests/unit/analytics-capture.test.ts tests/unit/analytics-consent.test.ts passes
+- [x] 1.2 npm run lint passes
+- [x] 1.3 astro check passes
 
 #### Manual
 
-- [ ] 1.4 Inverting hasAnalyticsConsent's error branch makes the fail-closed test go red, then restored
+- [x] 1.4 Inverting hasAnalyticsConsent's error branch makes the fail-closed test go red, then restored
 
 ### Phase 2: Route-level toggle and consent-gate tests
 
