@@ -6,7 +6,7 @@
 // through an anon-key client carrying a real JWT, because proving a policy with
 // the key that bypasses it proves nothing.
 import { execSync } from "node:child_process";
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createClient, isAuthRetryableFetchError, type AuthError, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/db/database.types";
 
 export type TestClient = SupabaseClient<Database>;
@@ -211,10 +211,36 @@ function readLocalStatus(): LocalStatus {
   return status;
 }
 
+// A 2026-09-13 CI run failed here with "failed to create user B: {}" -- {}
+// because supabase-js's _getErrorMessage (fetch.ts) falls back to
+// JSON.stringify(body) when the server's error body has none of msg/message/
+// error_description/error, and an empty object is exactly what a rate-limited
+// or gateway-blocked response can come back as. The stage project (SUPABASE_
+// STAGE_* opt-in) is shared across every test file Vitest runs concurrently,
+// each spending two admin.createUser calls, so a burst of 429s under that
+// concurrency is the leading explanation. Retrying a handful of times with
+// backoff rides out a transient burst like that; a real (non-retryable)
+// failure -- bad credentials, RLS misconfiguration -- still throws immediately,
+// and the message now names the status/code so the next unknown case is
+// diagnosable instead of reading as a bare "{}".
 async function createConfirmedUser(admin: TestClient, credentials: Credentials, label: string): Promise<string> {
-  const { data, error } = await admin.auth.admin.createUser({ ...credentials, email_confirm: true });
-  if (error) throw new Error(`failed to create user ${label}: ${error.message}`);
-  return data.user.id;
+  const attempts = 4;
+  let lastError: AuthError | undefined;
+
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const { data, error } = await admin.auth.admin.createUser({ ...credentials, email_confirm: true });
+    if (!error) return data.user.id;
+
+    lastError = error;
+    const retryable = error.status === 429 || isAuthRetryableFetchError(error);
+    if (!retryable || attempt === attempts - 1) break;
+
+    await new Promise((resolve) => setTimeout(resolve, 250 * 2 ** attempt));
+  }
+
+  throw new Error(
+    `failed to create user ${label} (status ${lastError?.status ?? "?"}, code ${lastError?.code ?? "?"}): ${lastError?.message}`,
+  );
 }
 
 async function signedInClient(
