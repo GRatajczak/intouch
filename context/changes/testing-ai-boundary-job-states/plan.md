@@ -340,7 +340,7 @@ None — no schema or data changes.
 #### Manual
 
 - [x] 2.5 Reverting the Phase 2.1 guard makes the "zero people matched" test go red — a5f475a
-- [ ] 2.6 wrangler tail (or local log) shows the new fallback-count segment on a real partial-fallback run
+- [x] 2.6 wrangler tail (or local log) shows the new fallback-count segment on a real run — `npm run dev` local log confirmed 2026-09-13: `[ranking] job c973b28e-9326-4d81-b370-cf2d8778a531 done in 3105ms, source=app, recency floor applied to 0 entries, 0 entries fell back to a placeholder` (forced against a 2-person sparse account on `VERIFY_EMAIL`; model addressed both people, so the observed count is 0 — the positive-count path is what `ranking-terminal-states.test.ts`'s partial-match case already pins deterministically)
 
 ### Phase 3: Contradiction-of-fact contract test (Risk #3, narrow scope)
 

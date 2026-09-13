@@ -19,6 +19,6 @@ Risk response intent:
 
 After creating this folder, follow the downstream continuation rule (research → plan → implement) unless a blocker surfaces.
 
-## Outstanding manual check
+## Closed
 
-Progress row 2.6 (`wrangler tail` / local log shows the new `fallbackCount` segment on a real partial-fallback run) is deliberately left open — it needs a running `npm run dev` instance and a deliberately sparse test account, which is the developer's own action per this repo's dev-server convention. Everything else in all five phases is done and committed (`8278213`, `a5f475a`, `12dd15a`, `4c1bab5`, `460f7da`).
+All five phases done and committed (`8278213`, `a5f475a`, `12dd15a`, `4c1bab5`, `460f7da`, epilogue `3ce3359`). Progress row 2.6 confirmed 2026-09-13 against a running `npm run dev`: forcing a recompute on a 2-person sparse `VERIFY_EMAIL` account produced `[ranking] job c973b28e-9326-4d81-b370-cf2d8778a531 done in 3105ms, source=app, recency floor applied to 0 entries, 0 entries fell back to a placeholder` — the extended log line renders correctly in a live run; the model addressed both people so the observed count was 0, and the positive-count path stays covered by `ranking-terminal-states.test.ts`'s deterministic partial-match case.
