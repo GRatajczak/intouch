@@ -1,10 +1,10 @@
 ---
 change_id: testing-ai-boundary-job-states
 title: AI boundary contract and job terminal states (test-plan Phase 3)
-status: implemented
+status: archived
 created: 2026-09-10
 updated: 2026-09-13
-archived_at: null
+archived_at: 2026-09-13T13:45:10Z
 ---
 
 ## Notes
