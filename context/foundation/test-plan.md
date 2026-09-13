@@ -91,13 +91,13 @@ orchestrator updates Status as artifacts appear on disk.
 | 1   | Runner bootstrap and access boundary         | Vitest exists and runs, and neither a second user nor an anonymous caller can reach the first user's data through real routes | #1                 | unit + integration                                                   | complete    | `context/changes/testing-runner-and-access-boundary/` |
 | 2   | Erasure and lifecycle                        | Deletion is complete across every table, and deactivate retains history while leaving the ranking input                       | —                  | integration                                                          | complete    | `context/archive/2026-09-04-person-lifecycle-and-erasure/` (delivered outside the rollout, by S-05) |
 | 3   | AI boundary contract and job terminal states | Bad provider output becomes a visible error instead of a rendered order, no job can strand the polling view, and a schema-valid response that contradicts a held fact — or drifts run-to-run on identical input — is caught rather than rendered as authoritative | #3, #4             | unit/contract on fixtures + integration + one AI-native sanity judge | complete | `context/changes/testing-ai-boundary-job-states/`     |
-| 4   | Input boundary and prompt composition        | The server enforces the same bounds as the form, free text cannot change the ranking output contract, and a rejected add-person submit does not discard what the user typed | #6, #8             | integration + unit                                                   | not started | —                                                     |
+| 4   | Input boundary and prompt composition        | The server enforces the same bounds as the form, free text cannot change the ranking output contract, and a rejected add-person submit does not discard what the user typed | #6, #8             | integration + unit                                                   | complete | `context/changes/testing-input-boundary-and-prompt-composition/`     |
 | 5   | Quality-gates wiring                         | The suite blocks CI and deploy — the local pre-commit and hook layers are already wired; only the CI gate itself remains       | #7, cross-cutting | gates                                                                 | not started | local layer complete (`.husky/pre-commit` + `.claude/hooks/`); delivery half complete via `context/archive/2026-09-08-decay-driven-reminders/` (S-04); CI gate not started |
 | 6   | Analytics privacy boundary                   | No event payload carries a person's name, description, context, tags or the user's email, and an opt-out actually suppresses sending | #9                 | unit + integration with the transport stubbed at the network edge    | not started | —                                                     |
 
 Phase numbers are stable identifiers, not an execution order — Phase 1's harness
 (the two-real-user integration setup) is the only hard prerequisite, and it is
-already met. What genuinely remains: Phase 4, Phase 5's CI gate, and Phase 6.
+already met. What genuinely remains: Phase 5's CI gate, and Phase 6.
 
 ## 4. Stack
 
@@ -270,6 +270,8 @@ here capturing anything surprising the phase taught.)
 
 **Phase 3 — AI boundary contract and job terminal states (2026-09-13).** One genuinely surprising discovery superseded this phase's own research: an OpenAI network-edge stubbing precedent (`tests/unit/ranking-key-source.test.ts`, delivered under S-17/`byok-openai-key`) already existed, which meant `runRanking()` was cheaper to test than the research pass had concluded (no local Supabase stack needed at all, contrary to that pass's assumption). The helpers were extracted into `tests/stubs/` first, proven behavior-preserving by keeping that existing test green, before either new test file was written on top of them.
 
+**Phase 4 — Input boundary and prompt composition (2026-09-13).** Research found two real bugs beyond what the risk descriptions themselves named. First, `POST /api/people`'s pre-insert `Promise.all` (a people-count query plus an analytics-consent check) had no try/catch at all — a thrown rejection was an unhandled 500 with no redirect and no error message, worse than the documented insert-failure path. Second, capping `loadRankingPeople` with `.limit()` alone would have been a silent correctness regression: without pairing it with `.order("weight", { ascending: false })`, an owner with more than `PEOPLE_CAP` people would be ranked over an arbitrary subset instead of the true highest-weight one `buildRankingPrompt` itself selects. Both were fixed and pinned by tests in the same phase, following Phase 3's precedent of shipping the fix alongside its proof.
+
 ### 6.7 Adding an E2E (browser) test
 
 **Before writing one, read `tests/e2e/E2E_RULES.md`.** It is the rules lever the
@@ -324,6 +326,13 @@ broke in the change folder. Green alone is also what a naive assertion looks lik
 loaded once into the dev server's SSR manifest. Restart `npm run dev` around any
 middleware break, or the check reports a false all-clear.
 
+### 6.8 Adding a bounded-input / draft-safety test
+
+**The row-cap route-test pattern.** When a schema allows a client-controlled array (indexed form fields, repeated rows), the cap belongs in the schema itself (`z.array(...).max(N, ...)`) and the proof belongs at the route layer, not just the schema in isolation — a schema-only unit test can't see whether the route actually enforces it. Worked example: `tests/routes/people.test.ts`, using this layer's usual `createRlsFixture`/`setRouteClient`/`createContext` harness (§6.3) to submit `N+1` rows (rejected) and exactly `N` rows (accepted) against the real route. The same file also shows the pattern for a pre-insert crash path: a purpose-built throwing double (not the shared RLS fixture — forcing a genuine network exception against a live local stack isn't reliably reproducible) swapped in via `setRouteClient`, proving a thrown rejection redirects with an error instead of crashing unhandled.
+
+**The extracted-store pattern for client-side persistence.** This repo has no `@testing-library/react` / jsdom — `vitest.config.ts` runs everything under `environment: "node"`. A React component that persists state to `localStorage` (a multi-step form draft, for example) should have that persistence logic extracted into a plain, React-free module (no JSX, no hooks) so it stays testable as an ordinary `tests/unit/` pure-function test against a minimal in-memory `Storage` double — no component-rendering infrastructure needed. Worked example: `src/lib/people/draft-store.ts` (extracted from `PersonForm.tsx`) and `tests/unit/draft-store.test.ts`.
+
+**The redirect-signal pattern for "only clear on real success."** When a client-side action (clearing a draft, dismissing a warning) must happen only after the *server* confirms success — not merely after client-side validation passes, which a native full-page-navigation form gives no other hook for — thread a marker through the success redirect itself (e.g. `/target?added=1`) and have the destination page act on the marker, never on the originating action. Prove it at the route layer: the success case's `Location` header carries the marker, and every rejection path's `Location` never does. Worked example: `src/pages/api/people.ts`'s `?added=1` redirect, consumed by `src/pages/people/index.astro`, proven in `tests/routes/people.test.ts`.
 
 ## 7. What We Deliberately Don't Test
 
@@ -354,6 +363,7 @@ contributors should respect these unless the underlying assumption changes.
 - AI-native tool references last verified: 2026-09-10
 - §6.5 filled in (2026-09-13): the AI-boundary cookbook pattern was "TBD" until `§3 Phase 3` shipped it — network-edge stubbing, prompt-facts contract tests, and the on-demand judge script are now documented with worked examples.
 - §7 gained two entries (2026-09-13): tie-breaking for equal-weight people and general run-to-run determinism outside the recency floor's band, both named as deliberately untestable without a live model call — source `§3 Phase 3`.
+- §6.8 added (2026-09-13): the bounded-input route-test pattern, the extracted-store pattern for client-side persistence, and the redirect-signal pattern — source `§3 Phase 4`, `context/changes/testing-input-boundary-and-prompt-composition/`.
 
 ### Retirements
 

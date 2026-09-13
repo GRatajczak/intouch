@@ -360,21 +360,21 @@ None — no schema or data changes. `PEOPLE_PER_SUBMIT_MAX` and the `.limit()` c
 
 #### Automated
 
-- [x] 4.1 npm test tests/unit/ranking-adversarial-input.test.ts passes
-- [x] 4.2 npm test tests/unit/ranking-prompt-facts.test.ts and tests/unit/ranking-terminal-states.test.ts still pass unchanged
-- [x] 4.3 npm run lint passes
-- [x] 4.4 astro check passes
+- [x] 4.1 npm test tests/unit/ranking-adversarial-input.test.ts passes — 5f3268c
+- [x] 4.2 npm test tests/unit/ranking-prompt-facts.test.ts and tests/unit/ranking-terminal-states.test.ts still pass unchanged — 5f3268c
+- [x] 4.3 npm run lint passes — 5f3268c
+- [x] 4.4 astro check passes — 5f3268c
 
 #### Manual
 
-- [x] 4.5 The updated system message sentence reads naturally in Polish and preserves the original framing's intent
+- [x] 4.5 The updated system message sentence reads naturally in Polish and preserves the original framing's intent — 5f3268c
 
 ### Phase 5: Documentation
 
 #### Automated
 
-- [ ] 5.1 npm run lint passes
+- [x] 5.1 npm run lint passes
 
 #### Manual
 
-- [ ] 5.2 User read-through of updated §6.8/§6.6/§8/§3 confirms they read as intended
+- [x] 5.2 User read-through of updated §6.8/§6.6/§8/§3 confirms they read as intended
