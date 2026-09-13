@@ -1,7 +1,7 @@
 ---
 change_id: testing-input-boundary-and-prompt-composition
 title: Input boundary and prompt composition (test-plan Phase 4)
-status: planned
+status: implementing
 created: 2026-09-13
 updated: 2026-09-13
 archived_at: null

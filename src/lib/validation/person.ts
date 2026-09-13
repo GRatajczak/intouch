@@ -53,7 +53,15 @@ export const personSchema = z.object({
   lastContactBucket: z.enum(LAST_CONTACT_BUCKETS, { message: "Wybierz jedną z opcji" }).optional(),
 });
 
-export const peopleFormSchema = z.array(personSchema).min(1, "Dodaj przynajmniej jedną osobę");
+// One client-driven POST /api/people request inserts every row in a single
+// call -- nothing else bounds how many a client can send. See test-plan.md
+// Risk #6.
+export const PEOPLE_PER_SUBMIT_MAX = 20;
+
+export const peopleFormSchema = z
+  .array(personSchema)
+  .min(1, "Dodaj przynajmniej jedną osobę")
+  .max(PEOPLE_PER_SUBMIT_MAX, `Możesz dodać maksymalnie ${String(PEOPLE_PER_SUBMIT_MAX)} osób na raz`);
 
 export type PersonFormValues = z.infer<typeof personSchema>;
 

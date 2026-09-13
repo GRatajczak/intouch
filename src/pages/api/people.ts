@@ -32,10 +32,22 @@ export const POST: APIRoute = async (context) => {
   // added another.
   //
   // Consent needs its own read here -- this route touches only `people`.
-  const [{ count: existingPeople }, consented] = await Promise.all([
-    supabase.from("people").select("*", { count: "exact", head: true }).eq("owner_id", user.id),
-    hasAnalyticsConsent(supabase, user.id),
-  ]);
+  //
+  // hasAnalyticsConsent fails open to silence (src/lib/analytics/consent.ts)
+  // and never throws, but the raw count query can still reject on a genuine
+  // network/driver exception -- guarded so that rejects the same way every
+  // other failure on this route does, instead of an unhandled 500.
+  let existingPeople: number | null;
+  let consented: boolean;
+  try {
+    [{ count: existingPeople }, consented] = await Promise.all([
+      supabase.from("people").select("*", { count: "exact", head: true }).eq("owner_id", user.id),
+      hasAnalyticsConsent(supabase, user.id),
+    ]);
+  } catch (err: unknown) {
+    console.error(`[people] pre-insert check failed: ${err instanceof Error ? err.message : String(err)}`);
+    return context.redirect(`/people/new?error=${encodeURIComponent("Nie udało się dodać osób. Spróbuj ponownie.")}`);
+  }
 
   const { error } = await supabase.from("people").insert(toRows(parsed.data, user.id));
 

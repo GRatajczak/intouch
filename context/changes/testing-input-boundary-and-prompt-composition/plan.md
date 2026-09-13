@@ -320,14 +320,14 @@ None — no schema or data changes. `PEOPLE_PER_SUBMIT_MAX` and the `.limit()` c
 
 #### Automated
 
-- [ ] 1.1 npm test tests/routes/people.test.ts passes, all three cases green
-- [ ] 1.2 npm run lint passes
-- [ ] 1.3 astro check passes
+- [x] 1.1 npm test tests/routes/people.test.ts passes, all three cases green
+- [x] 1.2 npm run lint passes
+- [x] 1.3 astro check passes
 
 #### Manual
 
-- [ ] 1.4 Removing the .max() bound makes the 21-row test case go red, then restored
-- [ ] 1.5 Removing the try/catch makes the crash-path test case go red, then restored
+- [x] 1.4 Removing the .max() bound makes the 21-row test case go red, then restored
+- [x] 1.5 Removing the try/catch makes the crash-path test case go red, then restored
 
 ### Phase 2: Fix the draft-clear race
 
