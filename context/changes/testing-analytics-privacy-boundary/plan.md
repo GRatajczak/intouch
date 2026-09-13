@@ -219,21 +219,21 @@ None — no schema or data changes. `.env.test`'s new placeholder key is test-on
 
 #### Automated
 
-- [x] 2.1 npm test tests/routes/analytics-toggle.test.ts tests/routes/people-analytics-consent.test.ts passes
-- [x] 2.2 npm test tests/routes/reminders-toggle.test.ts still passes unchanged
-- [x] 2.3 npm run lint passes
-- [x] 2.4 astro check passes
+- [x] 2.1 npm test tests/routes/analytics-toggle.test.ts tests/routes/people-analytics-consent.test.ts passes — 03b04c6
+- [x] 2.2 npm test tests/routes/reminders-toggle.test.ts still passes unchanged — 03b04c6
+- [x] 2.3 npm run lint passes — 03b04c6
+- [x] 2.4 astro check passes — 03b04c6
 
 #### Manual
 
-- [x] 2.5 Inverting the POST /api/people consent gate makes both new route-test cases go red, then restored
+- [x] 2.5 Inverting the POST /api/people consent gate makes both new route-test cases go red, then restored — 03b04c6
 
 ### Phase 3: Documentation
 
 #### Automated
 
-- [ ] 3.1 npm run lint passes
+- [x] 3.1 npm run lint passes
 
 #### Manual
 
-- [ ] 3.2 User read-through of updated test-plan.md §6.9/§6.6/§8/§3 and roadmap.md's F-07 closure confirms they read as intended
+- [x] 3.2 User read-through of updated test-plan.md §6.9/§6.6/§8/§3 and roadmap.md's F-07 closure confirms they read as intended
