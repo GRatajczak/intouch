@@ -1,7 +1,7 @@
 ---
 change_id: testing-ai-boundary-job-states
 title: AI boundary contract and job terminal states (test-plan Phase 3)
-status: implementing
+status: implemented
 created: 2026-09-10
 updated: 2026-09-13
 archived_at: null
@@ -18,3 +18,7 @@ Risk response intent:
 - Risk #4: prove a failed, expired or never-settled job reaches a terminal state the view renders as an error, within a bounded time.
 
 After creating this folder, follow the downstream continuation rule (research → plan → implement) unless a blocker surfaces.
+
+## Outstanding manual check
+
+Progress row 2.6 (`wrangler tail` / local log shows the new `fallbackCount` segment on a real partial-fallback run) is deliberately left open — it needs a running `npm run dev` instance and a deliberately sparse test account, which is the developer's own action per this repo's dev-server convention. Everything else in all five phases is done and committed (`8278213`, `a5f475a`, `12dd15a`, `4c1bab5`, `460f7da`).

@@ -370,8 +370,8 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 5.1 npm run lint passes
+- [x] 5.1 npm run lint passes — 460f7da
 
 #### Manual
 
-- [x] 5.2 User read-through of updated §6.5/§7/§8 confirms they read as intended
+- [x] 5.2 User read-through of updated §6.5/§7/§8 confirms they read as intended — 460f7da
