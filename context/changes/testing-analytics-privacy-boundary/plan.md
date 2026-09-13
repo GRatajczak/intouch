@@ -207,26 +207,26 @@ None — no schema or data changes. `.env.test`'s new placeholder key is test-on
 
 #### Automated
 
-- [x] 1.1 npm test tests/unit/analytics-capture.test.ts tests/unit/analytics-consent.test.ts passes
-- [x] 1.2 npm run lint passes
-- [x] 1.3 astro check passes
+- [x] 1.1 npm test tests/unit/analytics-capture.test.ts tests/unit/analytics-consent.test.ts passes — 5437fe6
+- [x] 1.2 npm run lint passes — 5437fe6
+- [x] 1.3 astro check passes — 5437fe6
 
 #### Manual
 
-- [x] 1.4 Inverting hasAnalyticsConsent's error branch makes the fail-closed test go red, then restored
+- [x] 1.4 Inverting hasAnalyticsConsent's error branch makes the fail-closed test go red, then restored — 5437fe6
 
 ### Phase 2: Route-level toggle and consent-gate tests
 
 #### Automated
 
-- [ ] 2.1 npm test tests/routes/analytics-toggle.test.ts tests/routes/people-analytics-consent.test.ts passes
-- [ ] 2.2 npm test tests/routes/reminders-toggle.test.ts still passes unchanged
-- [ ] 2.3 npm run lint passes
-- [ ] 2.4 astro check passes
+- [x] 2.1 npm test tests/routes/analytics-toggle.test.ts tests/routes/people-analytics-consent.test.ts passes
+- [x] 2.2 npm test tests/routes/reminders-toggle.test.ts still passes unchanged
+- [x] 2.3 npm run lint passes
+- [x] 2.4 astro check passes
 
 #### Manual
 
-- [ ] 2.5 Inverting the POST /api/people consent gate makes both new route-test cases go red, then restored
+- [x] 2.5 Inverting the POST /api/people consent gate makes both new route-test cases go red, then restored
 
 ### Phase 3: Documentation
 
