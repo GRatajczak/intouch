@@ -52,12 +52,18 @@ export function personRow(over: Partial<Tables<"people">> = {}): Tables<"people"
  * (empty) contact-events read, and the two writes persistRanking issues on a
  * successful run. Anything else throws, so a run that starts querying
  * something new fails loudly here rather than silently passing.
+ *
+ * `profile: null` models "no profile row for this account" -- runRanking's
+ * `.maybeSingle()` read then resolves to `null`, exercising its "No profile
+ * found" throw.
  */
-export function fakeSupabase(profile: Tables<"profiles">, people: Tables<"people">[]): SupabaseClient<Database> {
+export function fakeSupabase(profile: Tables<"profiles"> | null, people: Tables<"people">[]): SupabaseClient<Database> {
   const table = (name: string) => {
     const rows: Record<string, unknown>[] =
       name === "profiles"
-        ? [profile]
+        ? profile
+          ? [profile]
+          : []
         : name === "people"
           ? people
           : name === "contact_events"
@@ -66,7 +72,7 @@ export function fakeSupabase(profile: Tables<"profiles">, people: Tables<"people
               ? [
                   {
                     id: "ranking-1",
-                    owner_id: profile.owner_id,
+                    owner_id: profile?.owner_id ?? "owner-1",
                     model: "gpt-5.4-mini",
                     people_considered: people.length,
                     people_total: people.length,

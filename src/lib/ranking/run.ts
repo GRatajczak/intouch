@@ -52,6 +52,8 @@ export interface ReconcileResult {
   entries: PersistRankingEntry[];
   /** How many entries the recency floor overrode -- reported in the completion log. */
   flooredCount: number;
+  /** How many entries fell back to the code-authored placeholder -- reported in the completion log. */
+  fallbackCount: number;
 }
 
 /**
@@ -69,6 +71,13 @@ export interface ReconcileResult {
  * colour. Entries appended for people the model skipped are already `no_rush`,
  * the calmest window, so the floor never touches them and the stable sort
  * leaves them at the tail.
+ *
+ * test-plan Risk #3: a response that matched NOBODY sent (empty `entries`, or
+ * every `personId` hallucinated) throws instead of falling all the way through
+ * to an all-fallback ranking silently marked "done" -- the caller's existing
+ * catch/writeJob(failed) path handles it exactly like a total parse failure.
+ * A response that matched *some* people keeps today's per-person fallback
+ * unchanged; only the every-single-one-missed case is new.
  */
 function reconcileEntries(
   modelEntries: RankingOutputEntry[],
@@ -98,9 +107,15 @@ function reconcileEntries(
     });
   }
 
+  if (peopleSent.length > 0 && seen.size === 0) {
+    throw new Error("OpenAI response matched no person sent");
+  }
+
   const fallbackTimeWindow: TimeWindow = "no_rush";
+  let fallbackCount = 0;
   for (const person of peopleSent) {
     if (!seen.has(person.id)) {
+      fallbackCount += 1;
       reconciled.push({
         personId: person.id,
         timeWindow: fallbackTimeWindow,
@@ -111,7 +126,7 @@ function reconcileEntries(
     }
   }
 
-  return { entries: sortByUrgency(reconciled), flooredCount };
+  return { entries: sortByUrgency(reconciled), flooredCount, fallbackCount };
 }
 
 /**
@@ -241,7 +256,7 @@ export async function runRanking(
       throw new Error("OpenAI response had no parsed output");
     }
 
-    const { entries, flooredCount } = reconcileEntries(parsed.entries, peopleIncluded, facts);
+    const { entries, flooredCount, fallbackCount } = reconcileEntries(parsed.entries, peopleIncluded, facts);
 
     const rankingId = await persistRanking(supabase, {
       ownerId,
@@ -297,7 +312,7 @@ export async function runRanking(
     // so the two never disagree. Key source is here too, so `wrangler tail`
     // shows whose key paid for the run.
     console.log(
-      `[ranking] job ${jobId} done in ${String(durationMs)}ms, source=${ownerKey.source}, recency floor applied to ${String(flooredCount)} entries`,
+      `[ranking] job ${jobId} done in ${String(durationMs)}ms, source=${ownerKey.source}, recency floor applied to ${String(flooredCount)} entries, ${String(fallbackCount)} entries fell back to a placeholder`,
     );
     return "done";
   } catch (err: unknown) {

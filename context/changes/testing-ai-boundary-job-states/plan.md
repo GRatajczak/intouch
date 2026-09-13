@@ -332,10 +332,10 @@ None — no schema or data changes.
 
 #### Automated
 
-- [ ] 2.1 npm test tests/unit/ranking-terminal-states.test.ts passes, all six cases green
-- [ ] 2.2 npm test tests/unit/ranking-key-source.test.ts still passes unchanged
-- [ ] 2.3 npm run lint passes
-- [ ] 2.4 tsc --noEmit passes
+- [x] 2.1 npm test tests/unit/ranking-terminal-states.test.ts passes, all six cases green
+- [x] 2.2 npm test tests/unit/ranking-key-source.test.ts still passes unchanged
+- [x] 2.3 npm run lint passes
+- [x] 2.4 tsc --noEmit passes
 
 #### Manual
 
