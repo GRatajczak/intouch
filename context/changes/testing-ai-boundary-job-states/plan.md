@@ -332,27 +332,27 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 2.1 npm test tests/unit/ranking-terminal-states.test.ts passes, all six cases green
-- [x] 2.2 npm test tests/unit/ranking-key-source.test.ts still passes unchanged
-- [x] 2.3 npm run lint passes
-- [x] 2.4 tsc --noEmit passes
+- [x] 2.1 npm test tests/unit/ranking-terminal-states.test.ts passes, all six cases green — a5f475a
+- [x] 2.2 npm test tests/unit/ranking-key-source.test.ts still passes unchanged — a5f475a
+- [x] 2.3 npm run lint passes — a5f475a
+- [x] 2.4 tsc --noEmit passes — a5f475a
 
 #### Manual
 
-- [ ] 2.5 Reverting the Phase 2.1 guard makes the "zero people matched" test go red
+- [x] 2.5 Reverting the Phase 2.1 guard makes the "zero people matched" test go red — a5f475a
 - [ ] 2.6 wrangler tail (or local log) shows the new fallback-count segment on a real partial-fallback run
 
 ### Phase 3: Contradiction-of-fact contract test (Risk #3, narrow scope)
 
 #### Automated
 
-- [ ] 3.1 npm test tests/unit/ranking-prompt-facts.test.ts passes, all three cases green
-- [ ] 3.2 npm run lint passes
-- [ ] 3.3 tsc --noEmit passes
+- [x] 3.1 npm test tests/unit/ranking-prompt-facts.test.ts passes, all three cases green
+- [x] 3.2 npm run lint passes
+- [x] 3.3 tsc --noEmit passes
 
 #### Manual
 
-- [ ] 3.4 Reverting the prompt.ts:156 condition makes the first test case go red
+- [x] 3.4 Reverting the prompt.ts:156 condition makes the first test case go red
 
 ### Phase 4: On-demand AI-native sanity judge script
 
