@@ -93,7 +93,7 @@ export interface ReconcileResult {
  * A response that matched *some* people keeps today's per-person fallback
  * unchanged; only the every-single-one-missed case is new.
  */
-function reconcileEntries(
+export function reconcileEntries(
   modelEntries: RankingOutputEntry[],
   peopleSent: { id: string }[],
   facts: Map<string, ContactFacts>,

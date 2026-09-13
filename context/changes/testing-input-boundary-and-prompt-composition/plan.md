@@ -347,27 +347,27 @@ None — no schema or data changes. `PEOPLE_PER_SUBMIT_MAX` and the `.limit()` c
 
 #### Automated
 
-- [x] 3.1 npm test tests/unit/ranking-people-cap.test.ts passes
-- [x] 3.2 npm test tests/unit passes in full
-- [x] 3.3 npm run lint passes
-- [x] 3.4 astro check passes
+- [x] 3.1 npm test tests/unit/ranking-people-cap.test.ts passes — c39c984
+- [x] 3.2 npm test tests/unit passes in full — c39c984
+- [x] 3.3 npm run lint passes — c39c984
+- [x] 3.4 astro check passes — c39c984
 
 #### Manual
 
-- [x] 3.5 Removing .order() (keeping .limit()) makes the call-order assertion go red, then restored
+- [x] 3.5 Removing .order() (keeping .limit()) makes the call-order assertion go red, then restored — c39c984
 
 ### Phase 4: Prompt framing and adversarial-input contract test
 
 #### Automated
 
-- [ ] 4.1 npm test tests/unit/ranking-adversarial-input.test.ts passes
-- [ ] 4.2 npm test tests/unit/ranking-prompt-facts.test.ts and tests/unit/ranking-terminal-states.test.ts still pass unchanged
-- [ ] 4.3 npm run lint passes
-- [ ] 4.4 astro check passes
+- [x] 4.1 npm test tests/unit/ranking-adversarial-input.test.ts passes
+- [x] 4.2 npm test tests/unit/ranking-prompt-facts.test.ts and tests/unit/ranking-terminal-states.test.ts still pass unchanged
+- [x] 4.3 npm run lint passes
+- [x] 4.4 astro check passes
 
 #### Manual
 
-- [ ] 4.5 The updated system message sentence reads naturally in Polish and preserves the original framing's intent
+- [x] 4.5 The updated system message sentence reads naturally in Polish and preserves the original framing's intent
 
 ### Phase 5: Documentation
 
