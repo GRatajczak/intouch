@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-09-04
+> Last updated: 2026-09-13
 
 ## 1. Strategy
 
@@ -92,12 +92,12 @@ orchestrator updates Status as artifacts appear on disk.
 | 2   | Erasure and lifecycle                        | Deletion is complete across every table, and deactivate retains history while leaving the ranking input                       | —                  | integration                                                          | complete    | `context/archive/2026-09-04-person-lifecycle-and-erasure/` (delivered outside the rollout, by S-05) |
 | 3   | AI boundary contract and job terminal states | Bad provider output becomes a visible error instead of a rendered order, no job can strand the polling view, and a schema-valid response that contradicts a held fact — or drifts run-to-run on identical input — is caught rather than rendered as authoritative | #3, #4             | unit/contract on fixtures + integration + one AI-native sanity judge | complete | `context/changes/testing-ai-boundary-job-states/`     |
 | 4   | Input boundary and prompt composition        | The server enforces the same bounds as the form, free text cannot change the ranking output contract, and a rejected add-person submit does not discard what the user typed | #6, #8             | integration + unit                                                   | complete | `context/changes/testing-input-boundary-and-prompt-composition/`     |
-| 5   | Quality-gates wiring                         | The suite blocks CI and deploy — the local pre-commit and hook layers are already wired; only the CI gate itself remains       | #7, cross-cutting | gates                                                                 | not started | local layer complete (`.husky/pre-commit` + `.claude/hooks/`); delivery half complete via `context/archive/2026-09-08-decay-driven-reminders/` (S-04); CI gate not started |
+| 5   | Quality-gates wiring                         | The suite blocks CI and deploy — the local pre-commit and hook layers are already wired; only the CI gate itself remains       | #7, cross-cutting | gates                                                                 | complete | local layer complete (`.husky/pre-commit` + `.claude/hooks/`); delivery half complete via `context/archive/2026-09-08-decay-driven-reminders/` (S-04); CI gate wired `9257f8e` (2026-09-10) — `npm run test` blocks both `ci.yml` and `deploy.yml`. Known follow-up: stage-Supabase network flakiness intermittently reddens `tests/rls`/e2e in CI (not a code regression) — tracked, not yet eliminated. |
 | 6   | Analytics privacy boundary                   | No event payload carries a person's name, description, context, tags or the user's email, and an opt-out actually suppresses sending | #9                 | unit + integration with the transport stubbed at the network edge    | not started | —                                                     |
 
 Phase numbers are stable identifiers, not an execution order — Phase 1's harness
 (the two-real-user integration setup) is the only hard prerequisite, and it is
-already met. What genuinely remains: Phase 5's CI gate, and Phase 6.
+already met. What genuinely remains: Phase 6.
 
 ## 4. Stack
 
@@ -131,8 +131,8 @@ phase lands; before that, the gate is planned.
 | -------------------------------------------------- | -------------------------- | ------------------------- | -------------------------------------------------------------------------------------------- |
 | lint + typecheck                                   | per-edit + pre-commit + CI | required (wired)          | syntactic / type drift — `eslint --fix` and `tsc --noEmit` per edit, `astro check` at commit |
 | build                                              | local + CI                 | required (wired)          | broken build, missing env schema entries                                                     |
-| unit + integration                                 | local + CI                 | required after §3 Phase 5 | logic regressions, access-boundary and erasure regressions                                   |
-| suite blocks deploy                                | CI on push to `main`       | required after §3 Phase 5 | a regression auto-deploying to production                                                    |
+| unit + integration                                 | local + CI                 | required (wired 2026-09-10) | logic regressions, access-boundary and erasure regressions                                   |
+| suite blocks deploy                                | CI on push to `main`       | required (wired 2026-09-10) | a regression auto-deploying to production                                                    |
 | post-edit hook on the test suite                   | local (agent loop)         | wired for Risk #1 only    | cross-user access-boundary regressions at edit time, before CI                               |
 | manual human look at any visible UI change         | before merge               | required (convention)     | rendering failures every automated check passes — see `lessons.md` on `.astro` link-buttons  |
 | pre-prod smoke against a `versions upload` preview | between merge and prod     | optional                  | Workers-runtime-only failures that `astro dev` cannot show                                   |
@@ -140,11 +140,13 @@ phase lands; before that, the gate is planned.
 
 **Why e2e is not a blocking gate (decided 2026-09-10).** The layer needs two
 processes the other gates do not — a running app and the local Supabase stack —
-and it is the slowest and most flake-prone thing in the project. It gets a soak
-period on demand first. When it is promoted, the CI shape is already known: a job
-that starts the stack, starts a preview server, and runs `npm run test:e2e`
-against it with `E2E_BASE_URL` pointed at that server. Deliberately not wired yet;
-a layer that has not proven it stays green has no business blocking a deploy.
+and it is the slowest and most flake-prone thing in the project. It runs in CI
+(`ci.yml`'s `e2e` job, against the stage Supabase project) on every push and PR,
+but deliberately does **not** gate `deploy.yml` — a layer that has not proven it
+stays green has no business blocking a deploy. It has not yet proven that: stage-network
+flakiness (`Gateway Timeout` on the seed step, transient `auth.admin.createUser`
+failures) intermittently reddens it — a known, tracked operational issue, not a
+signal to promote it to a deploy gate.
 
 Local layering (wired 2026-09-08, `.claude/hooks/` + `.husky/pre-commit`):
 
@@ -160,16 +162,18 @@ when the stack is down, which would make every local gate red on a machine with
 no local Postgres. `tests/http` needs no exclusion — it self-skips on an unset
 `TEST_BASE_URL`. Both run in full via `npm test` and in CI.
 
-The suite is deliberately not gated until Phase 5: gating a suite of one
+The suite was deliberately not gated until Phase 5: gating a suite of one
 phase's tests buys nothing and blocks the rollout on flakiness before there
 is anything worth protecting.
 
-**What CI actually runs today.** The Local layering table's "CI" row above
-describes the target shape, not the current one. `.github/workflows/ci.yml`
-and `deploy.yml` run `npm run lint` and `npm run build` only — no `vitest`
-step exists in either workflow. A regression in the suite currently blocks
-nothing in CI or deploy; that gap is exactly what Phase 5's remaining scope
-closes.
+**What CI actually runs today (updated 2026-09-13).** Wired in `9257f8e`
+(2026-09-10): `.github/workflows/ci.yml` runs `npm run test` (unit + rls +
+routes; `tests/http` self-skips with no `TEST_BASE_URL`) after lint/build,
+plus a separate `e2e` job that starts the app and runs `npm run test:e2e`
+against it. `deploy.yml` runs the same `npm run test` gate before the
+Cloudflare deploy steps — a red suite blocks production. e2e is intentionally
+excluded from the deploy gate (see above). The Local layering table's "CI"
+row above now describes the actual shape, not a target one.
 
 ## 6. Cookbook Patterns
 
@@ -364,6 +368,7 @@ contributors should respect these unless the underlying assumption changes.
 - §6.5 filled in (2026-09-13): the AI-boundary cookbook pattern was "TBD" until `§3 Phase 3` shipped it — network-edge stubbing, prompt-facts contract tests, and the on-demand judge script are now documented with worked examples.
 - §7 gained two entries (2026-09-13): tie-breaking for equal-weight people and general run-to-run determinism outside the recency floor's band, both named as deliberately untestable without a live model call — source `§3 Phase 3`.
 - §6.8 added (2026-09-13): the bounded-input route-test pattern, the extracted-store pattern for client-side persistence, and the redirect-signal pattern — source `§3 Phase 4`, `context/changes/testing-input-boundary-and-prompt-composition/`.
+- §3 Phase 5 and §5 corrected (2026-09-13): both were stale, claiming "no vitest step exists in either workflow" and Phase 5 "not started," when in fact the CI gate had already been wired on 2026-09-10 (`9257f8e`) — three days before this correction. Discovered while starting to scope Phase 5's own work by checking real GitHub Actions run history rather than trusting this document. §5's e2e narrative corrected to match: it runs in `ci.yml` on every push/PR, deliberately excluded only from `deploy.yml`'s gate, with known stage-Supabase network flakiness as a tracked (not fixed) operational caveat.
 
 ### Retirements
 
