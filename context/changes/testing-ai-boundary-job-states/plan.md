@@ -358,20 +358,20 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 4.1 npm run lint passes
-- [x] 4.2 tsc --noEmit passes
+- [x] 4.1 npm run lint passes — 4c1bab5
+- [x] 4.2 tsc --noEmit passes — 4c1bab5
 
 #### Manual
 
-- [x] 4.3 npm run judge:ranking run once by hand, correctly flags the generic fixture and passes the plausible one
-- [x] 4.4 npm test and every CI workflow file remain untouched by this phase
+- [x] 4.3 npm run judge:ranking run once by hand, correctly flags the generic fixture and passes the plausible one — 4c1bab5
+- [x] 4.4 npm test and every CI workflow file remain untouched by this phase — 4c1bab5
 
 ### Phase 5: Documentation
 
 #### Automated
 
-- [ ] 5.1 npm run lint passes
+- [x] 5.1 npm run lint passes
 
 #### Manual
 
-- [ ] 5.2 User read-through of updated §6.5/§7/§8 confirms they read as intended
+- [x] 5.2 User read-through of updated §6.5/§7/§8 confirms they read as intended

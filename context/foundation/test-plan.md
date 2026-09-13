@@ -90,15 +90,14 @@ orchestrator updates Status as artifacts appear on disk.
 | --- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------- | -------------------------------------------------------------------- | ----------- | ----------------------------------------------------- |
 | 1   | Runner bootstrap and access boundary         | Vitest exists and runs, and neither a second user nor an anonymous caller can reach the first user's data through real routes | #1                 | unit + integration                                                   | complete    | `context/changes/testing-runner-and-access-boundary/` |
 | 2   | Erasure and lifecycle                        | Deletion is complete across every table, and deactivate retains history while leaving the ranking input                       | —                  | integration                                                          | complete    | `context/archive/2026-09-04-person-lifecycle-and-erasure/` (delivered outside the rollout, by S-05) |
-| 3   | AI boundary contract and job terminal states | Bad provider output becomes a visible error instead of a rendered order, no job can strand the polling view, and a schema-valid response that contradicts a held fact — or drifts run-to-run on identical input — is caught rather than rendered as authoritative | #3, #4             | unit/contract on fixtures + integration + one AI-native sanity judge | change opened | `context/changes/testing-ai-boundary-job-states/`     |
+| 3   | AI boundary contract and job terminal states | Bad provider output becomes a visible error instead of a rendered order, no job can strand the polling view, and a schema-valid response that contradicts a held fact — or drifts run-to-run on identical input — is caught rather than rendered as authoritative | #3, #4             | unit/contract on fixtures + integration + one AI-native sanity judge | complete | `context/changes/testing-ai-boundary-job-states/`     |
 | 4   | Input boundary and prompt composition        | The server enforces the same bounds as the form, free text cannot change the ranking output contract, and a rejected add-person submit does not discard what the user typed | #6, #8             | integration + unit                                                   | not started | —                                                     |
 | 5   | Quality-gates wiring                         | The suite blocks CI and deploy — the local pre-commit and hook layers are already wired; only the CI gate itself remains       | #7, cross-cutting | gates                                                                 | not started | local layer complete (`.husky/pre-commit` + `.claude/hooks/`); delivery half complete via `context/archive/2026-09-08-decay-driven-reminders/` (S-04); CI gate not started |
 | 6   | Analytics privacy boundary                   | No event payload carries a person's name, description, context, tags or the user's email, and an opt-out actually suppresses sending | #9                 | unit + integration with the transport stubbed at the network edge    | not started | —                                                     |
 
 Phase numbers are stable identifiers, not an execution order — Phase 1's harness
 (the two-real-user integration setup) is the only hard prerequisite, and it is
-already met. What genuinely remains: Phase 3, Phase 4, Phase 5's CI gate, and
-Phase 6.
+already met. What genuinely remains: Phase 4, Phase 5's CI gate, and Phase 6.
 
 ## 4. Stack
 
@@ -251,7 +250,11 @@ Invoke the real exported handler with `createContext()` from `tests/routes/conte
 
 ### 6.5 Adding a test around the AI boundary
 
-- TBD — see §3 Phase 3 for the recorded-fixture contract pattern (malformed / empty / partial response becomes a visible error, never a rendered order) and the injected-clock job-terminal-state pattern.
+**The network-edge stubbing pattern.** `tests/stubs/fake-ranking-supabase.ts` (an in-memory Supabase double — `profileRow()`/`personRow()`/`fakeSupabase()`) plus `tests/stubs/openai-responses-fetch.ts` (a stubbed `globalThis.fetch` returning OpenAI Responses-API-shaped JSON — `jsonResponse()`/`stubFetch()`/`rankingSuccessResponse()`/`noOutputResponse()`/the auth- and rate-limit-error builders) together make `runRanking()` fully testable as a `tests/unit/` test — no local Supabase stack, no HTTP server, and the real SDK (request building, `zodTextFormat`, `output_parsed` extraction) runs unmodified. Worked example: `tests/unit/ranking-terminal-states.test.ts`, one `describe` block per exit path, each asserting on `readJob(jobId)` after `await runRanking(...)`.
+
+**The prompt-facts contract-test pattern.** When a fact the model must or must not see depends on other data (here: whether a real `ContactFacts` entry supersedes a stale user-typed estimate), pin it as a pure-function test against the prompt builder directly — no fetch or Supabase stub needed. Worked example: `tests/unit/ranking-prompt-facts.test.ts`, asserting on `buildRankingPrompt(...)`'s returned message content for the omission case, its without-facts control, and the "facts exist but no success yet" edge case the source comment names.
+
+**The on-demand AI-native judge, and why it never gates anything.** `npm run judge:ranking` (`scripts/judge-ranking-fixtures.ts`) asks a judge model, against three frozen fixtures in `scripts/fixtures/ranking-judge/`, whether a `reason` contradicts its own facts and whether it reads as a genuine judgment rather than generic filler. It is **never** invoked by `npm test`, `vitest.config.ts`, or any CI workflow — a judge call is non-deterministic and costs real money, so it stays a human's on-demand tool, run when the prompt changes, not a gate anything else depends on.
 
 ### 6.6 Per-rollout-phase notes
 
@@ -264,6 +267,8 @@ here capturing anything surprising the phase taught.)
 - Running `getViteConfig()` under a test runner requires **removing the Cloudflare adapter's Vite plugins**, or Vitest never starts — the failure looks like a config error about `resolve.external`, not like anything to do with tests.
 - **`service_role` holds no table grants in this schema.** Anything reaching for it to bypass RLS will get `permission denied`, and that is the schema being right.
 - A route-layer test that runs under the attacker's own RLS session **cannot fail** when a route's owner filter is deleted. Always verify a boundary test by removing the thing it claims to protect.
+
+**Phase 3 — AI boundary contract and job terminal states (2026-09-13).** One genuinely surprising discovery superseded this phase's own research: an OpenAI network-edge stubbing precedent (`tests/unit/ranking-key-source.test.ts`, delivered under S-17/`byok-openai-key`) already existed, which meant `runRanking()` was cheaper to test than the research pass had concluded (no local Supabase stack needed at all, contrary to that pass's assumption). The helpers were extracted into `tests/stubs/` first, proven behavior-preserving by keeping that existing test green, before either new test file was written on top of them.
 
 ### 6.7 Adding an E2E (browser) test
 
@@ -331,6 +336,8 @@ contributors should respect these unless the underlying assumption changes.
 - **End-to-end browser flows beyond Risk #4 and #1's no-valid-session half** — this exclusion was re-evaluated on 2026-09-10 (`context/changes/e2e-browser-layer/`) under the clause it already carried, and a deliberately narrow Playwright layer now exists. Two risks earned it and no others: **#4**, whose entire protective behaviour is the polling state machine inside `HierarchyView` and exists only once the island is mounted, and **#1's no-valid-session half**, whose remaining gap is a real browser cookie jar crossing real middleware on a real SSR page load — the "cookie/session crossing the Workers boundary" case this entry named. Everything else in §2 stays at the integration layer, which is cheaper to run and to keep green. A third spec requires the same argument in a change folder first: why the cheaper layer would lie. (Source: §1 principle 1, cost × signal.)
   - Still excluded inside that layer: **Risk #3.** The provider call happens server-side inside `runRanking()` behind `waitUntil`, so a browser route mock cannot reach it; the only interception point left is `/api/rankings`, which is the seam Risk #4's spec already owns. It stays on the contract layer — §3 Phase 3.
 - **`src/components/ui/`** — shadcn-generated primitives; the generator is the test. Re-evaluate for any primitive that gets hand-modified. (Source: tech-stack.md convention.)
+- **Tie-breaking for equal-weight people** — `prompt.ts:60`'s instruction to the model is prompt-only, with no code enforcement; whether two equal-weight people land in a genuinely different, context-driven order is provably untestable without a live model call, which this project's stack notes forbid in the deterministic suite. (Source: §3 Phase 3.)
+- **General run-to-run determinism outside the recency floor's 0–6-day band** — `ranking-recency-floor` already declined to pin `temperature`/`top_p`/`seed` on the OpenAI call for lack of resolved support in the Responses API (`seed` is a Chat Completions parameter, `@deprecated` there); this phase reaffirms that decision rather than reopening it. The deterministic floor applied after the model answers is what makes behaviour repeatable inside its narrow band — outside it, the model decides alone and no test pins the exact answer. (Source: §3 Phase 3.)
 
 ## 8. Freshness Ledger
 
@@ -345,6 +352,8 @@ contributors should respect these unless the underlying assumption changes.
   both are reachable at the component/route and unit/stubbed-transport layers respectively, neither
   needs a browser, so the exclusion stands unchanged
 - AI-native tool references last verified: 2026-09-10
+- §6.5 filled in (2026-09-13): the AI-boundary cookbook pattern was "TBD" until `§3 Phase 3` shipped it — network-edge stubbing, prompt-facts contract tests, and the on-demand judge script are now documented with worked examples.
+- §7 gained two entries (2026-09-13): tie-breaking for equal-weight people and general run-to-run determinism outside the recency floor's band, both named as deliberately untestable without a live model call — source `§3 Phase 3`.
 
 ### Retirements
 
