@@ -1,7 +1,7 @@
 ---
 project: "InTouch"
 version: 2
-status: active
+status: complete
 created: 2026-08-15
 updated: 2026-09-13
 prd_version: 2
@@ -14,6 +14,12 @@ top_blocker: time
 > Derived from `context/foundation/prd.md` (v1) + auto-researched codebase baseline.
 > Edit-in-place; archive when superseded.
 > Slices below are listed in dependency order. The "At a glance" table is the index.
+
+## MVP status: done (2026-09-13)
+
+Every foundation and slice in the `## At a glance` table below is `done` — all 7 foundations (F-01–F-07) and all 12 slices (S-01–S-11, S-17). `F-07` (`automated-test-harness`) was the last item to close, across its six rollout phases tracked in `context/foundation/test-plan.md` §3.
+
+Two things stay deliberately open, neither blocking this: **Open Roadmap Question 12** (whether a one-person circle deserves a different screen — a product decision, not a build item) and the `## Parked` list (explicitly deferred by choice, most from PRD `Non-Goals` or the 2026-09-08 tester-feedback triage).
 
 ## Vision recap
 
