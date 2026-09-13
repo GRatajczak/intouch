@@ -373,8 +373,8 @@ None — no schema or data changes. `PEOPLE_PER_SUBMIT_MAX` and the `.limit()` c
 
 #### Automated
 
-- [x] 5.1 npm run lint passes
+- [x] 5.1 npm run lint passes — 07f895f
 
 #### Manual
 
-- [x] 5.2 User read-through of updated §6.8/§6.6/§8/§3 confirms they read as intended
+- [x] 5.2 User read-through of updated §6.8/§6.6/§8/§3 confirms they read as intended — 07f895f
