@@ -232,8 +232,8 @@ None — no schema or data changes. `.env.test`'s new placeholder key is test-on
 
 #### Automated
 
-- [x] 3.1 npm run lint passes
+- [x] 3.1 npm run lint passes — efd6256
 
 #### Manual
 
-- [x] 3.2 User read-through of updated test-plan.md §6.9/§6.6/§8/§3 and roadmap.md's F-07 closure confirms they read as intended
+- [x] 3.2 User read-through of updated test-plan.md §6.9/§6.6/§8/§3 and roadmap.md's F-07 closure confirms they read as intended — efd6256
