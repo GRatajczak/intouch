@@ -260,6 +260,11 @@ export async function runRanking(
       {
         model: RANKING_MODEL,
         input: messages,
+        // The prompt carries the user's and their close ones' details. OpenAI's
+        // `store` defaults to true (kept at least 30 days); nothing here ever
+        // retrieves a response later, so retention would be pure exposure.
+        // Applies to the app key and BYOK keys alike -- one call site.
+        store: false,
         text: { format: zodTextFormat(rankingOutputSchema, "ranking") },
       },
       { maxRetries: 0 },
