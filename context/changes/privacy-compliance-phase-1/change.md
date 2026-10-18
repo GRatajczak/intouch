@@ -19,3 +19,8 @@ Faza 1 wdrożenia RODO/privacy dla InTouch. Zakres:
 
 Kontekst: administrator = osoba prywatna; OpenAI bez regionu UE (transfer USA, SCC/DPF); Supabase prod eu-west-1; PostHog Cloud EU.
 Poza zakresem (osobne zmiany): Faza 2 (polityka prywatności + regulamin), Faza 3 (stopka, checkbox, terms_accepted_at).
+
+## Decisions
+
+- 2026-10-18: the 2026-09-10 "no consent banner, anonymous traffic collected by default" decision (web-analytics-pageviews) is **superseded**. Analytics are opt-in; the banner ships in Phase 2.
+- 2026-10-18: `profile_completed` was also removed (not named in the plan): it fired only when no `profiles` row existed, i.e. exactly when no consent can have been recorded. Funnel step 2 now has no server event.

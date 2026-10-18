@@ -63,7 +63,8 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.site ?? Astro.url).href : un
       /* Every page is a pageview, so this mounts on every page. The verdict is
          resolved once per document render by src/middleware.ts; it is absent
          for anonymous requests, which resolve to "unknown" — and "unknown"
-         means collect, since there is no consent banner.
+         means "ask first": the consent banner shows and nothing loads until
+         the visitor says yes (analytics are opt-in).
 
          In <body>, not <head>, though the script is what matters and it is a
          deferred module either way. AnalyticsRuntime renders a <div> alongside

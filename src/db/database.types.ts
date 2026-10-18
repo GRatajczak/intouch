@@ -129,6 +129,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          analytics_consent: boolean | null
           analytics_opt_out: boolean
           availability_windows: string[]
           birth_date: string
@@ -146,6 +147,7 @@ export type Database = {
           weekly_time_budget: string | null
         }
         Insert: {
+          analytics_consent?: boolean | null
           analytics_opt_out?: boolean
           availability_windows?: string[]
           birth_date: string
@@ -163,6 +165,7 @@ export type Database = {
           weekly_time_budget?: string | null
         }
         Update: {
+          analytics_consent?: boolean | null
           analytics_opt_out?: boolean
           availability_windows?: string[]
           birth_date?: string

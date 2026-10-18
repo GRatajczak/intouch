@@ -3,14 +3,14 @@
 // deliberate privacy decision (favors under-counting over leaking) with no
 // regression test before this phase.
 import { describe, expect, it } from "vitest";
-import { consentFromOptOut, hasAnalyticsConsent } from "@/lib/analytics/consent";
+import { consentFromProfile, hasAnalyticsConsent } from "@/lib/analytics/consent";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/db/database.types";
 
 /** A minimal `profiles`-only fake -- this test's own table set, not the
  * shared ranking fixture, which models a different set of tables. */
 function fakeProfilesClient(result: {
-  data: { analytics_opt_out: boolean | null } | null;
+  data: { analytics_consent: boolean | null } | null;
   error: { message: string } | null;
 }): SupabaseClient<Database> {
   return {
@@ -24,35 +24,41 @@ function fakeProfilesClient(result: {
   } as unknown as SupabaseClient<Database>;
 }
 
-describe("consentFromOptOut", () => {
-  it("treats undefined, null and false as consented", () => {
-    expect(consentFromOptOut(undefined)).toBe(true);
-    expect(consentFromOptOut(null)).toBe(true);
-    expect(consentFromOptOut(false)).toBe(true);
+describe("consentFromProfile", () => {
+  it("treats only an explicit true as consent", () => {
+    expect(consentFromProfile(true)).toBe(true);
   });
 
-  it("treats true as not consented", () => {
-    expect(consentFromOptOut(true)).toBe(false);
+  it("treats false, null (never asked) and undefined (no row) as not consented", () => {
+    expect(consentFromProfile(false)).toBe(false);
+    expect(consentFromProfile(null)).toBe(false);
+    expect(consentFromProfile(undefined)).toBe(false);
   });
 });
 
 describe("hasAnalyticsConsent", () => {
-  it("returns true when no profile row exists", async () => {
+  it("returns false when no profile row exists", async () => {
     const client = fakeProfilesClient({ data: null, error: null });
 
-    expect(await hasAnalyticsConsent(client, "owner-1")).toBe(true);
+    expect(await hasAnalyticsConsent(client, "owner-1")).toBe(false);
   });
 
-  it("returns true when analytics_opt_out is false", async () => {
-    const client = fakeProfilesClient({ data: { analytics_opt_out: false }, error: null });
-
-    expect(await hasAnalyticsConsent(client, "owner-1")).toBe(true);
-  });
-
-  it("returns false when analytics_opt_out is true", async () => {
-    const client = fakeProfilesClient({ data: { analytics_opt_out: true }, error: null });
+  it("returns false when analytics_consent is null (never asked)", async () => {
+    const client = fakeProfilesClient({ data: { analytics_consent: null }, error: null });
 
     expect(await hasAnalyticsConsent(client, "owner-1")).toBe(false);
+  });
+
+  it("returns false when analytics_consent is false", async () => {
+    const client = fakeProfilesClient({ data: { analytics_consent: false }, error: null });
+
+    expect(await hasAnalyticsConsent(client, "owner-1")).toBe(false);
+  });
+
+  it("returns true when analytics_consent is true", async () => {
+    const client = fakeProfilesClient({ data: { analytics_consent: true }, error: null });
+
+    expect(await hasAnalyticsConsent(client, "owner-1")).toBe(true);
   });
 
   it("fails CLOSED (false, never throws) when the query itself errors", async () => {

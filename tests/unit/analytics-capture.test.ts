@@ -59,7 +59,9 @@ describe("capture() payload contract", () => {
   it("resolves without throwing when PostHog answers a non-2xx status", async () => {
     stubPostHogFetch(new Response(null, { status: 500 }));
 
-    await expect(capture("owner-1", { event: "signup_started" })).resolves.toBeUndefined();
+    await expect(
+      capture("owner-1", { event: "first_person_added", properties: { people_added: 1 } }),
+    ).resolves.toBeUndefined();
   });
 
   it("resolves without throwing when the fetch itself rejects", async () => {
@@ -68,6 +70,8 @@ describe("capture() payload contract", () => {
       vi.fn(() => Promise.reject(new Error("network down"))),
     );
 
-    await expect(capture("owner-1", { event: "signup_started" })).resolves.toBeUndefined();
+    await expect(
+      capture("owner-1", { event: "first_person_added", properties: { people_added: 1 } }),
+    ).resolves.toBeUndefined();
   });
 });

@@ -42,9 +42,9 @@ const IDENTITY_KEY = "intouch.analytics.identified-as";
 /**
  * What the server knows about this visitor's analytics consent.
  *
- * `"unknown"` is not a refusal and not a pending question -- it means nobody is
- * signed in, so there is no `profiles` row to read a verdict from. Anonymous
- * traffic is collected by default; see `applyConsent`.
+ * `"unknown"` means no recorded choice: an anonymous visitor, or a profile whose
+ * `analytics_consent` is still null. It is NOT consent. The visitor's banner
+ * choice, kept in localStorage, is what can promote it to a start.
  */
 export type ConsentVerdict = "granted" | "denied" | "unknown";
 
@@ -56,8 +56,8 @@ export interface StartAnalyticsOptions {
   /**
    * What the server knows about consent.
    *
-   * `"granted"` / `"denied"` come from `profiles.analytics_opt_out`.
-   * `"unknown"` means anonymous, which resolves to collecting.
+   * `"granted"` / `"denied"` come from `profiles.analytics_consent`.
+   * `"unknown"` means never asked; only `"granted"` collects.
    */
   consent: ConsentVerdict;
 }
@@ -141,21 +141,17 @@ export function startAnalytics({ token, userId, consent }: StartAnalyticsOptions
 }
 
 /**
- * `"denied"` mutes. Everything else unmutes.
+ * Only `"granted"` unmutes.
  *
- * A denied user does not normally reach this function at all --
- * AnalyticsScript.astro declines to mount the SDK for them, because muting only
- * stops `capture()` and not the SDK's own config and flags requests. This
- * branch remains as the second gate for the case where a verdict arrives after
- * init.
+ * Consent is opt-in. AnalyticsRuntime.astro calls `startAnalytics` at all only
+ * once the server verdict or the visitor's stored banner choice is "granted";
+ * `"denied"` and `"unknown"` never reach this module's `init`, because muting
+ * does not stop the SDK's own config and flags requests. This branch remains as
+ * the second gate, so a caller that gets it wrong still ends up muted.
  *
- * `"unknown"` -- an anonymous visitor -- collects. There is no consent banner:
- * anonymous traffic is exactly the traffic this channel exists to measure (the
- * landing page, referrers, UTMs, the path into signup), and none of it happens
- * after a `profiles` row exists to carry a verdict. The control is the switch
- * under Ustawienia -> Prywatnosc, which governs from the moment there is an
- * account to attach it to. Dropping the banner was a deliberate scope decision
- * on 2026-09-10, recorded in this change's change.md.
+ * This reverses the 2026-09-10 decision to collect anonymous traffic by default
+ * and ship no banner (web-analytics-pageviews/change.md): ePrivacy / PKE art.
+ * 399 needs a prior affirmative choice, so the banner now exists.
  *
  * `opt_in_capturing()` captures an `$opt_in` event by default; suppressed here
  * because this runs on EVERY page load for a consenting visitor, and one
@@ -169,7 +165,7 @@ export function startAnalytics({ token, userId, consent }: StartAnalyticsOptions
  * installed package instead.
  */
 function applyConsent(consent: ConsentVerdict): void {
-  if (consent === "denied") {
+  if (consent !== "granted") {
     posthog.opt_out_capturing();
     return;
   }

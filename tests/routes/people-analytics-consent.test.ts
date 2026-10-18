@@ -77,10 +77,22 @@ function personForm(): Record<string, string> {
   };
 }
 
-describe("POST /api/people: first_person_added respects analytics_opt_out", () => {
-  it("emits nothing when the owner has opted out", async () => {
+describe("POST /api/people: first_person_added requires analytics_consent", () => {
+  it("emits nothing when the owner has refused", async () => {
     await resetToZeroPeople("A");
-    await fx.clientA.from("profiles").update({ analytics_opt_out: true }).eq("owner_id", fx.userAId);
+    await fx.clientA.from("profiles").update({ analytics_consent: false }).eq("owner_id", fx.userAId);
+    setRouteClient(fx.clientA);
+    const captured = stubPostHogFetch();
+
+    const response = await peoplePost(createContext({ user: { id: fx.userAId }, method: "POST", form: personForm() }));
+
+    expect(response.status).toBe(302);
+    expect(captured).toHaveLength(0);
+  });
+
+  it("emits nothing when the owner was never asked (consent is opt-in)", async () => {
+    await resetToZeroPeople("A");
+    await fx.clientA.from("profiles").update({ analytics_consent: null }).eq("owner_id", fx.userAId);
     setRouteClient(fx.clientA);
     const captured = stubPostHogFetch();
 
@@ -92,7 +104,7 @@ describe("POST /api/people: first_person_added respects analytics_opt_out", () =
 
   it("emits exactly one allow-listed event when the owner is consented", async () => {
     await resetToZeroPeople("B");
-    await fx.clientB.from("profiles").update({ analytics_opt_out: false }).eq("owner_id", fx.userBId);
+    await fx.clientB.from("profiles").update({ analytics_consent: true }).eq("owner_id", fx.userBId);
     setRouteClient(fx.clientB);
     const captured = stubPostHogFetch();
 

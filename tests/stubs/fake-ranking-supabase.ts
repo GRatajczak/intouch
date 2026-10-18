@@ -20,6 +20,7 @@ export function profileRow(over: Partial<Tables<"profiles">> = {}): Tables<"prof
     reminders_enabled: true,
     weekly_time_budget: null,
     analytics_opt_out: true,
+    analytics_consent: null,
     free_recompute_claimed_on: null,
     openai_api_key_ciphertext: null,
     openai_api_key_hint: null,

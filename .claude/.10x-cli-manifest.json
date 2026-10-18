@@ -2,7 +2,7 @@
   "package": "@przeprogramowani/10x-cli",
   "version": "1.20.0",
   "manifestVersion": 3,
-  "lastApplied": "2026-09-08T13:42:14.245Z",
+  "lastApplied": "2026-10-06T11:19:23.928Z",
   "lessonId": "m3l4",
   "course": "10xdevs3",
   "tool": "claude-code",
@@ -57,11 +57,21 @@
       "10x-stack-assess": {
         "files": [
           "references/agent-friendly-criteria.md",
-          "SKILL.md"
+          "SKILL.md",
+          "references/decision-flow.md",
+          "references/eval-cases.md",
+          "references/handoff-schema.md",
+          "references/residual-interview.md",
+          "references/starter-registry.yaml"
         ],
         "contentHashes": {
           "references/agent-friendly-criteria.md": "04e0cd99f1e64dd6dffe37a68844ddd8efb593057584afbe0fed308724eb0cad",
-          "SKILL.md": "694bfd569dd93a7d9d42f0d039ae1514c77351da84a03ae69d26f6cfe143141c"
+          "SKILL.md": "694bfd569dd93a7d9d42f0d039ae1514c77351da84a03ae69d26f6cfe143141c",
+          "references/decision-flow.md": "8f88998ae05601eb52d8d7038af4310a7b558d8c14ac091668e148b06de4fffd",
+          "references/eval-cases.md": "1bd474bd52bfb7a7efd5fa9a4f50f31f1a123f6acd6d0b5f2e9fd310b32fb920",
+          "references/handoff-schema.md": "157c5b8546b32c115b4e4ad05e29546bc6adda2a3739e30148bf391c9de167b2",
+          "references/residual-interview.md": "6b2b3f2b5975745e7c68e26748e7c2aaf4300de00e415f7c712fb8fac0272d95",
+          "references/starter-registry.yaml": "b31c10153c403b4c34b18a06c4665cfcde062ec148114630ccb17d2bd8afe6dc"
         }
       },
       "10x-bootstrapper": {
@@ -157,23 +167,27 @@
         ],
         "contentHashes": {
           "references/progress-format.md": "acd3841cb4b2baa3066f5ec4997d0c21b8791fcd432a66777fd8bcb38119e218",
-          "SKILL.md": "f7a89e29a958edc09c50b9bb2dda1b950b688f810bc194580d9cd7d32bfa5584"
+          "SKILL.md": "59874ba8d9be0478f31acafbbc8bab3a15ef0649dc7678f9788a5ab3d08113b8"
         }
       },
       "10x-plan-review": {
         "files": [
-          "SKILL.md"
+          "SKILL.md",
+          "references/progress-format.md"
         ],
         "contentHashes": {
-          "SKILL.md": "32bf19d6f3c247e7cd0bfdfc387616742d640a0e928af738573aec74af1e4615"
+          "SKILL.md": "a6ed0582af43d9d72a2f27b0bbff071618f5064458e7a00c3b5f84981c5b3f47",
+          "references/progress-format.md": "acd3841cb4b2baa3066f5ec4997d0c21b8791fcd432a66777fd8bcb38119e218"
         }
       },
       "10x-implement": {
         "files": [
-          "SKILL.md"
+          "SKILL.md",
+          "references/progress-format.md"
         ],
         "contentHashes": {
-          "SKILL.md": "08a8079cb42b569b35075aa7da6da56e9dca85a3e6bff6f272e7894511cdd119"
+          "SKILL.md": "08a8079cb42b569b35075aa7da6da56e9dca85a3e6bff6f272e7894511cdd119",
+          "references/progress-format.md": "acd3841cb4b2baa3066f5ec4997d0c21b8791fcd432a66777fd8bcb38119e218"
         }
       },
       "10x-archive": {
@@ -186,10 +200,12 @@
       },
       "10x-impl-review": {
         "files": [
-          "SKILL.md"
+          "SKILL.md",
+          "references/progress-format.md"
         ],
         "contentHashes": {
-          "SKILL.md": "35f411842641123a9a9bcab3928794d259ae9451595b78783169af82a35317c6"
+          "SKILL.md": "35f411842641123a9a9bcab3928794d259ae9451595b78783169af82a35317c6",
+          "references/progress-format.md": "acd3841cb4b2baa3066f5ec4997d0c21b8791fcd432a66777fd8bcb38119e218"
         }
       },
       "10x-frame": {
@@ -220,10 +236,12 @@
       },
       "10x-tdd": {
         "files": [
-          "SKILL.md"
+          "SKILL.md",
+          "references/progress-format.md"
         ],
         "contentHashes": {
-          "SKILL.md": "142707eba64cdb7a7bc9901e2de9a221c3a41a2cc0109f49820f684e2ec5a1ad"
+          "SKILL.md": "142707eba64cdb7a7bc9901e2de9a221c3a41a2cc0109f49820f684e2ec5a1ad",
+          "references/progress-format.md": "acd3841cb4b2baa3066f5ec4997d0c21b8791fcd432a66777fd8bcb38119e218"
         }
       },
       "10x-e2e": {
@@ -261,11 +279,12 @@
       "m1l5-3-extend-prerequisites.md": "3418ae7c2ffc10f9cce9ad23b48b845033b57793fc2816df66c6deb8b6eae867",
       "m1l5-4-store-plan.md": "0f72fd90618f05bd8f6784825d217e128fa3148def28024995f1ad1026b34f48",
       "m3l2-ad-hoc-testing.md": "6a4509b6b90d3ea9229d19dbec77aea0c6812d0d706144006f9465e195f5387f"
-    }
+    },
+    "configHashes": {}
   },
   "lessons": {
     "m1l1": {
-      "appliedAt": "2026-07-17T10:16:23.999Z",
+      "appliedAt": "2026-10-06T11:19:20.050Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -288,7 +307,7 @@
       "configs": []
     },
     "m1l2": {
-      "appliedAt": "2026-07-19T18:43:16.742Z",
+      "appliedAt": "2026-10-06T11:19:20.350Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -320,7 +339,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         }
       },
@@ -330,7 +354,7 @@
       "configs": []
     },
     "m1l3": {
-      "appliedAt": "2026-07-28T17:47:33.316Z",
+      "appliedAt": "2026-10-06T11:19:20.683Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -362,7 +386,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -390,7 +419,7 @@
       "configs": []
     },
     "m1l4": {
-      "appliedAt": "2026-07-29T14:21:30.922Z",
+      "appliedAt": "2026-10-06T11:19:20.940Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -422,7 +451,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -465,7 +499,7 @@
       "configs": []
     },
     "m1l5": {
-      "appliedAt": "2026-08-09T19:48:16.768Z",
+      "appliedAt": "2026-10-06T11:19:21.288Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -497,7 +531,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -550,7 +589,7 @@
       "configs": []
     },
     "m2l1": {
-      "appliedAt": "2026-08-14T19:05:19.193Z",
+      "appliedAt": "2026-10-06T11:19:21.552Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -582,7 +621,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -626,7 +670,8 @@
         },
         "10x-roadmap": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/milestone-state.md"
           ]
         }
       },
@@ -640,7 +685,7 @@
       "configs": []
     },
     "m2l2": {
-      "appliedAt": "2026-08-23T09:42:09.664Z",
+      "appliedAt": "2026-10-06T11:19:21.908Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -672,7 +717,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -716,7 +766,8 @@
         },
         "10x-roadmap": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/milestone-state.md"
           ]
         },
         "10x-new": {
@@ -733,12 +784,14 @@
         },
         "10x-plan-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-implement": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-archive": {
@@ -757,7 +810,7 @@
       "configs": []
     },
     "m2l3": {
-      "appliedAt": "2026-08-23T09:42:17.603Z",
+      "appliedAt": "2026-10-06T11:19:22.217Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -789,7 +842,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -833,7 +891,8 @@
         },
         "10x-roadmap": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/milestone-state.md"
           ]
         },
         "10x-new": {
@@ -850,12 +909,14 @@
         },
         "10x-plan-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-implement": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-archive": {
@@ -865,7 +926,8 @@
         },
         "10x-impl-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         }
       },
@@ -879,7 +941,7 @@
       "configs": []
     },
     "m2l4": {
-      "appliedAt": "2026-08-23T09:42:30.338Z",
+      "appliedAt": "2026-10-06T11:19:22.605Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -911,7 +973,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -955,7 +1022,8 @@
         },
         "10x-roadmap": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/milestone-state.md"
           ]
         },
         "10x-new": {
@@ -972,12 +1040,14 @@
         },
         "10x-plan-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-implement": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-archive": {
@@ -987,7 +1057,8 @@
         },
         "10x-impl-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-frame": {
@@ -1011,7 +1082,7 @@
       "configs": []
     },
     "m3l1": {
-      "appliedAt": "2026-09-02T17:04:01.091Z",
+      "appliedAt": "2026-10-06T11:19:22.895Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -1043,7 +1114,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -1105,12 +1181,14 @@
         },
         "10x-plan-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-implement": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-archive": {
@@ -1120,7 +1198,8 @@
         },
         "10x-impl-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-frame": {
@@ -1150,7 +1229,7 @@
       "configs": []
     },
     "m3l2": {
-      "appliedAt": "2026-09-06T19:07:26.593Z",
+      "appliedAt": "2026-10-06T11:19:23.219Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -1182,7 +1261,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -1244,12 +1328,14 @@
         },
         "10x-plan-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-implement": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-archive": {
@@ -1259,7 +1345,8 @@
         },
         "10x-impl-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-frame": {
@@ -1280,7 +1367,8 @@
         },
         "10x-tdd": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         }
       },
@@ -1295,7 +1383,7 @@
       "configs": []
     },
     "m3l3": {
-      "appliedAt": "2026-09-07T14:27:46.877Z",
+      "appliedAt": "2026-10-06T11:19:23.566Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -1327,7 +1415,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -1389,12 +1482,14 @@
         },
         "10x-plan-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-implement": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-archive": {
@@ -1404,7 +1499,8 @@
         },
         "10x-impl-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-frame": {
@@ -1425,7 +1521,8 @@
         },
         "10x-tdd": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         }
       },
@@ -1440,7 +1537,7 @@
       "configs": []
     },
     "m3l4": {
-      "appliedAt": "2026-09-08T13:42:14.242Z",
+      "appliedAt": "2026-10-06T11:19:23.928Z",
       "skills": {
         "10x-init": {
           "files": [
@@ -1472,7 +1569,12 @@
         "10x-stack-assess": {
           "files": [
             "references/agent-friendly-criteria.md",
-            "SKILL.md"
+            "SKILL.md",
+            "references/decision-flow.md",
+            "references/eval-cases.md",
+            "references/handoff-schema.md",
+            "references/residual-interview.md",
+            "references/starter-registry.yaml"
           ]
         },
         "10x-bootstrapper": {
@@ -1534,12 +1636,14 @@
         },
         "10x-plan-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-implement": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-archive": {
@@ -1549,7 +1653,8 @@
         },
         "10x-impl-review": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-frame": {
@@ -1570,7 +1675,8 @@
         },
         "10x-tdd": {
           "files": [
-            "SKILL.md"
+            "SKILL.md",
+            "references/progress-format.md"
           ]
         },
         "10x-e2e": {

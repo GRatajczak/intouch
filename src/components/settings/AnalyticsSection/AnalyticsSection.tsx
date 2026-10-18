@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { showToast } from "@/components/layout/Toaster";
+import { writeStoredConsent } from "@/lib/analytics/consent-storage";
 import { cn } from "@/lib/utils";
 import type { AnalyticsSectionProps } from "./types";
 
 /**
- * F-06's analytics opt-out — the control that closes the privacy story the
- * `analytics_opt_out` column has been honouring since phase 1.
+ * The analytics switch: the place to change one's mind after the banner. Analytics
+ * are opt-in, so it starts off until the user turns it on.
  *
  * Deliberately built as the twin of RemindersSection: same `role="switch"` on a
  * native button (there is still no switch primitive under components/ui, and
@@ -58,6 +59,9 @@ export default function AnalyticsSection({ analyticsEnabled }: AnalyticsSectionP
         throw new Error(message);
       }
 
+      // Keep the browser record in step, so a stale "granted" cannot outlive
+      // a refusal made here.
+      writeStoredConsent(next ? "granted" : "denied");
       showToast("success", next ? "Analityka włączona" : "Analityka wyłączona");
     } catch (err: unknown) {
       setEnabled(!next);
@@ -72,10 +76,10 @@ export default function AnalyticsSection({ analyticsEnabled }: AnalyticsSectionP
       <div>
         <p className="text-foreground text-sm font-medium">Anonimowa analityka produktu</p>
         <p className="text-muted-foreground mt-1 text-sm">
-          Zapisujemy to, które kroki w aplikacji przechodzisz — że wypełniłeś profil, że dodałeś pierwszą osobę, że
-          potwierdziłeś kontakt — a także które strony odwiedzasz i skąd trafiłeś do InTouch. Adresy stron czyścimy,
-          zanim je wyślemy: nie ma w nich identyfikatorów Twoich ludzi. Nigdy imion, opisów ani notatek o Twoich
-          ludziach. Pomaga nam to zobaczyć, gdzie aplikacja gubi ludzi po drodze.
+          Domyślnie wyłączona. Jeśli ją włączysz, zapisujemy to, które kroki w aplikacji przechodzisz — że wypełniłeś
+          profil, że dodałeś pierwszą osobę, że potwierdziłeś kontakt — a także które strony odwiedzasz i skąd trafiłeś
+          do InTouch. Adresy stron czyścimy, zanim je wyślemy: nie ma w nich identyfikatorów Twoich ludzi. Nigdy imion,
+          opisów ani notatek o Twoich ludziach. Pomaga nam to zobaczyć, gdzie aplikacja gubi ludzi po drodze.
         </p>
       </div>
 

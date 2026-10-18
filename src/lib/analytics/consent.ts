@@ -2,19 +2,19 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/db/database.types";
 
 /**
- * Turn a `profiles.analytics_opt_out` value into "may we send events?".
+ * Turn a `profiles.analytics_consent` value into "may we send events?".
  *
- * A missing row (`null`/`undefined`) counts as CONSENTED. Two reasons: the
- * column defaults to false, and at `signup_started` no profile row exists yet
- * -- so treating absence as a refusal would silently drop the funnel's first
- * step for every user.
+ * Opt-IN: only an explicit `true` is consent. `null` (never asked), `false`
+ * (refused), `undefined` (no profile row) and a failed read all mean "do not
+ * send". ePrivacy / PKE art. 399 needs a prior affirmative choice, so absence
+ * of a choice is never read as a yes.
  *
  * Exported separately from `hasAnalyticsConsent` so callers that already hold
  * the profile row -- src/lib/ranking/run.ts loads it before ranking -- can pass
  * the flag straight through instead of paying a second round trip.
  */
-export function consentFromOptOut(optOut: boolean | null | undefined): boolean {
-  return optOut !== true;
+export function consentFromProfile(consent: boolean | null | undefined): boolean {
+  return consent === true;
 }
 
 /**
@@ -30,7 +30,7 @@ export function consentFromOptOut(optOut: boolean | null | undefined): boolean {
 export async function hasAnalyticsConsent(supabase: SupabaseClient<Database>, ownerId: string): Promise<boolean> {
   const { data, error } = await supabase
     .from("profiles")
-    .select("analytics_opt_out")
+    .select("analytics_consent")
     .eq("owner_id", ownerId)
     .maybeSingle();
 
@@ -39,5 +39,5 @@ export async function hasAnalyticsConsent(supabase: SupabaseClient<Database>, ow
     return false;
   }
 
-  return consentFromOptOut(data?.analytics_opt_out);
+  return consentFromProfile(data?.analytics_consent);
 }

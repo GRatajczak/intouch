@@ -26,17 +26,16 @@ const settingsPrefs =
         await supabase
           .from("profiles")
           .select(
-            "reminders_enabled, analytics_opt_out, openai_api_key_ciphertext, openai_api_key_hint, openai_api_key_failure_reason",
+            "reminders_enabled, analytics_consent, openai_api_key_ciphertext, openai_api_key_hint, openai_api_key_failure_reason",
           )
           .eq("owner_id", user.id)
           .maybeSingle()
       ).data
     : null;
 const remindersEnabled = settingsPrefs?.reminders_enabled ?? true;
-// Inverted here because the column is negative and the switch is positive: no
-// profile row, or a row predating F-06, means analytics are on -- the same
-// default the wrapper's consent read applies.
-const analyticsEnabled = !(settingsPrefs?.analytics_opt_out ?? false);
+// Opt-in: only an explicit yes turns the switch on. `null` (never asked) and no
+// profile row both read as off.
+const analyticsEnabled = settingsPrefs?.analytics_consent === true;
 // S-17: no profile row reads as no key on file, same as an absent ciphertext.
 const ownerKey = await resolveOwnerKey({
   openai_api_key_ciphertext: settingsPrefs?.openai_api_key_ciphertext ?? null,

@@ -26,44 +26,6 @@
 // $pageview/$pageleave) is governed instead by the absence of autocapture plus the
 // URL sanitizer in ./sanitize-url.ts -- its events are written by the SDK, not here.
 
-/**
- * Step 1 of the PRD's primary funnel: an account was created.
- *
- * Named `_started`, not `_completed`, on purpose: production requires email
- * confirmation, and this fires before it. So the count knowingly includes
- * accounts that are never confirmed, and the event name says so rather than
- * hiding the caveat in a dashboard footnote.
- */
-interface SignupStarted {
-  event: "signup_started";
-  properties?: never;
-}
-
-/**
- * Step 2: the self-profile was filled for the first time.
- *
- * The plan also specified `has_life_context` and `has_birth_date` presence
- * booleans. They are deliberately absent: `profileSchema` in
- * src/lib/validation/profile.ts requires both fields (`.min(1, ...)`), so the
- * route 400s before the upsert if either is empty and both booleans would be
- * a constant `true` on every event ever sent -- a property of the schema, not
- * of user behaviour, that would read in a PostHog breakdown as a real 100%.
- * Re-add them only if those fields ever become optional.
- */
-interface ProfileCompleted {
-  event: "profile_completed";
-  properties: {
-    /**
-     * How many preferred channels were picked. The enum VALUES stay out: which
-     * channels a person prefers is a personal attribute, and the count is what
-     * a funnel analysis actually reads.
-     */
-    rhythm_channels_count: number;
-    /** How many availability windows were picked. Same reasoning as above. */
-    rhythm_slots_count: number;
-  };
-}
-
 /** Step 3: the user went from zero people to some. */
 interface FirstPersonAdded {
   event: "first_person_added";
@@ -112,17 +74,14 @@ interface ContactConfirmed {
 }
 
 /**
- * The closed set of events this app may send. Exactly the five steps of the
- * PRD's Success Criteria funnel -- no more. F-06's own risk note names
+ * The closed set of events this app may send. The funnel steps that can be
+ * attributed to a user who has ALREADY given consent -- `signup_started` and
+ * `profile_completed` were removed because they fire before any consent record
+ * can exist. F-06's own risk note names
  * instrumentation sprawl as one of its two real risks, so a sixth event is a
  * product decision, not a convenience.
  */
-export type AnalyticsEvent =
-  | SignupStarted
-  | ProfileCompleted
-  | FirstPersonAdded
-  | HierarchyGenerated
-  | ContactConfirmed;
+export type AnalyticsEvent = FirstPersonAdded | HierarchyGenerated | ContactConfirmed;
 
 /** The event names, for readers and for anything that needs the literal union. */
 export type AnalyticsEventName = AnalyticsEvent["event"];

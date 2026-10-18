@@ -41,16 +41,17 @@ the call path, so passing a name is a compile error rather than something a revi
 to catch. That matters most at step 4, whose emission point sits in the same lexical
 scope as the people array, the literal OpenAI prompt and the raw model output.
 
-### The five events
+### The three events
 
-Exactly the five steps of the PRD's Success Criteria funnel. No sixth event without a
+Originally five funnel steps. `signup_started` and `profile_completed` were **removed**
+by `privacy-compliance-phase-1`: both fire before any consent record can exist (no
+`profiles` row yet), and consent is now opt-in. The browser's consent-gated `$pageview`
+of `/auth/confirm-email` is the replacement first funnel step. No new event without a
 product decision — F-06's own risk note names instrumentation sprawl as one of its two
 real risks.
 
 | Event                 | Properties                                                  | Emitted from                      | Gated on                                                     |
 | --------------------- | ----------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------ |
-| `signup_started`      | _(none)_                                                    | `src/pages/api/auth/signup.ts`    | `data.user` is non-null after a successful `signUp`          |
-| `profile_completed`   | `rhythm_channels_count`, `rhythm_slots_count`               | `src/pages/api/profile.ts`        | no `profiles` row existed **before** the upsert              |
 | `first_person_added`  | `people_added`                                              | `src/pages/api/people.ts`         | the owner had **zero** people (any status) before the insert |
 | `hierarchy_generated` | `model`, `people_total`, `people_considered`, `duration_ms` | `src/lib/ranking/run.ts`          | reached after `persistRanking` and `writeJob(..., "done")`   |
 | `contact_confirmed`   | `has_note`, `from_suggestion`                               | `src/pages/api/contact-events.ts` | `outcome === "happened"`                                     |
@@ -60,14 +61,6 @@ carries `$process_person_profile: false`.
 
 #### Notes on individual properties
 
-- **`signup_started` is named `_started`, not `signed_up`.** Production requires email
-  confirmation and this fires before it, so the count knowingly includes accounts that
-  are never confirmed. The caveat lives in the event name rather than in a dashboard
-  footnote. Consequence: step1→step2 conversion is diluted by everyone who never
-  confirms.
-- **`profile_completed` carries counts, never values.** Which channels and availability
-  windows a user picked are personal attributes; how many they picked is what a funnel
-  analysis reads.
 - **`first_person_added`'s count exists because the route is a batch insert.** "First
   person" may in truth be "first N in one submit"; `people_added` records which.
 - **`hierarchy_generated.duration_ms` is the same value as the `[ranking] job … done in
@@ -102,17 +95,17 @@ interesting but is not step 5.
 
 ### Consent
 
-`profiles.analytics_opt_out` (boolean, `not null default false` — i.e. opted in).
+`profiles.analytics_consent` (boolean, nullable): `null` = never asked, `true` = accepted,
+`false` = refused. **Opt-in**: only an explicit `true` sends anything.
 
-- Read through `src/lib/analytics/consent.ts` before every capture except
-  `signup_started`, where no `profiles` row exists yet and the default applies.
-- A missing row counts as consented. A query error **suppresses the event** and logs —
-  it never throws into the caller's request path.
-- `profile_completed` needs no consent read at all: the only branch that emits is the one
-  where no `profiles` row exists, so no opt-out could ever have been recorded.
-- Flipped from `/settings` → "Prywatność". The wire contract and the switch are positive
-  (`enabled`); the column is negative. `src/pages/api/settings/analytics.ts` is the single
-  place that inverts.
+- Read through `src/lib/analytics/consent.ts` before every capture.
+- A missing row, a `null` column and a query error all **suppress the event** (a query
+  error also logs). It never throws into the caller's request path.
+- The legacy `analytics_opt_out` column is kept consistent (`= not analytics_consent`;
+  `true` for everyone who has not chosen) so a `wrangler rollback` cannot resume tracking.
+  It is dropped in a later change, at least one deploy after nothing reads it.
+- Changed from `/settings` → "Prywatność" or the cookie banner. `src/pages/api/settings/analytics.ts`
+  writes both columns.
 
 ### Divergences from `plan.md`
 
@@ -238,28 +231,27 @@ family added by a future SDK version fails the test even though no case names it
 
 ### Consent — and how it differs from the plan
 
-**Anonymous traffic is collected by default. There is no consent banner.**
+**Nothing is collected until the visitor says yes.**
 
-The plan for this change specified one; it was dropped by decision on 2026-09-10 (see
-`context/changes/web-analytics-pageviews/change.md` for the rationale and the two rejected
-alternatives). The reasoning in one line: a visitor before signup has no `profiles` row to
-carry a verdict, and anonymous traffic — the landing page, referrers, UTMs, the path into
-signup — is exactly what this channel exists to measure.
+The 2026-09-10 decision to collect anonymous traffic by default and ship no banner
+(`context/changes/web-analytics-pageviews/change.md`) is **superseded** by
+`privacy-compliance-phase-1` (ePrivacy / PKE art. 399 needs a prior affirmative choice).
+The banner (`src/components/analytics/ConsentBanner`) stores the choice in `localStorage`
+(`src/lib/analytics/consent-storage.ts`); once a `profiles` row exists and its column is
+still `null`, the stored choice is posted onto it.
 
-So the model is:
+| Visitor   | Verdict source                                                                     | Default                        |
+| --------- | ---------------------------------------------------------------------------------- | ------------------------------ |
+| Anonymous | none — `locals.analyticsConsent` is absent, the layout passes `"unknown"`          | **ask; collect nothing**       |
+| Signed in | `profiles.analytics_consent`, read once per document render in `src/middleware.ts` | `null` → ask; `true` → collect |
 
-| Visitor   | Verdict source                                                                     | Default                     |
-| --------- | ---------------------------------------------------------------------------------- | --------------------------- |
-| Anonymous | none — `locals.analyticsConsent` is absent, the layout passes `"unknown"`          | **collect**                 |
-| Signed in | `profiles.analytics_opt_out`, read once per document render in `src/middleware.ts` | collect unless switched off |
+`"unknown"` mounts only a loader plus the banner; `posthog-js` is dynamically imported
+once the verdict or the stored choice is `"granted"`. `applyConsent()` in `browser.ts`
+unmutes only `"granted"`.
 
-`applyConsent()` in `browser.ts` mutes only an explicit `"denied"`. The SDK still
-initializes with `opt_out_capturing_by_default: true` and is unmuted a moment later —
-that ordering is what guarantees nothing can fly before the verdict is known.
-
-**The middleware's fail-open direction is inverted relative to `consent.ts`.** That module
-fails open to silence by returning `false`. Here a read failure must resolve to `"denied"`
-_explicitly_, because dropping the banner made `"unknown"` mean collect. A broken query
+**The middleware resolves a read failure to `"denied"`, not `"unknown"`.** `"unknown"` shows
+the banner and lets a stored choice start the SDK, so a broken query must not be able to do
+either against a recorded refusal. A broken query
 must not be able to start sending pageviews for a user who switched them off.
 
 The control is the switch under **Ustawienia → Prywatność**, unchanged since F-06 except

@@ -34,7 +34,7 @@ export async function capture(distinctId: string, event: AnalyticsEvent): Promis
   // distinct_id, and a profile would pull user-level attributes into the vendor
   // for nothing.
   const properties = {
-    ...(event.properties ?? {}),
+    ...event.properties,
     $process_person_profile: false,
   };
 

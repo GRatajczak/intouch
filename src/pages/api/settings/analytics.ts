@@ -10,7 +10,7 @@ function jsonResponse(body: unknown, status: number): Response {
 }
 
 /**
- * Flips F-06's analytics opt-out for the signed-in user.
+ * Records the signed-in user's explicit analytics choice (opt-in).
  *
  * Shaped exactly like src/pages/api/settings/reminders.ts, for the same
  * reasons:
@@ -27,9 +27,9 @@ function jsonResponse(body: unknown, status: number): Response {
  *   one, not /settings), and answering 200 while writing nothing is exactly the
  *   wrong response on a route whose job is to stop data collection.
  *
- * The wire contract is positive (`enabled: true` = send events) while the
- * column is negative (`analytics_opt_out`). This function is the single place
- * that inverts, in both directions.
+ * The wire contract and `analytics_consent` share polarity. The legacy negative
+ * column `analytics_opt_out` is written alongside it (inverted) until a later
+ * change drops it.
  */
 export const POST: APIRoute = async (context) => {
   const user = context.locals.user;
@@ -57,9 +57,11 @@ export const POST: APIRoute = async (context) => {
 
   const { data: updated, error } = await supabase
     .from("profiles")
-    .update({ analytics_opt_out: !parsed.data.enabled })
+    // Both columns: analytics_opt_out stays consistent so a `wrangler rollback`
+    // to code that still reads it cannot re-enable tracking.
+    .update({ analytics_consent: parsed.data.enabled, analytics_opt_out: !parsed.data.enabled })
     .eq("owner_id", user.id)
-    .select("analytics_opt_out")
+    .select("analytics_consent")
     .maybeSingle();
 
   if (error) {
@@ -69,5 +71,5 @@ export const POST: APIRoute = async (context) => {
     return jsonResponse({ error: "Nie znaleziono profilu do zaktualizowania" }, 404);
   }
 
-  return jsonResponse({ enabled: !updated.analytics_opt_out }, 200);
+  return jsonResponse({ enabled: updated.analytics_consent === true }, 200);
 };

@@ -1,6 +1,7 @@
 ---
 import { POSTHOG_API_KEY } from "astro:env/server";
 import AnalyticsRuntime from "./AnalyticsRuntime.astro";
+import { ConsentBanner } from "./ConsentBanner";
 import type { ConsentVerdict } from "@/lib/analytics/browser";
 
 interface Props {
@@ -29,7 +30,12 @@ const token = POSTHOG_API_KEY;
 
 {
   /*
-    Two gates, and the second one is not cosmetic.
+    Consent is opt-in, so there are two gates and neither is cosmetic.
+
+    The runtime is mounted for "granted" and for "unknown", but for "unknown" it
+    is only a loader: it imports `posthog-js` (via browser.ts) solely once the
+    visitor's own stored banner choice says "granted". The banner is mounted for
+    "unknown" only -- the server has no recorded answer.
 
     A denied user must not merely be muted -- the SDK must not load at all.
     `opt_out_capturing()` stops `capture()`, and nothing else: `posthog.init()`
@@ -41,3 +47,4 @@ const token = POSTHOG_API_KEY;
   */
 }
 {token && consent !== "denied" && <AnalyticsRuntime token={token} userId={userId} consent={consent} />}
+{token && consent === "unknown" && <ConsentBanner client:load signedIn={userId !== null} />}

@@ -10,7 +10,7 @@ import { buildRankingPrompt, PEOPLE_CAP } from "@/lib/ranking/prompt";
 import { applyRecencyFloor, sortByUrgency } from "@/lib/ranking/recency-floor";
 import { persistRanking, type PersistRankingEntry } from "@/lib/ranking/store";
 import { rankingOutputSchema, type RankingOutputEntry, type TimeWindow } from "@/lib/validation/ranking";
-import { capture, consentFromOptOut } from "@/lib/analytics";
+import { capture, consentFromProfile } from "@/lib/analytics";
 
 // F-02's gpt-4o-mini was a throwaway ping choice it explicitly deferred to
 // this slice. Named constant so the model is visible at a glance and never
@@ -314,7 +314,7 @@ export async function runRanking(
     // comment is here so a reader checks it deliberately anyway.
     //
     // Consent comes from the already-loaded profile row -- no second query.
-    if (consentFromOptOut(profile.analytics_opt_out)) {
+    if (consentFromProfile(profile.analytics_consent)) {
       await capture(ownerId, {
         event: "hierarchy_generated",
         properties: {

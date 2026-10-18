@@ -379,31 +379,31 @@ All three migrations are additive (new nullable column, two new functions, one c
 
 #### Automated
 
-- [x] 1.1 Unit test passes: `npm test -- ranking-store-disabled`
-- [x] 1.2 Whole suite passes: `npm test`
-- [x] 1.3 Lint passes: `npm run lint`
+- [x] 1.1 Unit test passes: `npm test -- ranking-store-disabled` — 1a46c49
+- [x] 1.2 Whole suite passes: `npm test` — 1a46c49
+- [x] 1.3 Lint passes: `npm run lint` — 1a46c49
 
 #### Manual
 
-- [x] 1.4 `npm run verify:ai-call` still completes against the real API
+- [x] 1.4 `npm run verify:ai-call` still completes against the real API — 1a46c49
 
 ### Phase 2: Opt-in analytics consent
 
 #### Automated
 
-- [ ] 2.1 Migration applies on a fresh local DB: `npx supabase db reset`
-- [ ] 2.2 Types regenerated with no diff afterwards: `npm run db:types && git diff --exit-code src/db/database.types.ts`
+- [x] 2.1 Migration applies on a fresh local DB: `npx supabase db reset`
+- [x] 2.2 Types regenerated with no diff afterwards: `npm run db:types && git diff --exit-code src/db/database.types.ts`
 - [ ] 2.3 Unit tests for consent truth table and SDK mounting: `npm test -- analytics`
-- [ ] 2.4 Route tests (toggle writes both columns, consent gates) pass: `npm test`
-- [ ] 2.5 Type check and lint: `npx astro check && npm run lint`
+- [x] 2.4 Route tests (toggle writes both columns, consent gates) pass: `npm test`
+- [x] 2.5 Type check and lint: `npx astro check && npm run lint`
 
 #### Manual
 
-- [ ] 2.6 Clean browser: banner shown, no PostHog request/cookie/localStorage before "Akceptuję"
-- [ ] 2.7 After "Odrzucam", reload: no PostHog traffic and no banner
-- [ ] 2.8 After "Akceptuję", pageviews arrive in PostHog with sanitised URLs
-- [ ] 2.9 Sign up and complete profile: `analytics_consent` matches the stored choice; Settings agrees
-- [ ] 2.10 A pre-migration account behaves as off until it chooses
+- [x] 2.6 Clean browser: banner shown, no PostHog request/cookie/localStorage before "Akceptuję"
+- [x] 2.7 After "Odrzucam", reload: no PostHog traffic and no banner
+- [x] 2.8 After "Akceptuję", pageviews arrive in PostHog with sanitised URLs
+- [x] 2.9 Sign up and complete profile: `analytics_consent` matches the stored choice; Settings agrees
+- [x] 2.10 A pre-migration account behaves as off until it chooses
 
 ### Phase 3: Real account deletion
 

@@ -29,7 +29,7 @@ const { token, userId, consent } = Astro.props;
 }
 <div id="analytics-config" hidden data-token={token} data-user-id={userId ?? ""} data-consent={consent}></div>
 <script>
-  import { startAnalytics } from "@/lib/analytics/browser";
+  import { CONSENT_EVENT, readStoredConsent } from "@/lib/analytics/consent-storage";
   import type { ConsentVerdict } from "@/lib/analytics/browser";
 
   // Read from the DOM rather than from a template literal: this file is
@@ -38,12 +38,29 @@ const { token, userId, consent } = Astro.props;
   const el = document.getElementById("analytics-config");
   const token = el?.dataset.token ?? "";
   const userId = el?.dataset.userId ?? "";
+  const verdict = (el?.dataset.consent ?? "unknown") as ConsentVerdict;
 
-  if (token) {
-    startAnalytics({
-      token,
-      userId: userId === "" ? null : userId,
-      consent: (el?.dataset.consent ?? "unknown") as ConsentVerdict,
+  let started = false;
+
+  // A dynamic import, so `posthog-js` is not even fetched until somebody has
+  // said yes. Nothing about PostHog loads for a visitor who has not.
+  async function start() {
+    if (started || !token) {
+      return;
+    }
+    started = true;
+    const { startAnalytics } = await import("@/lib/analytics/browser");
+    startAnalytics({ token, userId: userId === "" ? null : userId, consent: "granted" });
+  }
+
+  if (verdict === "granted" || (verdict === "unknown" && readStoredConsent() === "granted")) {
+    void start();
+  } else if (verdict === "unknown") {
+    // The banner answers later on this same page; start as soon as it says yes.
+    window.addEventListener(CONSENT_EVENT, (event) => {
+      if ((event as CustomEvent<string>).detail === "granted") {
+        void start();
+      }
     });
   }
 </script>

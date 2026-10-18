@@ -3,7 +3,7 @@ import type { AnalyticsEvent } from "./events";
 
 export type { AnalyticsEvent, AnalyticsEventName } from "./events";
 export { capture } from "./capture";
-export { hasAnalyticsConsent, consentFromOptOut } from "./consent";
+export { hasAnalyticsConsent, consentFromProfile } from "./consent";
 export { getAnalyticsConfig } from "./config";
 export type { AnalyticsConfig } from "./config";
 
