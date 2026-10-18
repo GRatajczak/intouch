@@ -14,6 +14,9 @@ const error = Astro.url.searchParams.get("error");
         <h1 class="font-display text-display-sm text-foreground text-center">Zarejestruj się</h1>
       </div>
       <SignUpForm serverError={error} client:load />
+      <p class="text-muted-foreground mt-4 text-center text-xs">
+        Zakładając konto, zapoznaj się z <a href="/privacy" class="cursor-pointer underline">Polityką prywatności</a>.
+      </p>
       <p class="text-muted-foreground mt-4 text-center text-sm">
         Masz już konto?{" "}
         <a href="/auth/signin" class="text-accent-foreground cursor-pointer hover:underline"> Zaloguj się </a>

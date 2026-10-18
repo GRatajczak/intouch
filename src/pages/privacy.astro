@@ -1,0 +1,278 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Logo from "@/components/Logo.astro";
+import { CONTROLLER_EMAIL, CONTROLLER_NAME, PRIVACY_POLICY_UPDATED } from "@/lib/legal";
+
+const updated = new Intl.DateTimeFormat("pl-PL", { dateStyle: "long" }).format(new Date(PRIVACY_POLICY_UPDATED));
+---
+
+<Layout
+  title="Polityka prywatności"
+  description="Jak InTouch przetwarza dane osobowe: kto je administruje, po co, komu je powierza i jakie masz prawa."
+>
+  <div class="bg-background text-foreground min-h-screen">
+    <header class="border-border border-b">
+      <div class="mx-auto flex max-w-[760px] items-center px-5 py-5 sm:px-8">
+        <a href="/" class="cursor-pointer" aria-label="InTouch — strona główna">
+          <Logo size={24} withWordmark wordmarkSize={24} />
+        </a>
+      </div>
+    </header>
+
+    <main class="legal mx-auto max-w-[760px] px-5 py-10 sm:px-8">
+      <h1 class="font-display text-display-lg">Polityka prywatności</h1>
+      <p class="text-muted-foreground">Ostatnia aktualizacja: {updated}</p>
+
+      <p>
+        InTouch to aplikacja, która pomaga dbać o relacje z bliskimi: układa osoby, które dodajesz, w kolejność i raz
+        dziennie podpowiada, do kogo się odezwać. Ta strona wyjaśnia, jakie dane osobowe przetwarzamy, po co, komu je
+        powierzamy i jakie masz prawa. Piszemy tak, jak to działa dzisiaj — bez ogólników.
+      </p>
+
+      <h2>1. Kto jest administratorem</h2>
+      <p>
+        Administratorem danych jest <strong>{CONTROLLER_NAME}</strong> (osoba fizyczna, dalej: „my”). Kontakt we wszystkich
+        sprawach dotyczących danych: <a href={`mailto:${CONTROLLER_EMAIL}`}>{CONTROLLER_EMAIL}</a>. Nie wyznaczyliśmy
+        inspektora ochrony danych — nie jesteśmy do tego zobowiązani.
+      </p>
+
+      <h2>2. Czyje dane przetwarzamy</h2>
+      <p>Są to dwie różne grupy osób:</p>
+      <ul>
+        <li>
+          <strong>Ty, użytkownik</strong> — dane konta i dane, które sam wpisujesz o sobie.
+        </li>
+        <li>
+          <strong>Osoby, które dodajesz do swojej listy</strong> (rodzina, przyjaciele, znajomi) — dane o nich wpisujesz Ty.
+          Jeśli ktoś wpisał Cię do swojej listy w InTouch, ten punkt dotyczy także Ciebie (zob. punkt 8).
+        </li>
+      </ul>
+
+      <h2>3. Jakie dane, po co i na jakiej podstawie</h2>
+
+      <h3>Konto i działanie aplikacji</h3>
+      <p>
+        <strong>Dane:</strong> adres e-mail i hasło (przechowujemy wyłącznie jego skrót), imię, data urodzenia, opis Twojej
+        sytuacji życiowej, rytm kontaktów (preferowane kanały, okna czasowe, tygodniowy budżet czasu), ustawienia. Dla każdej
+        dodanej osoby: imię, rodzaj relacji, kontekst relacji, opis, tagi, waga, czas od ostatniego kontaktu, status. Historia
+        kontaktów (czy do kogoś się odezwałeś/aś, kiedy, opcjonalna notatka). Wygenerowane rankingi wraz z uzasadnieniami.
+        <br />
+        <strong>Cel:</strong> świadczenie usługi, którą zamawiasz zakładając konto.
+        <br />
+        <strong>Podstawa:</strong> art. 6 ust. 1 lit. b RODO (wykonanie umowy) — co do Twoich danych; art. 6 ust. 1 lit. f
+        RODO (nasz prawnie uzasadniony interes: możliwość świadczenia Ci usługi) — co do danych osób z Twojej listy.
+      </p>
+
+      <h3>Podpowiedzi sztucznej inteligencji</h3>
+      <p>
+        Aby ułożyć ranking i napisać uzasadnienie, wysyłamy do dostawcy modeli językowych (OpenAI) dane z Twojego
+        profilu i z listy osób: imiona, opisy, relacje, tagi, wagi, historię kontaktów, Twój rytm oraz Twój <em>wiek</em
+        > (daty urodzenia nie wysyłamy). Uzasadnienia i podpowiedzi są generowane przez AI i mogą być nietrafione — to sugestia,
+        nie decyzja. Nie podejmujemy wobec Ciebie decyzji, które wywołują skutki prawne lub podobnie istotnie na Ciebie wpływają
+        (art. 22 RODO). Logika rankingu opiera się na wadze, jaką nadajesz osobie, czasie od ostatniego kontaktu, nieudanych
+        próbach kontaktu i Twoim rytmie.
+        <br />
+        Zgodnie z ustawieniami zapytania do OpenAI nie są zapisywane po stronie OpenAI do dalszego użycia (parametr „store:
+        false”). OpenAI deklaruje jednak, że logi do wykrywania nadużyć mogą być przechowywane do 30 dni, oraz że dane przesłane
+        przez API nie służą do trenowania jego modeli. Możesz podać własny klucz OpenAI — przechowujemy go zaszyfrowany i
+        używamy wyłącznie do wywołań wykonywanych na Twoje zlecenie; usuniesz go w Ustawieniach.
+        <br />
+        <strong>Podstawa:</strong> art. 6 ust. 1 lit. b RODO (Twoje dane) i lit. f RODO (dane osób z listy).
+      </p>
+
+      <h3>Przypomnienia e-mail</h3>
+      <p>
+        Jeśli masz je włączone w Ustawieniach, wysyłamy na Twój adres e-mail wiadomość z podpowiedzią, do kogo się
+        odezwać (maksymalnie jedna dziennie). Zawiera imię osoby i powód podpowiedzi. Możesz je wyłączyć w Ustawieniach.
+        Nie wysyłamy wiadomości marketingowych.
+        <br />
+        <strong>Podstawa:</strong> art. 6 ust. 1 lit. b RODO. Zapisujemy też fakt wysłania wiadomości (żeby nie wysłać jej
+        dwa razy).
+      </p>
+
+      <h3>Anonimowa analityka produktu</h3>
+      <p>
+        <strong>Domyślnie wyłączona.</strong> Włącza się wyłącznie po kliknięciu „Akceptuję” w banerze (lub włączeniu przełącznika
+        w Ustawieniach). Gdy ją włączysz, PostHog zapisuje odwiedzane strony (adresy czyścimy z identyfikatorów i parametrów,
+        usuwamy tytuły stron), źródło wejścia, sesję i kilka zdarzeń dotyczących przechodzenia przez aplikację (np. wygenerowanie
+        rankingu, potwierdzenie kontaktu). Nigdy nie wysyłamy tam imion, opisów ani notatek o Twoich bliskich. Do działania
+        używa plików cookie / pamięci przeglądarki.
+        <br />
+        <strong>Podstawa:</strong> Twoja zgoda — art. 6 ust. 1 lit. a RODO oraz art. 399 Prawa komunikacji elektronicznej
+        (dostęp do informacji zapisanych na urządzeniu). Zgodę wycofasz w każdej chwili w Ustawieniach, co nie wpływa na zgodność
+        z prawem przetwarzania sprzed wycofania.
+      </p>
+
+      <h3>Bezpieczeństwo i obsługa serwera</h3>
+      <p>
+        Podczas każdego połączenia infrastruktura (Cloudflare) przetwarza adres IP i dane techniczne żądania, by
+        dostarczyć stronę, chronić ją przed nadużyciami i diagnozować błędy.
+        <br />
+        <strong>Podstawa:</strong> art. 6 ust. 1 lit. f RODO (bezpieczeństwo i niezawodność serwisu).
+      </p>
+
+      <h3>Dochodzenie roszczeń i obrona przed nimi</h3>
+      <p>
+        <strong>Podstawa:</strong> art. 6 ust. 1 lit. f RODO. Dane przetwarzamy w tym celu tylko wtedy, gdy zajdzie taka potrzeba.
+      </p>
+
+      <h2>4. Pliki cookie i pamięć przeglądarki</h2>
+      <ul>
+        <li>
+          <strong>Niezbędne</strong> (bez Twojej zgody, bo bez nich nie zalogujesz się): ciasteczka sesji logowania.
+        </li>
+        <li>
+          <strong>Twój wybór co do analityki</strong>: wpis w pamięci lokalnej przeglądarki, żeby baner nie pytał
+          ponownie.
+        </li>
+        <li>
+          <strong>Analityczne PostHog</strong> (cookie i pamięć lokalna): tylko po Twojej zgodzie.
+        </li>
+      </ul>
+      <p>
+        Strona pobiera też czcionki z Google Fonts, co powoduje przesłanie Twojego adresu IP do Google. Podstawą jest
+        art. 6 ust. 1 lit. f RODO.
+      </p>
+
+      <h2>5. Komu powierzamy dane (odbiorcy)</h2>
+      <p>
+        Korzystamy z dostawców, którzy przetwarzają dane w naszym imieniu na podstawie umów powierzenia (art. 28 RODO):
+      </p>
+      <ul>
+        <li>
+          <strong>Supabase</strong> — baza danych i logowanie; dane przechowujemy w regionie UE (Irlandia, eu-west-1).
+        </li>
+        <li>
+          <strong>Cloudflare</strong> — hosting aplikacji i ruch sieciowy.
+        </li>
+        <li>
+          <strong>OpenAI</strong> — generowanie rankingów i uzasadnień (USA).
+        </li>
+        <li>
+          <strong>Resend</strong> — wysyłka e-maili z przypomnieniami (przetwarzanie głównie w USA).
+        </li>
+        <li>
+          <strong>PostHog (chmura UE, Frankfurt)</strong> — analityka, wyłącznie po Twojej zgodzie.
+        </li>
+        <li>
+          <strong>Google</strong> — czcionki (adres IP).
+        </li>
+      </ul>
+      <p>Nie sprzedajemy danych i nie udostępniamy ich w celach reklamowych.</p>
+
+      <h2>6. Przekazywanie danych poza Europejski Obszar Gospodarczy</h2>
+      <p>
+        Część dostawców (OpenAI, Resend, Cloudflare, Google) przetwarza dane w USA. Robimy to na podstawie mechanizmów z
+        rozdziału V RODO: decyzji stwierdzającej odpowiedni stopień ochrony dla podmiotów certyfikowanych w ramach EU–US
+        Data Privacy Framework oraz standardowych klauzul umownych zatwierdzonych przez Komisję Europejską, zgodnie z
+        umowami powierzenia z danym dostawcą. Kopię zabezpieczeń możesz uzyskać, pisząc na adres z punktu 1.
+      </p>
+
+      <h2>7. Jak długo przechowujemy dane</h2>
+      <ul>
+        <li>Dane konta, profilu, osób, historii kontaktów i rankingów — do usunięcia przez Ciebie danych lub konta.</li>
+        <li>
+          Zapisy wysłanych przypomnień — do usunięcia konta; planujemy ich automatyczne usuwanie po 90 dniach, a
+          starszych rankingów po 12 miesiącach (poza najnowszym).
+        </li>
+        <li>Wybór co do analityki — do usunięcia przez Ciebie danych przeglądarki.</li>
+        <li>Dane analityczne w PostHog — do wycofania zgody i usunięcia konta (usuwamy Twoją osobę w PostHog).</li>
+        <li>Logi dostawców infrastruktury i OpenAI — zgodnie z ich zasadami, zwykle do 30 dni.</li>
+        <li>
+          Dane potrzebne do obrony przed roszczeniami — do upływu terminów przedawnienia, jeśli roszczenie zostanie
+          zgłoszone.
+        </li>
+      </ul>
+      <p>Kopie zapasowe u dostawcy bazy mogą zawierać usunięte dane przez ograniczony czas, wynikający z ich cyklu.</p>
+
+      <h2>8. Dane osób, które ktoś dodał do swojej listy</h2>
+      <p>
+        Jeśli zostałeś/aś dodany/a do cudzej listy w InTouch, my nie mamy z Tobą kontaktu i nie znamy Twojego adresu.
+        Dane (imię, rodzaj relacji, opis, tagi, ewentualne notatki) pochodzą od użytkownika, który Cię dodał.
+        Przetwarzamy je wyłącznie po to, by tej osobie świadczyć usługę (art. 6 ust. 1 lit. f RODO) i nie wykorzystujemy
+        ich do żadnego innego celu. Nie możemy każdej takiej osoby indywidualnie poinformować — wymagałoby to
+        niewspółmiernie dużego wysiłku (art. 14 ust. 5 lit. b RODO), dlatego publikujemy te informacje tutaj.
+        <br />
+        Masz wobec tych danych wszystkie prawa z punktu 9 — w tym sprzeciw i usunięcie. Napisz do nas na adres z punktu 1,
+        podając dane, po których możemy Cię znaleźć w systemie; możemy poprosić o doprecyzowanie, by nie ujawnić danych innej
+        osobie.
+        <br />
+        Prosimy użytkowników, by nie wpisywali o bliskich informacji o zdrowiu, orientacji, poglądach, wyznaniu i innych danych
+        szczególnych kategorii (art. 9 RODO) ani numerów dokumentów. Aplikacja ich nie potrzebuje.
+      </p>
+
+      <h2>9. Twoje prawa</h2>
+      <p>Przysługuje Ci prawo do:</p>
+      <ul>
+        <li>dostępu do danych i otrzymania ich kopii,</li>
+        <li>sprostowania danych,</li>
+        <li>usunięcia danych („prawo do bycia zapomnianym”),</li>
+        <li>ograniczenia przetwarzania,</li>
+        <li>przenoszenia danych (otrzymania ich w ustrukturyzowanym formacie),</li>
+        <li>
+          sprzeciwu wobec przetwarzania opartego na prawnie uzasadnionym interesie (wskazując przyczyny związane z Twoją
+          szczególną sytuacją),
+        </li>
+        <li>wycofania zgody w dowolnym momencie (dotyczy analityki).</li>
+      </ul>
+      <p>
+        Część z tych praw wykonasz sam w Ustawieniach (usunięcie wszystkich danych, wyłączenie analityki i przypomnień,
+        usunięcie własnego klucza OpenAI). W pozostałych sprawach — w tym w usunięciu samego konta i kopii danych —
+        napisz na adres z punktu 1. Odpowiadamy bez zbędnej zwłoki, najpóźniej w ciągu miesiąca.
+      </p>
+
+      <h2>10. Skarga do organu nadzorczego</h2>
+      <p>
+        Jeśli uważasz, że przetwarzamy dane niezgodnie z prawem, możesz złożyć skargę do Prezesa Urzędu Ochrony Danych
+        Osobowych (ul. Stawki 2, 00-193 Warszawa, <a href="https://uodo.gov.pl" rel="noopener noreferrer">uodo.gov.pl</a
+        >).
+      </p>
+
+      <h2>11. Czy musisz podawać dane</h2>
+      <p>
+        Podanie danych jest dobrowolne, ale adres e-mail, hasło, imię, data urodzenia i opis sytuacji są potrzebne do
+        założenia konta i działania podpowiedzi. Bez nich nie możemy świadczyć usługi. Zgoda na analitykę jest
+        całkowicie dobrowolna i niczego nie blokuje.
+      </p>
+
+      <h2>12. Zmiany polityki</h2>
+      <p>
+        Gdy zmienimy sposób przetwarzania danych, zaktualizujemy tę stronę i datę na górze. O istotnych zmianach
+        poinformujemy w aplikacji lub e-mailem.
+      </p>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .legal {
+    line-height: 1.7;
+  }
+  .legal h2 {
+    font-family: var(--font-display, inherit);
+    font-size: 1.5rem;
+    margin-top: 2.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .legal h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  .legal p,
+  .legal ul {
+    margin-top: 0.75rem;
+  }
+  .legal ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .legal li {
+    margin-top: 0.25rem;
+  }
+  .legal a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
