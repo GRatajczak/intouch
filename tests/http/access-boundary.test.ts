@@ -39,7 +39,7 @@ describe.skipIf(!BASE_URL)("HTTP access boundary", () => {
     });
 
     it("returns the settings routes' own Polish 401", async () => {
-      const response = await fetch(`${fx.baseUrl}/api/settings/delete-data`, {
+      const response = await fetch(`${fx.baseUrl}/api/settings/delete-account`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",

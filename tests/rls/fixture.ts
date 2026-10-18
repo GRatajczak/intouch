@@ -122,7 +122,9 @@ export async function destroyRlsFixture(): Promise<void> {
   for (const id of createdUserIds.splice(0)) {
     try {
       const { error } = await admin.auth.admin.deleteUser(id);
-      if (error) throw new Error(error.message);
+      // A test that deletes its own user (delete-account.test.ts) leaves nothing
+      // to remove: "already gone" is the desired end state, not a leak.
+      if (error && error.status !== 404 && !/not found/i.test(error.message)) throw new Error(error.message);
     } catch (cause: unknown) {
       createdUserIds.push(id);
       failures.push(`${id}: ${cause instanceof Error ? cause.message : String(cause)}`);

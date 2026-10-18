@@ -1,6 +1,6 @@
 ---
 import AppShell from "@/components/layout/AppShell.astro";
-import DeleteDataSection from "@/components/settings/DeleteDataSection";
+import DeleteAccountSection from "@/components/settings/DeleteAccountSection";
 import RemindersSection from "@/components/settings/RemindersSection";
 import AnalyticsSection from "@/components/settings/AnalyticsSection";
 import ApiKeySection from "@/components/settings/ApiKeySection";
@@ -101,7 +101,7 @@ const apiKeyFailure =
     <section>
       <h2 class="text-destructive mb-3 text-sm font-semibold">Strefa zagrożenia</h2>
       <div class="border-destructive/30 bg-card text-card-foreground shadow-card rounded-2xl border p-8">
-        <DeleteDataSection client:load />
+        <DeleteAccountSection client:load />
       </div>
     </section>
   </div>

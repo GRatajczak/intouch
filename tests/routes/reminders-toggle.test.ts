@@ -6,7 +6,7 @@
 // pinning are: an anonymous caller must not be able to flip anybody's flag,
 // and a signed-in caller's flip must stop at their own row.
 //
-// The cross-owner instrument is delete-data.test.ts's, for the same reason it
+// The cross-owner instrument is delete-account.test.ts's, for the same reason it
 // exists there: run the handler under the caller's own session and RLS absorbs
 // a missing owner filter, so the test would pass against a route that had none.
 // Handing the handler a connection carrying A's session while `locals.user`

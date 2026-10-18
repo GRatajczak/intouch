@@ -114,7 +114,7 @@ async function warmRoutes(baseUrl: string): Promise<void> {
     ["/dashboard", {}],
     ["/api/rankings?jobId=none", {}],
     ["/api/contact-events?personId=none", {}],
-    ["/api/settings/delete-data", { method: "POST", headers: json, body: "{}" }],
+    ["/api/settings/delete-account", { method: "POST", headers: json, body: "{}" }],
     ["/api/contact-events/none", { method: "PATCH", headers: json, body: "{}" }],
     ["/api/people", { method: "POST", headers: { ...json }, body: "{}" }],
     ["/api/auth/signin", { method: "POST", headers: json, body: "{}" }],

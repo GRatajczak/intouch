@@ -2,7 +2,7 @@
 // teraz" recomputes, once per Europe/Warsaw calendar day, skipped entirely
 // for an owner with a usable OpenAI key of their own.
 //
-// The cross-owner instrument mirrors delete-data.test.ts's / openai-key.test.ts's:
+// The cross-owner instrument mirrors delete-account.test.ts's / openai-key.test.ts's:
 // hand claimFreeRecompute a connection carrying A's session while asking it to
 // claim for B's id. RLS alone already refuses to touch B's row from A's
 // session, so the property this file actually proves is the one RLS cannot:

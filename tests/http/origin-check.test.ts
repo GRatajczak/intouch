@@ -62,17 +62,17 @@ describe.skipIf(!BASE_URL)("Astro's origin check", () => {
   });
 
   it("rejects a bodiless POST, which carries no content-type at all", async () => {
-    // /api/settings/delete-data reads no body (delete-data.ts:15-44), so a caller
+    // /api/settings/delete-account reads no body (delete-account.ts), so a caller
     // has nothing to attach a content-type to -- the case most likely to surprise
     // a machine caller, and the one the lessons entry was written about.
-    const response = await fetch(`${fx.baseUrl}/api/settings/delete-data`, { method: "POST" });
+    const response = await fetch(`${fx.baseUrl}/api/settings/delete-account`, { method: "POST" });
 
     expect(response.status).toBe(403);
     expect(await response.text()).toContain("Cross-site POST form submissions are forbidden");
   });
 
   it("accepts the same bodiless POST once Origin matches", async () => {
-    const response = await fetch(`${fx.baseUrl}/api/settings/delete-data`, {
+    const response = await fetch(`${fx.baseUrl}/api/settings/delete-account`, {
       method: "POST",
       headers: { Origin: fx.baseUrl },
     });

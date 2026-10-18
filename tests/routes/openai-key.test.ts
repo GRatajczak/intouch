@@ -1,10 +1,10 @@
 // POST/DELETE /api/settings/openai-key -- S-17's BYOK save/remove.
 //
 // The cookbook triad this layer has established (reminders-toggle.test.ts,
-// delete-data.test.ts): an anonymous caller must not reach the route, a
+// delete-account.test.ts): an anonymous caller must not reach the route, a
 // signed-in caller's write must stop at their own row, and the real
 // happy-path write must actually land. The cross-owner instrument is
-// delete-data.test.ts's, for the same reason it exists there: run the
+// delete-account.test.ts's, for the same reason it exists there: run the
 // handler under the caller's own session and RLS absorbs a missing owner
 // filter, so the test would pass against a route that had none. Handing the
 // handler a connection carrying A's session while `locals.user` says B makes
@@ -75,7 +75,7 @@ function stubOpenAiValidationSuccess(): void {
 }
 
 // fx.clientA / fx.clientB directly, never mintExtraSession: this route never
-// calls auth.signOut() (unlike delete-data.test.ts's route), so a fresh
+// calls auth.signOut() (unlike delete-account.test.ts's route), so a fresh
 // session per read would only spend the stage project's sign-in rate limit
 // for nothing.
 async function ciphertextFor(which: "A" | "B"): Promise<string | null> {
@@ -111,7 +111,7 @@ describe("POST /api/settings/openai-key", () => {
   });
 
   it("writes only the row the handler was told to, never the connection's owner", async () => {
-    // A's session, B's identity -- the same mismatch instrument delete-data.test.ts
+    // A's session, B's identity -- the same mismatch instrument delete-account.test.ts
     // and reminders-toggle.test.ts use. RLS confines A's session to A's row, and the
     // route additionally filters on B's id, so no row can ever satisfy both --
     // the update matches nothing and the route answers 404, touching neither owner.

@@ -170,13 +170,19 @@ const updated = new Intl.DateTimeFormat("pl-PL", { dateStyle: "long" }).format(n
 
       <h2>7. Jak długo przechowujemy dane</h2>
       <ul>
-        <li>Dane konta, profilu, osób, historii kontaktów i rankingów — do usunięcia przez Ciebie danych lub konta.</li>
+        <li>
+          Dane konta, profilu, osób, historii kontaktów i rankingów — do usunięcia przez Ciebie konta w Ustawieniach.
+        </li>
         <li>
           Zapisy wysłanych przypomnień — do usunięcia konta; planujemy ich automatyczne usuwanie po 90 dniach, a
           starszych rankingów po 12 miesiącach (poza najnowszym).
         </li>
         <li>Wybór co do analityki — do usunięcia przez Ciebie danych przeglądarki.</li>
-        <li>Dane analityczne w PostHog — do wycofania zgody i usunięcia konta (usuwamy Twoją osobę w PostHog).</li>
+        <li>
+          Dane analityczne w PostHog — do wycofania zgody i usunięcia konta (przy usuwaniu konta usuwamy Twoją osobę w
+          PostHog; zdarzenia zapisane bez profilu osoby mogą pozostać w formie powiązanej wyłącznie z losowym
+          identyfikatorem konta, bez imienia i e-maila).
+        </li>
         <li>Logi dostawców infrastruktury i OpenAI — zgodnie z ich zasadami, zwykle do 30 dni.</li>
         <li>
           Dane potrzebne do obrony przed roszczeniami — do upływu terminów przedawnienia, jeśli roszczenie zostanie
@@ -216,8 +222,8 @@ const updated = new Intl.DateTimeFormat("pl-PL", { dateStyle: "long" }).format(n
         <li>wycofania zgody w dowolnym momencie (dotyczy analityki).</li>
       </ul>
       <p>
-        Część z tych praw wykonasz sam w Ustawieniach (usunięcie wszystkich danych, wyłączenie analityki i przypomnień,
-        usunięcie własnego klucza OpenAI). W pozostałych sprawach — w tym w usunięciu samego konta i kopii danych —
+        Część z tych praw wykonasz sam w Ustawieniach (usunięcie konta wraz ze wszystkimi danymi, wyłączenie analityki i
+        przypomnień, usunięcie własnego klucza OpenAI). W pozostałych sprawach — w tym w otrzymaniu kopii danych —
         napisz na adres z punktu 1. Odpowiadamy bez zbędnej zwłoki, najpóźniej w ciągu miesiąca.
       </p>
 

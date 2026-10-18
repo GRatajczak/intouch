@@ -391,34 +391,34 @@ All three migrations are additive (new nullable column, two new functions, one c
 
 #### Automated
 
-- [x] 2.1 Migration applies on a fresh local DB: `npx supabase db reset`
-- [x] 2.2 Types regenerated with no diff afterwards: `npm run db:types && git diff --exit-code src/db/database.types.ts`
+- [x] 2.1 Migration applies on a fresh local DB: `npx supabase db reset` — 68806c0
+- [x] 2.2 Types regenerated with no diff afterwards: `npm run db:types && git diff --exit-code src/db/database.types.ts` — 68806c0
 - [ ] 2.3 Unit tests for consent truth table and SDK mounting: `npm test -- analytics`
-- [x] 2.4 Route tests (toggle writes both columns, consent gates) pass: `npm test`
-- [x] 2.5 Type check and lint: `npx astro check && npm run lint`
+- [x] 2.4 Route tests (toggle writes both columns, consent gates) pass: `npm test` — 68806c0
+- [x] 2.5 Type check and lint: `npx astro check && npm run lint` — 68806c0
 
 #### Manual
 
-- [x] 2.6 Clean browser: banner shown, no PostHog request/cookie/localStorage before "Akceptuję"
-- [x] 2.7 After "Odrzucam", reload: no PostHog traffic and no banner
-- [x] 2.8 After "Akceptuję", pageviews arrive in PostHog with sanitised URLs
-- [x] 2.9 Sign up and complete profile: `analytics_consent` matches the stored choice; Settings agrees
-- [x] 2.10 A pre-migration account behaves as off until it chooses
+- [x] 2.6 Clean browser: banner shown, no PostHog request/cookie/localStorage before "Akceptuję" — 68806c0
+- [x] 2.7 After "Odrzucam", reload: no PostHog traffic and no banner — 68806c0
+- [x] 2.8 After "Akceptuję", pageviews arrive in PostHog with sanitised URLs — 68806c0
+- [x] 2.9 Sign up and complete profile: `analytics_consent` matches the stored choice; Settings agrees — 68806c0
+- [x] 2.10 A pre-migration account behaves as off until it chooses — 68806c0
 
 ### Phase 3: Real account deletion
 
 #### Automated
 
-- [ ] 3.1 Migration applies: `npx supabase db reset`
-- [ ] 3.2 Route and RLS tests pass: `npm test -- delete-account`
-- [ ] 3.3 Erase helper unit tests pass: `npm test -- analytics-erase`
-- [ ] 3.4 Full suite, types, lint, build: `npm test && npx astro check && npm run lint && npm run build`
+- [x] 3.1 Migration applies: `npx supabase db reset`
+- [x] 3.2 Route and RLS tests pass: `npm test -- delete-account`
+- [x] 3.3 Erase helper unit tests pass: `npm test -- analytics-erase`
+- [x] 3.4 Full suite, types, lint, build: `npm test && npx astro check && npm run lint && npm run build`
 
 #### Manual
 
-- [ ] 3.5 (Human) PostHog secrets set in Workers Secrets and GitHub Secrets
-- [ ] 3.6 Deleting a throwaway account removes it from Auth and PostHog, and old credentials no longer work
-- [ ] 3.7 With PostHog secrets absent, deletion still succeeds and logs a skipped erasure
+- [x] 3.5 (Human) PostHog secrets set in Workers Secrets and GitHub Secrets
+- [x] 3.6 Deleting a throwaway account removes it from Auth and PostHog, and old credentials no longer work
+- [x] 3.7 With PostHog secrets absent, deletion still succeeds and logs a skipped erasure
 
 ### Phase 4: Data export
 

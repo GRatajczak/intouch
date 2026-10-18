@@ -23,7 +23,7 @@ import { PATCH as contactEventIdPatch, DELETE as contactEventIdDelete } from "@/
 import { POST as rankingsPost, GET as rankingsGet } from "@/pages/api/rankings";
 import { POST as aiPingPost, GET as aiPingGet } from "@/pages/api/internal/ai-ping";
 import { POST as profilePost } from "@/pages/api/profile";
-import { POST as deleteDataPost } from "@/pages/api/settings/delete-data";
+import { POST as deleteAccountPost } from "@/pages/api/settings/delete-account";
 import { POST as settingsEmailPost } from "@/pages/api/settings/email";
 import { POST as settingsPasswordPost } from "@/pages/api/settings/password";
 import { POST as openaiKeyPost, DELETE as openaiKeyDelete } from "@/pages/api/settings/openai-key";
@@ -102,7 +102,12 @@ const JSON_ROUTES: JsonRouteCase[] = [
     searchParams: { jobId: "any" },
   },
   { name: "POST /api/profile", handler: profilePost, method: "POST", message: "Musisz być zalogowany" },
-  { name: "POST /api/settings/delete-data", handler: deleteDataPost, method: "POST", message: "Musisz być zalogowany" },
+  {
+    name: "POST /api/settings/delete-account",
+    handler: deleteAccountPost,
+    method: "POST",
+    message: "Musisz być zalogowany",
+  },
   { name: "POST /api/settings/email", handler: settingsEmailPost, method: "POST", message: "Musisz być zalogowany" },
   {
     name: "POST /api/settings/password",

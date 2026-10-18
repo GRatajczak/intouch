@@ -87,6 +87,13 @@ export default defineConfig({
       // an absent BYOK secret breaks nothing a user can see, so surfacing it
       // on the missing-config banner would advertise an internal ops gap to
       // the wrong audience.
+      // Account deletion's PostHog erasure (src/lib/analytics/erase.ts). The
+      // PERSONAL api key is a different credential from POSTHOG_API_KEY above
+      // (that one is the public project token); it needs project-level
+      // "person:write"-style access, so keep it scoped. Both optional: with
+      // either absent, deletion still succeeds and skips the PostHog step.
+      POSTHOG_PERSONAL_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+      POSTHOG_PROJECT_ID: envField.string({ context: "server", access: "secret", optional: true }),
       OPENAI_KEY_ENCRYPTION_KEY: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },

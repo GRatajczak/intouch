@@ -12,7 +12,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 
-export default function DeleteDataSection() {
+export default function DeleteAccountSection() {
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [error, setError] = useState<string | undefined>();
 
@@ -20,14 +20,14 @@ export default function DeleteDataSection() {
     setDeleteBusy(true);
     setError(undefined);
     try {
-      const res = await fetch("/api/settings/delete-data", { method: "POST" });
+      const res = await fetch("/api/settings/delete-account", { method: "POST" });
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(body?.error ?? "Nie udało się usunąć danych");
+        throw new Error(body?.error ?? "Nie udało się usunąć konta");
       }
-      window.location.href = "/?notice=" + encodeURIComponent("Twoje dane zostały usunięte");
+      window.location.href = "/?notice=" + encodeURIComponent("Twoje konto zostało usunięte");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Nie udało się usunąć danych");
+      setError(err instanceof Error ? err.message : "Nie udało się usunąć konta");
       setDeleteBusy(false);
     }
   }
@@ -35,24 +35,23 @@ export default function DeleteDataSection() {
   return (
     <div>
       <p className="text-muted-foreground mb-4 text-sm">
-        Trwale usuniesz wszystkie dodane osoby, historię kontaktu i swój profil. Twoje konto pozostanie aktywne —
-        będziesz mógł zalogować się ponownie, ale zaczniesz od zera.
+        Trwale usuniesz swoje konto razem ze wszystkimi danymi: dodanymi osobami, historią kontaktu, rankingami,
+        profilem i adresem e-mail. Nie będzie można tego cofnąć.
       </p>
       {error && <p className="text-destructive mb-4 text-sm">{error}</p>}
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button type="button" variant="destructive">
             <Trash2 className="size-4" />
-            Usuń wszystkie dane
+            Usuń konto
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Usunąć wszystkie Twoje dane?</AlertDialogTitle>
+            <AlertDialogTitle>Usunąć konto?</AlertDialogTitle>
             <AlertDialogDescription>
-              Nie można cofnąć tej operacji. Wszystkie osoby, ich historia kontaktu, obliczone rankingi i Twój profil
-              zostaną usunięte bezpowrotnie. Zostaniesz wylogowany, a Twoje konto pozostanie puste — będziesz mógł
-              zalogować się ponownie i zacząć od nowa.
+              Nie można cofnąć tej operacji. Twoje konto, wszystkie osoby, ich historia kontaktu, obliczone rankingi,
+              profil i adres e-mail zostaną usunięte bezpowrotnie. Zostaniesz wylogowany.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -69,7 +68,7 @@ export default function DeleteDataSection() {
                 void handleDelete();
               }}
             >
-              Usuń wszystkie dane
+              Usuń konto
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
